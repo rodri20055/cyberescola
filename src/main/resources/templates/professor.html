@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Área do Professor | CyberEscola</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    body {
+      background: #f8f5ef;
+      color: #1f1f1f;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1180px;
+      margin: auto;
+    }
+
+    header {
+      padding: 24px 0;
+      border-bottom: 1px solid #ddd4c8;
+      background: #f8f5ef;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: #9b6b43;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .btn-nav {
+      background: #1f1f1f;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 999px;
+      display: inline-block;
+      font-weight: 700;
+    }
+
+    .hero {
+      padding: 55px 0 30px;
+    }
+
+    .hero-box {
+      background: #efe6da;
+      border-radius: 28px;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .hero-text h1 {
+      font-size: 3.2rem;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 14px;
+    }
+
+    .hero-text p {
+      color: #4f4f4f;
+      font-size: 1rem;
+      line-height: 1.7;
+      max-width: 700px;
+      margin-bottom: 22px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-dark {
+      background: #1f1f1f;
+      color: white;
+      padding: 11px 18px;
+      border-radius: 999px;
+      display: inline-block;
+      font-weight: 700;
+    }
+
+    .btn-light {
+      border: 1px solid #1f1f1f;
+      color: #1f1f1f;
+      padding: 11px 18px;
+      border-radius: 999px;
+      display: inline-block;
+      font-weight: 700;
+    }
+
+    .hero-side {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 22px;
+      padding: 24px;
+    }
+
+    .hero-side h3 {
+      font-size: 1.1rem;
+      margin-bottom: 14px;
+    }
+
+    .hero-side ul {
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+
+    .hero-side li {
+      color: #5c5c5c;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #eee2d3;
+    }
+
+    .hero-side li:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .section {
+      padding: 26px 0 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .stat-card {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .stat-label {
+      color: #5c5c5c;
+      font-size: 0.92rem;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .stat-extra {
+      color: #7a6b5c;
+      font-size: 0.9rem;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1.6fr 0.9fr;
+      gap: 22px;
+      padding: 30px 0 70px;
+    }
+
+    .panel {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 22px;
+      padding: 26px;
+      margin-bottom: 20px;
+    }
+
+    .panel:last-child {
+      margin-bottom: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .panel-header h2 {
+      font-size: 1.5rem;
+      letter-spacing: -1px;
+    }
+
+    .panel-header a {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #6e5036;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .quick-card {
+      border: 1px solid #e6dbce;
+      border-radius: 18px;
+      padding: 20px;
+      background: #fffaf4;
+    }
+
+    .quick-card h3 {
+      font-size: 1.08rem;
+      margin-bottom: 10px;
+    }
+
+    .quick-card p {
+      color: #5c5c5c;
+      font-size: 0.94rem;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .quick-card a {
+      font-weight: 700;
+      color: #1f1f1f;
+    }
+
+    .class-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .class-item {
+      border: 1px solid #e6dbce;
+      border-radius: 18px;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      background: #fffaf4;
+    }
+
+    .class-item h3 {
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+    }
+
+    .class-item p {
+      color: #5c5c5c;
+      font-size: 0.93rem;
+    }
+
+    .class-meta {
+      text-align: right;
+      color: #5c5c5c;
+      font-size: 0.92rem;
+      white-space: nowrap;
+    }
+
+    .activity-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .activity-item {
+      padding-bottom: 14px;
+      border-bottom: 1px solid #eee2d3;
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .activity-item h4 {
+      font-size: 1rem;
+      margin-bottom: 5px;
+    }
+
+    .activity-item p {
+      color: #5c5c5c;
+      font-size: 0.94rem;
+      line-height: 1.6;
+    }
+
+    .side-box {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 22px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .side-box:last-child {
+      margin-bottom: 0;
+    }
+
+    .side-box h3 {
+      font-size: 1.15rem;
+      margin-bottom: 14px;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .mini-item {
+      padding: 14px 16px;
+      background: #fffaf4;
+      border: 1px solid #e9ddcf;
+      border-radius: 16px;
+    }
+
+    .mini-item strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.96rem;
+    }
+
+    .mini-item span {
+      color: #5c5c5c;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .progress-card {
+      background: #efe6da;
+      border-radius: 22px;
+      padding: 24px;
+    }
+
+    .progress-card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 10px;
+    }
+
+    .progress-card p {
+      color: #4f4f4f;
+      font-size: 0.94rem;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 14px;
+      background: #d9ccbc;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .progress-fill {
+      width: 72%;
+      height: 100%;
+      background: #1f1f1f;
+      border-radius: 999px;
+    }
+
+    .progress-text {
+      color: #5c5c5c;
+      font-size: 0.92rem;
+    }
+
+    footer {
+      padding: 28px 0;
+      border-top: 1px solid #ddd4c8;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      color: #5c5c5c;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 980px) {
+      .hero-box,
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero-text h1 {
+        font-size: 2.6rem;
+      }
+
+      nav a:not(.btn-nav) {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .stats-grid,
+      .quick-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .class-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .class-meta {
+        text-align: left;
+        white-space: normal;
+      }
+
+      .hero-box {
+        padding: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container navbar">
+      <a href="/index.html" class="logo">Cyber<span>Escola</span></a>
+
+      <nav>
+        <a href="/professor">Professor</a>
+        <a href="/conteudos">Conteúdos</a>
+        <a href="/quiz">Quiz</a>
+        <a href="/ranking">Ranking</a>
+        <a href="/logout" class="btn-nav">Sair</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-box">
+        <div class="hero-text">
+          <h1>Painel do professor</h1>
+          <p>
+            Gere atividades, acompanha turmas, consulta resultados e organiza a aprendizagem
+            dos alunos na plataforma de cibersegurança.
+          </p>
+
+          <div class="hero-actions">
+            <a href="/conteudos" class="btn-dark">Ver conteúdos</a>
+            <a href="/quiz" class="btn-light">Gerir quizzes</a>
+          </div>
+        </div>
+
+        <div class="hero-side">
+          <h3>Resumo rápido</h3>
+          <ul>
+            <li>4 turmas associadas à tua conta</li>
+            <li>120 alunos acompanhados</li>
+            <li>28 quizzes ativos na plataforma</li>
+            <li>12 atividades por rever esta semana</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Turmas</div>
+          <div class="stat-value">4</div>
+          <div class="stat-extra">Ativas neste período</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Alunos</div>
+          <div class="stat-value">120</div>
+          <div class="stat-extra">Acompanhados</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Quizzes</div>
+          <div class="stat-value">28</div>
+          <div class="stat-extra">Disponíveis</div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-label">Conclusão média</div>
+          <div class="stat-value">72%</div>
+          <div class="stat-extra">Participação geral</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="main-layout">
+      <div>
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Acesso rápido</h2>
+            <a href="#">Ver tudo</a>
+          </div>
+
+          <div class="quick-grid">
+            <div class="quick-card">
+              <h3>Conteúdos</h3>
+              <p>Consulta materiais, vídeos e recursos de apoio para as aulas.</p>
+              <a href="/conteudos">Abrir conteúdos</a>
+            </div>
+
+            <div class="quick-card">
+              <h3>Quizzes</h3>
+              <p>Consulta avaliações, acompanha resultados e revê desempenho.</p>
+              <a href="/quiz">Ver quizzes</a>
+            </div>
+
+            <div class="quick-card">
+              <h3>Ranking</h3>
+              <p>Analisa a classificação dos alunos e a evolução na plataforma.</p>
+              <a href="/ranking">Abrir ranking</a>
+            </div>
+
+            <div class="quick-card">
+              <h3>Relatórios</h3>
+              <p>Consulta métricas gerais de participação e progresso das turmas.</p>
+              <a href="#">Ver relatórios</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Turmas</h2>
+            <a href="/gerir-turmas">Gerir turmas</a>
+          </div>
+
+          <div class="class-list">
+            <div class="class-item">
+              <div>
+                <h3>Turma 10.º A</h3>
+                <p>Módulo introdutório de cibersegurança e navegação segura.</p>
+              </div>
+              <div class="class-meta">
+                28 alunos<br>
+                81% participação
+              </div>
+            </div>
+
+            <div class="class-item">
+              <div>
+                <h3>Turma 10.º B</h3>
+                <p>Atividades sobre passwords seguras, phishing e proteção de dados.</p>
+              </div>
+              <div class="class-meta">
+                30 alunos<br>
+                74% participação
+              </div>
+            </div>
+
+            <div class="class-item">
+              <div>
+                <h3>Turma 11.º A</h3>
+                <p>Quizzes semanais e conteúdos multimédia sobre ameaças digitais.</p>
+              </div>
+              <div class="class-meta">
+                31 alunos<br>
+                69% participação
+              </div>
+            </div>
+
+            <div class="class-item">
+              <div>
+                <h3>Turma 11.º B</h3>
+                <p>Desafios práticos e acompanhamento do ranking dos alunos.</p>
+              </div>
+              <div class="class-meta">
+                31 alunos<br>
+                65% participação
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Atividade recente</h2>
+            <a href="#">Ver histórico</a>
+          </div>
+
+          <div class="activity-list">
+            <div class="activity-item">
+              <h4>Quiz “Phishing e emails suspeitos” concluído por 24 alunos</h4>
+              <p>Última atualização hoje às 10:45. A média de resultados foi de 78%.</p>
+            </div>
+
+            <div class="activity-item">
+              <h4>Novo vídeo adicionado à secção de conteúdos</h4>
+              <p>Recurso publicado para apoio à turma 10.º B sobre proteção de passwords.</p>
+            </div>
+
+            <div class="activity-item">
+              <h4>Ranking atualizado após atividade semanal</h4>
+              <p>Os resultados mais recentes já estão visíveis para os alunos.</p>
+            </div>
+
+            <div class="activity-item">
+              <h4>Participação abaixo do esperado na turma 11.º B</h4>
+              <p>Convém rever o envolvimento dos alunos nas atividades da semana.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="side-box">
+          <h3>Avisos</h3>
+          <div class="mini-list">
+            <div class="mini-item">
+              <strong>3 quizzes por corrigir</strong>
+              <span>Existem submissões pendentes de revisão.</span>
+            </div>
+
+            <div class="mini-item">
+              <strong>Nova atividade disponível</strong>
+              <span>Foi publicado um novo recurso sobre redes seguras.</span>
+            </div>
+
+            <div class="mini-item">
+              <strong>Ranking semanal fechado</strong>
+              <span>Os resultados desta semana já foram calculados.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-box">
+          <h3>Próximas ações</h3>
+          <div class="mini-list">
+            <div class="mini-item">
+              <strong>Rever resultados</strong>
+              <span>Confirmar desempenho do quiz de phishing.</span>
+            </div>
+
+            <div class="mini-item">
+              <strong>Publicar conteúdo</strong>
+              <span>Adicionar material para a turma 11.º A.</span>
+            </div>
+
+            <div class="mini-item">
+              <strong>Ver alunos com menor atividade</strong>
+              <span>Identificar quem precisa de mais apoio.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="progress-card">
+          <h3>Participação global</h3>
+          <p>
+            A maioria das turmas está a acompanhar bem as atividades propostas na plataforma.
+          </p>
+
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+
+          <div class="progress-text">72% de participação média</div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-content">
+      <p>© 2026 CyberEscola</p>
+      <p>Área do professor</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conteúdos | CyberEscola</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    body {
+      background: #f8f5ef;
+      color: #1f1f1f;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1180px;
+      margin: auto;
+    }
+
+    header {
+      padding: 24px 0;
+      border-bottom: 1px solid #ddd4c8;
+      background: #f8f5ef;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: #9b6b43;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .btn-nav {
+      background: #1f1f1f;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 999px;
+      display: inline-block;
+      font-weight: 700;
+    }
+
+    .hero {
+      padding: 55px 0 30px;
+    }
+
+    .hero-box {
+      background: #efe6da;
+      border-radius: 28px;
+      padding: 38px;
+      display: grid;
+      grid-template-columns: 1.3fr 0.8fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .hero-text h1 {
+      font-size: 3rem;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 14px;
+    }
+
+    .hero-text p {
+      max-width: 700px;
+      color: #4f4f4f;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .hero-side {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 22px;
+      padding: 22px;
+    }
+
+    .hero-side h3 {
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+    }
+
+    .hero-side p {
+      color: #5c5c5c;
+      font-size: 0.94rem;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .hero-side span {
+      color: #7a6b5c;
+      font-size: 0.9rem;
+    }
+
+    .filters {
+      padding: 10px 0 30px;
+    }
+
+    .filters-box {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-input,
+    .filter-select {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 14px;
+      padding: 13px 15px;
+      font-size: 0.95rem;
+      color: #1f1f1f;
+      outline: none;
+    }
+
+    .search-input {
+      min-width: 280px;
+      flex: 1;
+    }
+
+    .filter-select {
+      min-width: 180px;
+    }
+
+    .section {
+      padding: 0 0 70px;
+    }
+
+    .section-title {
+      margin-bottom: 24px;
+    }
+
+    .section-title h2 {
+      font-size: 1.9rem;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .section-title p {
+      color: #5c5c5c;
+      line-height: 1.7;
+      max-width: 720px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .content-card {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 22px;
+      overflow: hidden;
+    }
+
+    .content-thumb {
+      height: 180px;
+      background: #e8dccf;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #6b5642;
+    }
+
+    .content-body {
+      padding: 22px;
+    }
+
+    .content-tag {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #efe6da;
+      color: #6c4b2d;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .content-body h3 {
+      font-size: 1.15rem;
+      margin-bottom: 10px;
+    }
+
+    .content-body p {
+      color: #5c5c5c;
+      line-height: 1.6;
+      font-size: 0.94rem;
+      margin-bottom: 16px;
+    }
+
+    .content-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 0.88rem;
+      color: #7a6b5c;
+      margin-bottom: 14px;
+    }
+
+    .content-body a {
+      font-weight: 700;
+    }
+
+    .topics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .topic-box {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    .topic-box h3 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+    }
+
+    .topic-box p {
+      color: #5c5c5c;
+      font-size: 0.93rem;
+      line-height: 1.6;
+    }
+
+    footer {
+      padding: 28px 0;
+      border-top: 1px solid #ddd4c8;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      color: #5c5c5c;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 980px) {
+      .hero-box,
+      .content-grid,
+      .topics {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero-text h1 {
+        font-size: 2.4rem;
+      }
+
+      nav a:not(.btn-nav) {
+        display: none;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .hero-box,
+      .content-grid,
+      .topics {
+        grid-template-columns: 1fr;
+      }
+
+      .filters-box {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-input,
+      .filter-select {
+        width: 100%;
+        min-width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container navbar">
+      <a href="/index.html" class="logo">Cyber<span>Escola</span></a>
+
+      <nav>
+        <a href="/index.html">Início</a>
+        <a href="/conteudos">Conteúdos</a>
+        <a href="/quiz">Quiz</a>
+        <a href="/ranking">Ranking</a>
+        <a href="/logout" class="btn-nav">Sair</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-box">
+        <div class="hero-text">
+          <h1>Conteúdos de cibersegurança</h1>
+          <p>
+            Explora vídeos, recursos e materiais de aprendizagem sobre temas essenciais
+            de cibersegurança. A plataforma organiza os conteúdos por assunto para
+            facilitar o estudo e o acompanhamento das atividades.
+          </p>
+        </div>
+
+        <div class="hero-side">
+          <h3>Biblioteca digital</h3>
+          <p>Consulta conteúdos educativos pensados para alunos e professores.</p>
+          <span>Vídeos, recursos e apoio à aprendizagem.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="filters">
+    <div class="container">
+      <div class="filters-box">
+        <input type="text" class="search-input" placeholder="Pesquisar conteúdos...">
+        <select class="filter-select">
+          <option>Todos os temas</option>
+          <option>Phishing</option>
+          <option>Passwords</option>
+          <option>Segurança digital</option>
+          <option>Privacidade</option>
+        </select>
+        <select class="filter-select">
+          <option>Todos os formatos</option>
+          <option>Vídeos</option>
+          <option>Guias</option>
+          <option>Recursos</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Conteúdos em destaque</h2>
+        <p>
+          Uma seleção de recursos importantes para aprender conceitos essenciais
+          de forma simples e organizada.
+        </p>
+      </div>
+
+      <div class="content-grid">
+        <div class="content-card">
+          <div class="content-thumb">Vídeo educativo</div>
+          <div class="content-body">
+            <div class="content-tag">Phishing</div>
+            <h3>O que é phishing?</h3>
+            <p>
+              Introdução ao conceito de phishing, exemplos de ataques e formas de
+              identificar mensagens suspeitas.
+            </p>
+            <div class="content-meta">
+              <span>Formato: Vídeo</span>
+              <span>Duração: 8 min</span>
+            </div>
+            <a href="#">Ver conteúdo</a>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="content-thumb">Guia prático</div>
+          <div class="content-body">
+            <div class="content-tag">Passwords</div>
+            <h3>Como criar passwords seguras</h3>
+            <p>
+              Boas práticas para criar palavras-passe fortes e proteger contas
+              pessoais e escolares.
+            </p>
+            <div class="content-meta">
+              <span>Formato: Guia</span>
+              <span>Nível: Básico</span>
+            </div>
+            <a href="#">Ver conteúdo</a>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="content-thumb">Recurso multimédia</div>
+          <div class="content-body">
+            <div class="content-tag">Privacidade</div>
+            <h3>Privacidade na internet</h3>
+            <p>
+              Recursos sobre proteção de dados, partilha segura de informação e
+              cuidados na navegação online.
+            </p>
+            <div class="content-meta">
+              <span>Formato: Recurso</span>
+              <span>Tema: Privacidade</span>
+            </div>
+            <a href="#">Ver conteúdo</a>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="content-thumb">Vídeo educativo</div>
+          <div class="content-body">
+            <div class="content-tag">Segurança digital</div>
+            <h3>Navegação segura</h3>
+            <p>
+              Conteúdo sobre hábitos seguros ao navegar online e prevenção de riscos
+              comuns no dia a dia digital.
+            </p>
+            <div class="content-meta">
+              <span>Formato: Vídeo</span>
+              <span>Duração: 10 min</span>
+            </div>
+            <a href="#">Ver conteúdo</a>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="content-thumb">Guia prático</div>
+          <div class="content-body">
+            <div class="content-tag">Segurança digital</div>
+            <h3>Boas práticas no dia a dia</h3>
+            <p>
+              Um conjunto de recomendações simples para melhorar a segurança digital
+              no contexto escolar e pessoal.
+            </p>
+            <div class="content-meta">
+              <span>Formato: Guia</span>
+              <span>Nível: Intermédio</span>
+            </div>
+            <a href="#">Ver conteúdo</a>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="content-thumb">Recurso multimédia</div>
+          <div class="content-body">
+            <div class="content-tag">Phishing</div>
+            <h3>Exemplos de mensagens falsas</h3>
+            <p>
+              Exemplos visuais de emails e mensagens suspeitas para ajudar a
+              reconhecer sinais de fraude.
+            </p>
+            <div class="content-meta">
+              <span>Formato: Recurso</span>
+              <span>Tema: Phishing</span>
+            </div>
+            <a href="#">Ver conteúdo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Temas principais</h2>
+        <p>
+          Os conteúdos estão organizados por áreas para facilitar a consulta
+          e o estudo ao longo da plataforma.
+        </p>
+      </div>
+
+      <div class="topics">
+        <div class="topic-box">
+          <h3>Phishing</h3>
+          <p>Mensagens falsas, fraudes digitais e formas de prevenção.</p>
+        </div>
+
+        <div class="topic-box">
+          <h3>Passwords</h3>
+          <p>Criação de palavras-passe fortes e proteção de contas.</p>
+        </div>
+
+        <div class="topic-box">
+          <h3>Privacidade</h3>
+          <p>Proteção de dados pessoais e comportamentos seguros online.</p>
+        </div>
+
+        <div class="topic-box">
+          <h3>Segurança digital</h3>
+          <p>Boas práticas no uso diário da internet e dispositivos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-content">
+      <p>© 2026 CyberEscola</p>
+      <p>Biblioteca de conteúdos</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ranking | CyberEscola</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    body {
+      background: #f8f5ef;
+      color: #1f1f1f;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    header {
+      padding: 24px 0;
+      border-bottom: 1px solid #ddd4c8;
+      background: #f8f5ef;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: #9b6b43;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .btn-nav {
+      background: #1f1f1f;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 999px;
+      display: inline-block;
+      font-weight: 700;
+    }
+
+    .hero {
+      padding: 60px 0 30px;
+    }
+
+    .hero-box {
+      background: #efe6da;
+      border-radius: 28px;
+      padding: 38px;
+    }
+
+    .hero-box h1 {
+      font-size: 3rem;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 14px;
+    }
+
+    .hero-box p {
+      max-width: 700px;
+      color: #4f4f4f;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .stat-card {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 18px;
+      padding: 22px;
+    }
+
+    .stat-card h3 {
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+    }
+
+    .stat-card p {
+      color: #5c5c5c;
+      font-size: 0.95rem;
+    }
+
+    .section {
+      padding: 28px 0 70px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.5fr 0.8fr;
+      gap: 22px;
+    }
+
+    .panel {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 22px;
+      padding: 26px;
+    }
+
+    .panel h2 {
+      font-size: 1.5rem;
+      letter-spacing: -1px;
+      margin-bottom: 18px;
+    }
+
+    .top3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .top-card {
+      background: #fffaf4;
+      border: 1px solid #e8dccf;
+      border-radius: 18px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .top-card .place {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: #9b6b43;
+      margin-bottom: 8px;
+    }
+
+    .top-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+    }
+
+    .top-card p {
+      color: #5c5c5c;
+      font-size: 0.93rem;
+      margin-bottom: 8px;
+    }
+
+    .top-card strong {
+      font-size: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      text-align: left;
+      font-size: 0.92rem;
+      color: #6d6257;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #eadfd2;
+    }
+
+    tbody td {
+      padding: 16px 0;
+      border-bottom: 1px solid #f0e6da;
+      font-size: 0.95rem;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .position {
+      font-weight: 800;
+      width: 70px;
+    }
+
+    .score {
+      font-weight: 700;
+    }
+
+    .tag-you {
+      display: inline-block;
+      margin-left: 8px;
+      background: #efe6da;
+      color: #6c4b2d;
+      font-size: 0.78rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+
+    .side-box {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 22px;
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+
+    .side-box:last-child {
+      margin-bottom: 0;
+    }
+
+    .side-box h3 {
+      font-size: 1.15rem;
+      margin-bottom: 14px;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .mini-item {
+      padding: 14px 16px;
+      background: #fffaf4;
+      border: 1px solid #e9ddcf;
+      border-radius: 16px;
+    }
+
+    .mini-item strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.96rem;
+    }
+
+    .mini-item span {
+      color: #5c5c5c;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .highlight-box {
+      background: #efe6da;
+      border-radius: 22px;
+      padding: 24px;
+    }
+
+    .highlight-box h3 {
+      font-size: 1.15rem;
+      margin-bottom: 10px;
+    }
+
+    .highlight-box p {
+      color: #4f4f4f;
+      font-size: 0.94rem;
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 14px;
+      background: #d9ccbc;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .progress-fill {
+      width: 68%;
+      height: 100%;
+      background: #1f1f1f;
+      border-radius: 999px;
+    }
+
+    .progress-text {
+      color: #5c5c5c;
+      font-size: 0.92rem;
+    }
+
+    footer {
+      padding: 28px 0;
+      border-top: 1px solid #ddd4c8;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      color: #5c5c5c;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .stats,
+      .top3 {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-box h1 {
+        font-size: 2.4rem;
+      }
+
+      nav a:not(.btn-nav) {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      table,
+      thead,
+      tbody,
+      th,
+      td,
+      tr {
+        display: block;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tbody tr {
+        padding: 14px 0;
+        border-bottom: 1px solid #eadfd2;
+      }
+
+      tbody td {
+        border: none;
+        padding: 4px 0;
+      }
+
+      tbody tr:last-child {
+        border-bottom: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container navbar">
+      <a href="/index.html" class="logo">Cyber<span>Escola</span></a>
+
+      <nav>
+        <a href="/conteudos">Conteúdos</a>
+        <a href="/quiz">Quiz</a>
+        <a href="/ranking">Ranking</a>
+        <a href="/logout" class="btn-nav">Sair</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-box">
+        <h1>Ranking da plataforma</h1>
+        <p>
+          Consulta a classificação dos alunos com melhor desempenho na CyberEscola.
+          O ranking é atualizado com base na participação, quizzes concluídos,
+          desafios e atividades realizadas.
+        </p>
+
+        <div class="stats">
+          <div class="stat-card">
+            <h3>426</h3>
+            <p>Alunos no ranking</p>
+          </div>
+
+          <div class="stat-card">
+            <h3>32</h3>
+            <p>Atividades contabilizadas</p>
+          </div>
+
+          <div class="stat-card">
+            <h3>850</h3>
+            <p>A tua pontuação atual</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container layout">
+      <div>
+        <div class="panel">
+          <h2>Top 3 desta semana</h2>
+
+          <div class="top3">
+            <div class="top-card">
+              <div class="place">1.º lugar</div>
+              <h3>Mariana Silva</h3>
+              <p>Turma 11.º A</p>
+              <strong>1240 pontos</strong>
+            </div>
+
+            <div class="top-card">
+              <div class="place">2.º lugar</div>
+              <h3>Rafael Costa</h3>
+              <p>Turma 10.º B</p>
+              <strong>1175 pontos</strong>
+            </div>
+
+            <div class="top-card">
+              <div class="place">3.º lugar</div>
+              <h3>Beatriz Lopes</h3>
+              <p>Turma 11.º B</p>
+              <strong>1105 pontos</strong>
+            </div>
+          </div>
+
+          <h2>Classificação geral</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Posição</th>
+                <th>Nome</th>
+                <th>Turma</th>
+                <th>Pontuação</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="position">1</td>
+                <td>Mariana Silva</td>
+                <td>11.º A</td>
+                <td class="score">1240</td>
+              </tr>
+              <tr>
+                <td class="position">2</td>
+                <td>Rafael Costa</td>
+                <td>10.º B</td>
+                <td class="score">1175</td>
+              </tr>
+              <tr>
+                <td class="position">3</td>
+                <td>Beatriz Lopes</td>
+                <td>11.º B</td>
+                <td class="score">1105</td>
+              </tr>
+              <tr>
+                <td class="position">4</td>
+                <td>Tiago Martins</td>
+                <td>10.º A</td>
+                <td class="score">980</td>
+              </tr>
+              <tr>
+                <td class="position">5</td>
+                <td>Joana Ferreira</td>
+                <td>11.º A</td>
+                <td class="score">940</td>
+              </tr>
+              <tr>
+                <td class="position">6</td>
+                <td>Ana Costa <span class="tag-you">Tu</span></td>
+                <td>10.º A</td>
+                <td class="score">850</td>
+              </tr>
+              <tr>
+                <td class="position">7</td>
+                <td>Pedro Rocha</td>
+                <td>10.º B</td>
+                <td class="score">810</td>
+              </tr>
+              <tr>
+                <td class="position">8</td>
+                <td>Leonor Sousa</td>
+                <td>11.º B</td>
+                <td class="score">775</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <aside>
+        <div class="side-box">
+          <h3>O teu lugar</h3>
+          <div class="mini-list">
+            <div class="mini-item">
+              <strong>6.º lugar no ranking geral</strong>
+              <span>Estás perto do top 5. Continua a participar para subir de posição.</span>
+            </div>
+
+            <div class="mini-item">
+              <strong>850 pontos acumulados</strong>
+              <span>Os teus pontos vêm de quizzes, jogos e atividades concluídas.</span>
+            </div>
+
+            <div class="mini-item">
+              <strong>+70 pontos esta semana</strong>
+              <span>Tiveste uma boa evolução nas últimas atividades.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="side-box">
+          <h3>Como subir no ranking</h3>
+          <div class="mini-list">
+            <div class="mini-item">
+              <strong>Concluir quizzes</strong>
+              <span>Responde corretamente e melhora a tua pontuação.</span>
+            </div>
+
+            <div class="mini-item">
+              <strong>Participar nos jogos</strong>
+              <span>As atividades práticas também contam para o ranking.</span>
+            </div>
+
+            <div class="mini-item">
+              <strong>Ser consistente</strong>
+              <span>A participação frequente ajuda-te a manter uma posição alta.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="highlight-box">
+          <h3>Progresso para o top 5</h3>
+          <p>
+            Faltam poucos pontos para entrares no top 5 da plataforma.
+          </p>
+
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+
+          <div class="progress-text">68% do caminho até ao top 5</div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-content">
+      <p>© 2026 CyberEscola</p>
+      <p>Ranking da plataforma</p>
+    </div>
+  </footer>
+
+</body>
+</html>

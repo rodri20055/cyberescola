@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | CyberEscola</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    body {
+      background: #f8f5ef;
+      color: #1f1f1f;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 15px;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 440px;
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 22px;
+      padding: 32px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.03);
+    }
+
+    .brand {
+      text-align: center;
+      font-size: 1.7rem;
+      font-weight: 800;
+      margin-bottom: 18px;
+      letter-spacing: -1px;
+    }
+
+    .brand span {
+      color: #9b6b43;
+    }
+
+    .login-card h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      letter-spacing: -1px;
+    }
+
+    .login-card p {
+      color: #5c5c5c;
+      font-size: 0.96rem;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .error-message {
+      display: none;
+      background: #fdeaea;
+      color: #a33a3a;
+      border: 1px solid #efc7c7;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      margin-bottom: 18px;
+    }
+
+    .success-message {
+      display: none;
+      background: #e9f8ee;
+      color: #1f6b3b;
+      border: 1px solid #bfe2ca;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      margin-bottom: 18px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #d7cec2;
+      border-radius: 12px;
+      background: #ffffff;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #9b6b43;
+    }
+
+    .login-btn {
+      width: 100%;
+      border: none;
+      background: #1f1f1f;
+      color: white;
+      padding: 14px;
+      border-radius: 999px;
+      font-size: 0.96rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: 0.2s;
+    }
+
+    .login-btn:hover {
+      opacity: 0.92;
+    }
+
+  .extra-links {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.extra-links a {
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #d7cec2;
+  background: #ffffff;
+  color: #5c5c5c;
+  transition: 0.25s;
+}
+
+.extra-links a:hover {
+  background: #1f1f1f;
+  color: white;
+  border-color: #1f1f1f;
+}
+    @media (max-width: 520px) {
+      .login-card {
+        padding: 24px;
+      }
+
+      .extra-links {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <div class="brand">Cyber<span>Escola</span></div>
+
+    <h1>Login</h1>
+    <p>Introduz os teus dados para entrar na plataforma.</p>
+
+    <div id="errorMessage" class="error-message"></div>
+    <div id="successMessage" class="success-message"></div>
+
+    <form id="loginForm" action="/login" method="post">
+      <div class="form-group">
+        <label for="perfil">Perfil</label>
+        <select id="perfil" name="perfil" required>
+          <option value="">Seleciona o perfil</option>
+          <option value="aluno">Aluno</option>
+          <option value="professor">Professor</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="exemplo@escola.pt" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Palavra-passe</label>
+        <input type="password" id="password" name="password" placeholder="Introduz a tua palavra-passe" required>
+      </div>
+
+      <button type="submit" class="login-btn">Entrar</button>
+    </form>
+
+    <div class="extra-links">
+      <a href="/esqueci-password">Recuperar palavra-passe</a>
+      <a href="/criar-conta">Criar conta</a>
+      <a href="/index.html">Voltar ao início</a>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const errorBox = document.getElementById("errorMessage");
+    const successBox = document.getElementById("successMessage");
+
+    if (params.has("erro")) {
+      errorBox.style.display = "block";
+      errorBox.textContent = "Email, palavra-passe ou perfil inválidos.";
+    }
+
+    if (params.has("emailEnviado")) {
+      successBox.style.display = "block";
+      successBox.textContent = "Se o email existir, vais receber um link de recuperação.";
+    }
+
+    if (params.has("passwordAlterada")) {
+      successBox.style.display = "block";
+      successBox.textContent = "Palavra-passe alterada com sucesso.";
+    }
+
+    if (params.has("contaCriada")) {
+      successBox.style.display = "block";
+      successBox.textContent = "Conta criada com sucesso. Já podes iniciar sessão.";
+    }
+
+    if (params.has("codigoInvalido")) {
+      errorBox.style.display = "block";
+      errorBox.textContent = "Código inválido.";
+    }
+
+    if (params.has("codigoExpirado")) {
+      errorBox.style.display = "block";
+      errorBox.textContent = "O código expirou. Faz login novamente.";
+    }
+
+    if (params.has("codigoUsado")) {
+      errorBox.style.display = "block";
+      errorBox.textContent = "Esse código já foi utilizado.";
+    }
+
+    if (params.has("bloqueado")) {
+      errorBox.style.display = "block";
+      errorBox.textContent = "Demasiadas tentativas. Faz login novamente.";
+    }
+
+    if (params.has("erroToken")) {
+      errorBox.style.display = "block";
+      errorBox.textContent = "Token inválido.";
+    }
+
+    if (params.has("tokenExpirado")) {
+      errorBox.style.display = "block";
+      errorBox.textContent = "O link de recuperação expirou.";
+    }
+  </script>
+
+</body>
+</html>

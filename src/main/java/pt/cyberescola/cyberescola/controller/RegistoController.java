@@ -23,36 +23,38 @@ public class RegistoController {
     public String paginaCriarConta() {
         return "criar-conta";
     }
-@PostMapping("/criar-conta")
-public String criarConta(@RequestParam String nome,
-                         @RequestParam String email,
-                         @RequestParam String password,
-                         @RequestParam String confirmarPassword,
-                         @RequestParam String perfil) {
 
-    if (!password.equals(confirmarPassword)) {
-        return "redirect:/criar-conta?erro=password";
+    @PostMapping("/criar-conta")
+    public String criarConta(@RequestParam String nome,
+                             @RequestParam String email,
+                             @RequestParam String password,
+                             @RequestParam String confirmarPassword,
+                             @RequestParam String perfil) {
+
+        if (!password.equals(confirmarPassword)) {
+            return "redirect:/criar-conta?erro=password";
+        }
+
+        Optional<Utilizador> existente = utilizadorRepository.findByEmail(email);
+
+        if (existente.isPresent()) {
+            return "redirect:/criar-conta?erro=email";
+        }
+
+        if (!perfil.equalsIgnoreCase("aluno")) {
+            return "redirect:/criar-conta?erro=perfil";
+        }
+
+        Utilizador novo = new Utilizador();
+        novo.setNome(nome);
+        novo.setEmail(email);
+        novo.setPalavraPasse(password);
+        novo.setTipo("aluno");
+        novo.setPontos(0);
+        novo.setAtivo(true);
+
+        utilizadorRepository.save(novo);
+
+        return "redirect:/login.html?contaCriada";
     }
-
-    Optional<Utilizador> existente = utilizadorRepository.findByEmail(email);
-
-    if (existente.isPresent()) {
-        return "redirect:/criar-conta?erro=email";
-    }
-
-    if (!perfil.equalsIgnoreCase("aluno")) {
-        return "redirect:/criar-conta?erro=perfil";
-    }
-
-    Utilizador novo = new Utilizador();
-    novo.setNome(nome);
-    novo.setEmail(email);
-    novo.setPalavraPasse(password);
-    novo.setTipo("aluno");
-    novo.setPontos(0);
-    novo.setAtivo(true);
-
-    utilizadorRepository.save(novo);
-
-    return "redirect:/login.html?contaCriada";
 }

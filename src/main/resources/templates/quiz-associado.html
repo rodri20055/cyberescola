@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Conteúdos | CyberEscola</title>
+  <title>Quiz | CyberEscola</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -76,11 +76,6 @@
       transition: 0.2s;
     }
 
-    .menu a i {
-      width: 18px;
-      text-align: center;
-    }
-
     .menu a:hover {
       background: #efe6da;
       color: #1f1f1f;
@@ -149,168 +144,113 @@
 
     .content {
       width: 100%;
-      max-width: 1380px;
-      padding: 30px 24px 34px;
+      max-width: 920px;
+      padding: 32px 24px 40px;
     }
 
-    .page-header {
-      margin-bottom: 22px;
-    }
-
-    .page-header h1 {
-      font-size: 2.3rem;
+    .quiz-header h1 {
+      font-size: 2.25rem;
       letter-spacing: -1px;
       margin-bottom: 8px;
     }
 
-    .page-header p {
-      color: #5c5c5c;
+    .quiz-header p {
+      color: #6f6257;
+      margin-bottom: 20px;
       font-size: 1rem;
     }
 
-    .search-row {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 22px;
-      flex-wrap: wrap;
-    }
-
-    .search-box {
-      flex: 1;
-      min-width: 280px;
-      position: relative;
-    }
-
-    .search-box i {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #8a8a8a;
-    }
-
-    .search-box input {
+    .progress-bar {
       width: 100%;
-      padding: 14px 14px 14px 42px;
-      border: 1px solid #d7cec2;
-      border-radius: 18px;
-      background: #fffdf9;
-      font-size: 0.95rem;
-      outline: none;
+      height: 12px;
+      background: #e7ddd1;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 26px;
     }
 
-    .filter-tags {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+    .progress-fill {
+      width: 100%;
+      height: 100%;
+      background: #9b6b43;
+      border-radius: 999px;
     }
 
-    .filter-tags a {
-  padding: 12px 16px;
-  border-radius: 16px;
-  background: #efe6da;
-  color: #6c4b2d;
-  font-weight: 700;
-  font-size: 0.9rem;
-  display: inline-block;
-  transition: 0.2s;
-}
-
-.filter-tags a:hover {
-  opacity: 0.9;
-}
-
-.filter-tags a.active {
-  background: #1f1f1f;
-  color: white;
-}
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .content-card {
+    .quiz-card {
       background: #fffdf9;
       border: 1px solid #ddd4c8;
-      border-radius: 22px;
-      overflow: hidden;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.03);
+      border-radius: 24px;
+      padding: 26px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.03);
     }
 
-    .content-thumb {
-      height: 210px;
-      background: #ece2d6;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-      color: #7a6b5c;
-    }
-
-    .content-body {
-      padding: 18px;
-    }
-
-    .content-tag {
-      display: inline-block;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: #efe6da;
-      color: #6c4b2d;
-      font-size: 0.78rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .content-body h3 {
-      font-size: 1.05rem;
-      margin-bottom: 10px;
-    }
-
-    .content-body p {
-      color: #5c5c5c;
-      line-height: 1.6;
-      font-size: 0.94rem;
+    .quiz-card h2 {
+      font-size: 1.2rem;
       margin-bottom: 14px;
-      min-height: 52px;
+      line-height: 1.5;
     }
 
-    .content-footer {
+    .answers {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .quiz-actions {
       display: flex;
       justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .answer-option {
+      display: flex;
       align-items: center;
-      font-size: 0.9rem;
-      color: #7a6b5c;
+      gap: 12px;
+      border: 1px solid #ddd4c8;
+      background: #fff;
+      padding: 16px 18px;
+      border-radius: 16px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
     }
 
-    .content-footer a {
+    .answer-option:hover {
+      background: #faf5ee;
+      border-color: #cdb79d;
+    }
+
+    .answer-option input[type="radio"] {
+      transform: scale(1.15);
+      accent-color: #9b6b43;
+    }
+
+    .answer-option span {
+      flex: 1;
+    }
+
+    .btn-disabled {
+      background: #efebe4;
+      color: #6f6257;
+      border: none;
+      padding: 14px 18px;
+      border-radius: 14px;
       font-weight: 800;
-      color: #1f1f1f;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    @media (max-width: 1100px) {
-      .cards-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 900px) {
-      .dashboard {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #ddd4c8;
-      }
-
-      .cards-grid {
-        grid-template-columns: 1fr;
-      }
+    .btn-next {
+      background: #9b6b43;
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-weight: 800;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -346,50 +286,63 @@
       </div>
 
       <section class="content">
-        <div class="page-header">
-          <h1>Conteúdos</h1>
-          <p>Explora vídeos sobre cibersegurança</p>
+        <div class="quiz-header">
+          <h1 th:text="${quiz.titulo}">Quiz</h1>
+          <p>Responde às 5 perguntas</p>
         </div>
 
-        <div class="search-row">
-          <form action="/conteudos" method="get" class="search-box">
-  <i class="fa-solid fa-magnifying-glass"></i>
-  <input type="text" name="q" placeholder="Pesquisar vídeos..." th:value="${pesquisa}">
-  <input type="hidden" name="tema" th:value="${temaSelecionado}">
-</form>
-
-          <div class="filter-tags">
-  <a th:href="@{/conteudos(q=${pesquisa})}"
-     th:classappend="${temaSelecionado == ''} ? ' active' : ''">Todos</a>
-
-  <a th:href="@{/conteudos(tema='Phishing', q=${pesquisa})}"
-     th:classappend="${temaSelecionado == 'Phishing'} ? ' active' : ''">Phishing</a>
-
-  <a th:href="@{/conteudos(tema='Senhas', q=${pesquisa})}"
-     th:classappend="${temaSelecionado == 'Senhas'} ? ' active' : ''">Senhas</a>
-
-  <a th:href="@{/conteudos(tema='Privacidade', q=${pesquisa})}"
-     th:classappend="${temaSelecionado == 'Privacidade'} ? ' active' : ''">Privacidade</a>
-</div>
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
         </div>
 
-        <div class="cards-grid">
-          <div class="content-card" th:each="c : ${conteudos}">
-            <div class="content-thumb">
-              <i class="fa-regular fa-circle-play"></i>
-            </div>
+        <div class="quiz-card">
+          <form th:action="@{'/quiz-associado/' + ${quiz.idConteudo}}" method="post">
 
-            <div class="content-body">
-              <div class="content-tag" th:text="${c.tema}">Tema</div>
-              <h3 th:text="${c.titulo}">Título</h3>
-              <p th:text="${c.descricao}">Descrição</p>
+            <div th:each="p, iter : ${perguntas}" style="margin-bottom: 28px;">
+              <h2 th:text="${iter.index + 1} + '. ' + ${p.enunciado}">
+                Pergunta
+              </h2>
 
-              <div class="content-footer">
-                <span th:text="${c.duracao}">0:00</span>
-                <a th:href="@{'/conteudo/' + ${c.id}}">Ver →</a>
+              <div class="answers">
+                <label class="answer-option">
+                  <input type="radio"
+                         th:name="'resposta' + ${iter.index + 1}"
+                         th:value="${p.opcao1}"
+                         required>
+                  <span th:text="${p.opcao1}">Opção 1</span>
+                </label>
+
+                <label class="answer-option">
+                  <input type="radio"
+                         th:name="'resposta' + ${iter.index + 1}"
+                         th:value="${p.opcao2}"
+                         required>
+                  <span th:text="${p.opcao2}">Opção 2</span>
+                </label>
+
+                <label class="answer-option">
+                  <input type="radio"
+                         th:name="'resposta' + ${iter.index + 1}"
+                         th:value="${p.opcao3}"
+                         required>
+                  <span th:text="${p.opcao3}">Opção 3</span>
+                </label>
+
+                <label class="answer-option">
+                  <input type="radio"
+                         th:name="'resposta' + ${iter.index + 1}"
+                         th:value="${p.opcao4}"
+                         required>
+                  <span th:text="${p.opcao4}">Opção 4</span>
+                </label>
               </div>
             </div>
-          </div>
+
+            <div class="quiz-actions">
+              <a href="/conteudos" class="btn-disabled" style="text-decoration:none;">Sair</a>
+              <button type="submit" class="btn-next">Submeter quiz</button>
+            </div>
+          </form>
         </div>
       </section>
     </main>

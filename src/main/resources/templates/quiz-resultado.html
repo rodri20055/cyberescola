@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Conteúdos | CyberEscola</title>
+  <title>Resultado do Quiz | CyberEscola</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -76,11 +76,6 @@
       transition: 0.2s;
     }
 
-    .menu a i {
-      width: 18px;
-      text-align: center;
-    }
-
     .menu a:hover {
       background: #efe6da;
       color: #1f1f1f;
@@ -149,152 +144,99 @@
 
     .content {
       width: 100%;
-      max-width: 1380px;
-      padding: 30px 24px 34px;
+      max-width: 920px;
+      padding: 32px 24px 40px;
     }
 
-    .page-header {
-      margin-bottom: 22px;
+    .result-card {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.03);
     }
 
-    .page-header h1 {
-      font-size: 2.3rem;
+    .result-card h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
       letter-spacing: -1px;
-      margin-bottom: 8px;
     }
 
-    .page-header p {
-      color: #5c5c5c;
+    .theme {
+      color: #7a6b5c;
+      margin-bottom: 20px;
       font-size: 1rem;
     }
 
-    .search-row {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 22px;
-      flex-wrap: wrap;
-    }
-
-    .search-box {
-      flex: 1;
-      min-width: 280px;
-      position: relative;
-    }
-
-    .search-box i {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #8a8a8a;
-    }
-
-    .search-box input {
-      width: 100%;
-      padding: 14px 14px 14px 42px;
-      border: 1px solid #d7cec2;
-      border-radius: 18px;
-      background: #fffdf9;
-      font-size: 0.95rem;
-      outline: none;
-    }
-
-    .filter-tags {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .filter-tags a {
-  padding: 12px 16px;
-  border-radius: 16px;
-  background: #efe6da;
-  color: #6c4b2d;
-  font-weight: 700;
-  font-size: 0.9rem;
-  display: inline-block;
-  transition: 0.2s;
-}
-
-.filter-tags a:hover {
-  opacity: 0.9;
-}
-
-.filter-tags a.active {
-  background: #1f1f1f;
-  color: white;
-}
-
-    .cards-grid {
+    .stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
+      gap: 16px;
+      margin: 24px 0;
     }
 
-    .content-card {
-      background: #fffdf9;
-      border: 1px solid #ddd4c8;
-      border-radius: 22px;
-      overflow: hidden;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.03);
+    .stat-box {
+      background: #faf5ee;
+      border: 1px solid #e7dccf;
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
     }
 
-    .content-thumb {
-      height: 210px;
-      background: #ece2d6;
+    .stat-box span {
+      display: block;
+      font-size: 0.9rem;
+      color: #6f6257;
+      margin-bottom: 8px;
+    }
+
+    .stat-box strong {
+      font-size: 1.8rem;
+      font-weight: 800;
+    }
+
+    .message {
+      margin: 20px 0;
+      padding: 16px 18px;
+      border-radius: 16px;
+      font-weight: 700;
+    }
+
+    .message.success {
+      background: #e9f8ee;
+      color: #246b3f;
+      border: 1px solid #bfe2ca;
+    }
+
+    .message.warning {
+      background: #fdeaea;
+      color: #a33a3a;
+      border: 1px solid #efc7c7;
+    }
+
+    .actions {
       display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .btn {
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 3rem;
-      color: #7a6b5c;
-    }
-
-    .content-body {
-      padding: 18px;
-    }
-
-    .content-tag {
-      display: inline-block;
-      padding: 5px 10px;
+      padding: 14px 18px;
       border-radius: 999px;
-      background: #efe6da;
-      color: #6c4b2d;
-      font-size: 0.78rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .content-body h3 {
-      font-size: 1.05rem;
-      margin-bottom: 10px;
-    }
-
-    .content-body p {
-      color: #5c5c5c;
-      line-height: 1.6;
-      font-size: 0.94rem;
-      margin-bottom: 14px;
-      min-height: 52px;
-    }
-
-    .content-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.9rem;
-      color: #7a6b5c;
-    }
-
-    .content-footer a {
       font-weight: 800;
+      border: 1px solid #d7cec2;
+      background: #fffdf9;
       color: #1f1f1f;
     }
 
-    @media (max-width: 1100px) {
-      .cards-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    .btn-dark {
+      background: #1f1f1f;
+      color: white;
+      border-color: #1f1f1f;
     }
 
     @media (max-width: 900px) {
@@ -308,14 +250,13 @@
         border-bottom: 1px solid #ddd4c8;
       }
 
-      .cards-grid {
+      .stats {
         grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
-
   <div class="dashboard">
     <aside class="sidebar">
       <div class="sidebar-top">
@@ -346,54 +287,50 @@
       </div>
 
       <section class="content">
-        <div class="page-header">
-          <h1>Conteúdos</h1>
-          <p>Explora vídeos sobre cibersegurança</p>
-        </div>
+        <div class="result-card">
+          <h1>Resultado do Quiz</h1>
+          <div class="theme" th:text="${quiz.titulo}">Quiz</div>
 
-        <div class="search-row">
-          <form action="/conteudos" method="get" class="search-box">
-  <i class="fa-solid fa-magnifying-glass"></i>
-  <input type="text" name="q" placeholder="Pesquisar vídeos..." th:value="${pesquisa}">
-  <input type="hidden" name="tema" th:value="${temaSelecionado}">
-</form>
-
-          <div class="filter-tags">
-  <a th:href="@{/conteudos(q=${pesquisa})}"
-     th:classappend="${temaSelecionado == ''} ? ' active' : ''">Todos</a>
-
-  <a th:href="@{/conteudos(tema='Phishing', q=${pesquisa})}"
-     th:classappend="${temaSelecionado == 'Phishing'} ? ' active' : ''">Phishing</a>
-
-  <a th:href="@{/conteudos(tema='Senhas', q=${pesquisa})}"
-     th:classappend="${temaSelecionado == 'Senhas'} ? ' active' : ''">Senhas</a>
-
-  <a th:href="@{/conteudos(tema='Privacidade', q=${pesquisa})}"
-     th:classappend="${temaSelecionado == 'Privacidade'} ? ' active' : ''">Privacidade</a>
-</div>
-        </div>
-
-        <div class="cards-grid">
-          <div class="content-card" th:each="c : ${conteudos}">
-            <div class="content-thumb">
-              <i class="fa-regular fa-circle-play"></i>
+          <div class="stats">
+            <div class="stat-box">
+              <span>Respostas certas</span>
+              <strong th:text="${certas}">0</strong>
             </div>
 
-            <div class="content-body">
-              <div class="content-tag" th:text="${c.tema}">Tema</div>
-              <h3 th:text="${c.titulo}">Título</h3>
-              <p th:text="${c.descricao}">Descrição</p>
-
-              <div class="content-footer">
-                <span th:text="${c.duracao}">0:00</span>
-                <a th:href="@{'/conteudo/' + ${c.id}}">Ver →</a>
-              </div>
+            <div class="stat-box">
+              <span>Total de perguntas</span>
+              <strong th:text="${totalPerguntas}">5</strong>
             </div>
+
+            <div class="stat-box">
+              <span>Percentagem</span>
+              <strong th:text="${percentagem + '%'}">0%</strong>
+            </div>
+          </div>
+
+          <div th:if="${percentagem >= 60}" class="message success">
+            Bom trabalho! Completaste o quiz com sucesso.
+          </div>
+
+          <div th:if="${percentagem < 60}" class="message warning">
+            Ainda podes melhorar. Revê o conteúdo e tenta novamente.
+          </div>
+
+          <div class="stats">
+            <div class="stat-box">
+              <span>Pontos ganhos</span>
+              <strong th:text="${pontosGanhos}">0</strong>
+            </div>
+          </div>
+
+          <div class="actions">
+            <a href="/aluno" class="btn btn-dark">Voltar ao dashboard</a>
+            <a href="/ranking" class="btn">Ver ranking</a>
+            <a href="/conteudos" class="btn">Voltar aos conteúdos</a>
           </div>
         </div>
       </section>
     </main>
   </div>
-
 </body>
 </html>

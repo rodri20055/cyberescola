@@ -449,13 +449,16 @@
             <h2>Últimas Atividades</h2>
 
             <div class="activity-list">
-              <div class="activity-item">
-                <div class="activity-icon"><i class="fa-solid fa-video"></i></div>
-                <div class="activity-text">
-                  <strong>Assistiu “O que é Phishing?”</strong>
-                  <span>2026-03-28</span>
-                </div>
-              </div>
+  <div class="activity-item" th:each="atividade : ${atividades}">
+    <div class="activity-icon">
+      <i th:class="${atividade.tipoAtividade == 'video'} ? 'fa-solid fa-video' : 'fa-solid fa-book-open'"></i>
+    </div>
+    <div class="activity-text">
+      <strong th:text="${atividade.descricao}">Descrição da atividade</strong>
+      <span th:text="${atividade.dataAtividade}">2026-03-28</span>
+    </div>
+  </div>
+</div>
 
               <div class="activity-item">
                 <div class="activity-icon"><i class="fa-solid fa-book-open"></i></div>

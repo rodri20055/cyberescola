@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
     * {
@@ -26,552 +27,417 @@
       color: inherit;
     }
 
-    .container {
-      width: 90%;
-      max-width: 1100px;
-      margin: auto;
-    }
-
-    header {
-      padding: 24px 0;
-      border-bottom: 1px solid #ddd4c8;
-      background: #f8f5ef;
-    }
-
-    .navbar {
+    .dashboard {
       display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 290px;
+      background: #fffdf9;
+      border-right: 1px solid #ddd4c8;
+      padding: 28px 18px;
+      display: flex;
+      flex-direction: column;
       justify-content: space-between;
-      align-items: center;
-      gap: 20px;
+    }
+
+.position-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  background: #efe6da;
+  color: #6c4b2d;
+}
+
+.position-gold {
+  background: #f3e3b2 !important;
+  color: #7a5a00 !important;
+}
+
+.position-silver {
+  background: #e4e4e4 !important;
+  color: #5f5f5f !important;
+}
+
+.position-bronze {
+  background: #e6c7ad !important;
+  color: #7a4a22 !important;
+}
+
+    .sidebar-top {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
     }
 
     .logo {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       font-weight: 800;
       letter-spacing: -1px;
+      padding: 0 10px;
     }
 
     .logo span {
       color: #9b6b43;
     }
 
-    nav {
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .menu a {
       display: flex;
       align-items: center;
-      gap: 22px;
-      flex-wrap: wrap;
-    }
-
-    nav a {
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
-
-    .btn-nav {
-      background: #1f1f1f;
-      color: white;
-      padding: 10px 18px;
-      border-radius: 999px;
-      display: inline-block;
-      font-weight: 700;
-    }
-
-    .hero {
-      padding: 60px 0 30px;
-    }
-
-    .hero-box {
-      background: #efe6da;
-      border-radius: 28px;
-      padding: 38px;
-    }
-
-    .hero-box h1 {
-      font-size: 3rem;
-      line-height: 1.05;
-      letter-spacing: -2px;
-      margin-bottom: 14px;
-    }
-
-    .hero-box p {
-      max-width: 700px;
-      color: #4f4f4f;
-      font-size: 1rem;
-      line-height: 1.7;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-      margin-top: 24px;
-    }
-
-    .stat-card {
-      background: #fffdf9;
-      border: 1px solid #ddd4c8;
-      border-radius: 18px;
-      padding: 22px;
-    }
-
-    .stat-card h3 {
-      font-size: 1.8rem;
-      margin-bottom: 6px;
-    }
-
-    .stat-card p {
+      gap: 12px;
+      padding: 14px 14px;
+      border-radius: 14px;
       color: #5c5c5c;
-      font-size: 0.95rem;
+      font-weight: 700;
+      transition: 0.2s;
     }
 
-    .section {
-      padding: 28px 0 70px;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1.5fr 0.8fr;
-      gap: 22px;
-    }
-
-    .panel {
-      background: #fffdf9;
-      border: 1px solid #ddd4c8;
-      border-radius: 22px;
-      padding: 26px;
-    }
-
-    .panel h2 {
-      font-size: 1.5rem;
-      letter-spacing: -1px;
-      margin-bottom: 18px;
-    }
-
-    .top3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-bottom: 22px;
-    }
-
-    .top-card {
-      background: #fffaf4;
-      border: 1px solid #e8dccf;
-      border-radius: 18px;
-      padding: 20px;
+    .menu a i {
+      width: 18px;
       text-align: center;
     }
 
-    .top-card .place {
-      font-size: 0.9rem;
-      font-weight: 800;
-      color: #9b6b43;
-      margin-bottom: 8px;
+    .menu a:hover {
+      background: #efe6da;
+      color: #1f1f1f;
     }
 
-    .top-card h3 {
-      font-size: 1.1rem;
-      margin-bottom: 6px;
+    .menu a.active {
+      background: #1f1f1f;
+      color: white;
     }
 
-    .top-card p {
+    .sidebar-footer {
+      padding: 0 10px;
+      font-size: 0.86rem;
+      color: #7a6b5c;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .topbar {
+      width: 100%;
+      background: #fffdf9;
+      border-bottom: 1px solid #ddd4c8;
+      padding: 20px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .topbar-left {
+      font-weight: 700;
       color: #5c5c5c;
-      font-size: 0.93rem;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge {
+      background: #efe6da;
+      color: #6c4b2d;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid #ddd4c8;
+      background: #fffdf9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #5c5c5c;
+      transition: 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: #1f1f1f;
+      color: white;
+      border-color: #1f1f1f;
+    }
+
+    .content {
+      width: 100%;
+      max-width: 1400px;
+      padding: 30px 24px 34px;
+    }
+
+    .page-header {
+      margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+      font-size: 2.3rem;
+      letter-spacing: -1px;
       margin-bottom: 8px;
     }
 
-    .top-card strong {
+    .page-header p {
+      color: #5c5c5c;
       font-size: 1rem;
     }
 
-    table {
+    .ranking-card {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 24px;
+      padding: 24px;
+    }
+
+    .ranking-table {
       width: 100%;
       border-collapse: collapse;
     }
 
-    thead th {
+    .ranking-table thead th {
       text-align: left;
-      font-size: 0.92rem;
-      color: #6d6257;
-      padding-bottom: 12px;
+      font-size: 0.9rem;
+      color: #74685d;
+      padding-bottom: 14px;
       border-bottom: 1px solid #eadfd2;
     }
 
-    tbody td {
-      padding: 16px 0;
-      border-bottom: 1px solid #f0e6da;
-      font-size: 0.95rem;
+    .ranking-table tbody td {
+      padding: 18px 8px 18px 0;
+      border-bottom: 1px solid #f0e7dc;
+      vertical-align: middle;
     }
 
-    tbody tr:last-child td {
+    .ranking-table tbody tr:last-child td {
       border-bottom: none;
     }
 
-    .position {
-      font-weight: 800;
-      width: 70px;
+    .user-row {
+      background: #faf5ee;
     }
 
-    .score {
+    .position-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      background: #efe6da;
+      color: #6c4b2d;
+    }
+
+    .name-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
       font-weight: 700;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: #1f1f1f;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      flex-shrink: 0;
     }
 
     .tag-you {
       display: inline-block;
       margin-left: 8px;
-      background: #efe6da;
-      color: #6c4b2d;
-      font-size: 0.78rem;
       padding: 4px 8px;
+      font-size: 0.74rem;
+      font-weight: 800;
       border-radius: 999px;
-      font-weight: 700;
-    }
-
-    .side-box {
-      background: #fffdf9;
-      border: 1px solid #ddd4c8;
-      border-radius: 22px;
-      padding: 24px;
-      margin-bottom: 18px;
-    }
-
-    .side-box:last-child {
-      margin-bottom: 0;
-    }
-
-    .side-box h3 {
-      font-size: 1.15rem;
-      margin-bottom: 14px;
-    }
-
-    .mini-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .mini-item {
-      padding: 14px 16px;
-      background: #fffaf4;
-      border: 1px solid #e9ddcf;
-      border-radius: 16px;
-    }
-
-    .mini-item strong {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 0.96rem;
-    }
-
-    .mini-item span {
-      color: #5c5c5c;
-      font-size: 0.9rem;
-      line-height: 1.5;
-    }
-
-    .highlight-box {
-      background: #efe6da;
-      border-radius: 22px;
-      padding: 24px;
-    }
-
-    .highlight-box h3 {
-      font-size: 1.15rem;
-      margin-bottom: 10px;
-    }
-
-    .highlight-box p {
-      color: #4f4f4f;
-      font-size: 0.94rem;
-      line-height: 1.7;
-      margin-bottom: 14px;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 14px;
-      background: #d9ccbc;
-      border-radius: 999px;
-      overflow: hidden;
-      margin-bottom: 10px;
-    }
-
-    .progress-fill {
-      width: 68%;
-      height: 100%;
       background: #1f1f1f;
-      border-radius: 999px;
+      color: white;
     }
 
-    .progress-text {
-      color: #5c5c5c;
+    .turma-cell {
+      color: #6f6257;
+      font-weight: 600;
+    }
+
+    .tipo {
+      color: #6f6257;
       font-size: 0.92rem;
+      text-transform: capitalize;
     }
 
-    footer {
-      padding: 28px 0;
-      border-top: 1px solid #ddd4c8;
+    .score {
+      font-weight: 800;
+      font-size: 1rem;
     }
 
-    .footer-content {
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
-      color: #5c5c5c;
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 980px) {
-      .layout {
-        grid-template-columns: 1fr;
+    @media (max-width: 900px) {
+      .dashboard {
+        flex-direction: column;
       }
 
-      .stats,
-      .top3 {
-        grid-template-columns: 1fr;
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ddd4c8;
       }
 
-      .hero-box h1 {
-        font-size: 2.4rem;
-      }
-
-      nav a:not(.btn-nav) {
-        display: none;
+      .menu {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
-    @media (max-width: 640px) {
-      table,
-      thead,
-      tbody,
-      th,
-      td,
-      tr {
+    @media (max-width: 700px) {
+      .ranking-table,
+      .ranking-table thead,
+      .ranking-table tbody,
+      .ranking-table th,
+      .ranking-table td,
+      .ranking-table tr {
         display: block;
       }
 
-      thead {
+      .ranking-table thead {
         display: none;
       }
 
-      tbody tr {
+      .ranking-table tbody tr {
         padding: 14px 0;
         border-bottom: 1px solid #eadfd2;
       }
 
-      tbody td {
+      .ranking-table tbody td {
         border: none;
-        padding: 4px 0;
-      }
-
-      tbody tr:last-child {
-        border-bottom: none;
+        padding: 6px 0;
       }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="container navbar">
-      <a href="/index.html" class="logo">Cyber<span>Escola</span></a>
+  <div class="dashboard">
 
-      <nav>
-        <a href="/conteudos">Conteúdos</a>
-        <a href="/quiz">Quiz</a>
-        <a href="/ranking">Ranking</a>
-        <a href="/logout" class="btn-nav">Sair</a>
-      </nav>
-    </div>
-  </header>
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <div class="logo">Cyber<span>Escola</span></div>
 
-  <section class="hero">
-    <div class="container">
-      <div class="hero-box">
-        <h1>Ranking da plataforma</h1>
-        <p>
-          Consulta a classificação dos alunos com melhor desempenho na CyberEscola.
-          O ranking é atualizado com base na participação, quizzes concluídos,
-          desafios e atividades realizadas.
-        </p>
+        <nav class="menu">
+          <a href="/aluno"><i class="fa-solid fa-house"></i> Dashboard</a>
+          <a href="/conteudos"><i class="fa-solid fa-book-open"></i> Conteúdos</a>
+          <a href="/ranking" class="active"><i class="fa-solid fa-trophy"></i> Classificação</a>
+          <a href="/perfil"><i class="fa-solid fa-user"></i> Perfil</a>
+        </nav>
+      </div>
 
-        <div class="stats">
-          <div class="stat-card">
-            <h3>426</h3>
-            <p>Alunos no ranking</p>
-          </div>
+      <div class="sidebar-footer">
+        © 2026 CyberEscola
+      </div>
+    </aside>
 
-          <div class="stat-card">
-            <h3>32</h3>
-            <p>Atividades contabilizadas</p>
-          </div>
+    <main class="main">
 
-          <div class="stat-card">
-            <h3>850</h3>
-            <p>A tua pontuação atual</p>
-          </div>
+      <div class="topbar">
+        <div class="topbar-left" th:text="'Bem-vindo, ' + ${utilizadorLogado.nome}">
+          Bem-vindo, Aluno
+        </div>
+
+        <div class="topbar-right">
+          <span class="badge" th:text="${utilizadorLogado.tipo}">ALUNO</span>
+
+          <a href="/perfil" class="icon-btn" title="Perfil">
+            <i class="fa-solid fa-user"></i>
+          </a>
+
+          <a href="/logout" class="icon-btn" title="Sair">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </a>
         </div>
       </div>
-    </div>
-  </section>
 
-  <section class="section">
-    <div class="container layout">
-      <div>
-        <div class="panel">
-          <h2>Top 3 desta semana</h2>
+      <section class="content">
+        <div class="page-header">
+          <h1>Ranking da plataforma</h1>
+          <p>Consulta a classificação geral dos utilizadores da CyberEscola.</p>
+        </div>
 
-          <div class="top3">
-            <div class="top-card">
-              <div class="place">1.º lugar</div>
-              <h3>Mariana Silva</h3>
-              <p>Turma 11.º A</p>
-              <strong>1240 pontos</strong>
-            </div>
-
-            <div class="top-card">
-              <div class="place">2.º lugar</div>
-              <h3>Rafael Costa</h3>
-              <p>Turma 10.º B</p>
-              <strong>1175 pontos</strong>
-            </div>
-
-            <div class="top-card">
-              <div class="place">3.º lugar</div>
-              <h3>Beatriz Lopes</h3>
-              <p>Turma 11.º B</p>
-              <strong>1105 pontos</strong>
-            </div>
-          </div>
-
-          <h2>Classificação geral</h2>
-
-          <table>
+        <div class="ranking-card">
+          <table class="ranking-table">
             <thead>
               <tr>
                 <th>Posição</th>
-                <th>Nome</th>
+                <th>Utilizador</th>
                 <th>Turma</th>
-                <th>Pontuação</th>
+                <th>Tipo</th>
+                <th>Pontos</th>
               </tr>
             </thead>
+
             <tbody>
-              <tr>
-                <td class="position">1</td>
-                <td>Mariana Silva</td>
-                <td>11.º A</td>
-                <td class="score">1240</td>
-              </tr>
-              <tr>
-                <td class="position">2</td>
-                <td>Rafael Costa</td>
-                <td>10.º B</td>
-                <td class="score">1175</td>
-              </tr>
-              <tr>
-                <td class="position">3</td>
-                <td>Beatriz Lopes</td>
-                <td>11.º B</td>
-                <td class="score">1105</td>
-              </tr>
-              <tr>
-                <td class="position">4</td>
-                <td>Tiago Martins</td>
-                <td>10.º A</td>
-                <td class="score">980</td>
-              </tr>
-              <tr>
-                <td class="position">5</td>
-                <td>Joana Ferreira</td>
-                <td>11.º A</td>
-                <td class="score">940</td>
-              </tr>
-              <tr>
-                <td class="position">6</td>
-                <td>Ana Costa <span class="tag-you">Tu</span></td>
-                <td>10.º A</td>
-                <td class="score">850</td>
-              </tr>
-              <tr>
-                <td class="position">7</td>
-                <td>Pedro Rocha</td>
-                <td>10.º B</td>
-                <td class="score">810</td>
-              </tr>
-              <tr>
-                <td class="position">8</td>
-                <td>Leonor Sousa</td>
-                <td>11.º B</td>
-                <td class="score">775</td>
+              <tr th:each="u, iter : ${ranking}"
+                  th:classappend="${u.idUtilizador == utilizadorLogado.idUtilizador} ? 'user-row' : ''">
+
+                <td>
+                  <span class="position-badge"
+      th:classappend="${iter.index == 0} ? ' position-gold' :
+                      (${iter.index == 1} ? ' position-silver' :
+                      (${iter.index == 2} ? ' position-bronze' : ''))"
+      th:text="${iter.index + 1}">
+  1
+</span>
+                </td>
+
+                <td>
+                  <div class="name-cell">
+                    <div class="avatar" th:text="${#strings.substring(u.nome,0,1)}">A</div>
+
+                    <div>
+                      <span th:text="${u.nome}">Nome</span>
+                      <span th:if="${u.idUtilizador == utilizadorLogado.idUtilizador}" class="tag-you">Tu</span>
+                    </div>
+                  </div>
+                </td>
+
+                <td class="turma-cell" th:text="${u.turma}">Turma</td>
+
+                <td class="tipo" th:text="${u.tipo}">aluno</td>
+
+                <td class="score" th:text="${u.pontos}">0</td>
               </tr>
             </tbody>
           </table>
         </div>
-      </div>
+      </section>
 
-      <aside>
-        <div class="side-box">
-          <h3>O teu lugar</h3>
-          <div class="mini-list">
-            <div class="mini-item">
-              <strong>6.º lugar no ranking geral</strong>
-              <span>Estás perto do top 5. Continua a participar para subir de posição.</span>
-            </div>
-
-            <div class="mini-item">
-              <strong>850 pontos acumulados</strong>
-              <span>Os teus pontos vêm de quizzes, jogos e atividades concluídas.</span>
-            </div>
-
-            <div class="mini-item">
-              <strong>+70 pontos esta semana</strong>
-              <span>Tiveste uma boa evolução nas últimas atividades.</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="side-box">
-          <h3>Como subir no ranking</h3>
-          <div class="mini-list">
-            <div class="mini-item">
-              <strong>Concluir quizzes</strong>
-              <span>Responde corretamente e melhora a tua pontuação.</span>
-            </div>
-
-            <div class="mini-item">
-              <strong>Participar nos jogos</strong>
-              <span>As atividades práticas também contam para o ranking.</span>
-            </div>
-
-            <div class="mini-item">
-              <strong>Ser consistente</strong>
-              <span>A participação frequente ajuda-te a manter uma posição alta.</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="highlight-box">
-          <h3>Progresso para o top 5</h3>
-          <p>
-            Faltam poucos pontos para entrares no top 5 da plataforma.
-          </p>
-
-          <div class="progress-bar">
-            <div class="progress-fill"></div>
-          </div>
-
-          <div class="progress-text">68% do caminho até ao top 5</div>
-        </div>
-      </aside>
-    </div>
-  </section>
-
-  <footer>
-    <div class="container footer-content">
-      <p>© 2026 CyberEscola</p>
-      <p>Ranking da plataforma</p>
-    </div>
-  </footer>
+    </main>
+  </div>
 
 </body>
 </html>

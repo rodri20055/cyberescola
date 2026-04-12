@@ -52,9 +52,11 @@ public class RegistoController {
         novo.setTipo("aluno");
         novo.setPontos(0);
         novo.setAtivo(true);
+        novo.setTurma("Por atribuir");
 
         utilizadorRepository.save(novo);
 
         return "redirect:/login.html?contaCriada";
     }
+    
 }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Conteúdos | CyberEscola</title>
+  <title>Conteúdo | CyberEscola</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -149,168 +149,84 @@
 
     .content {
       width: 100%;
-      max-width: 1380px;
-      padding: 30px 24px 34px;
+      max-width: 1180px;
+      padding: 32px 24px 40px;
     }
 
-    .page-header {
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #6f6257;
+      font-weight: 700;
       margin-bottom: 22px;
     }
 
     .page-header h1 {
-      font-size: 2.3rem;
+      font-size: 2.35rem;
       letter-spacing: -1px;
       margin-bottom: 8px;
     }
 
-    .page-header p {
-      color: #5c5c5c;
+    .meta {
+      color: #7a6b5c;
       font-size: 1rem;
-    }
-
-    .search-row {
-      display: flex;
-      gap: 12px;
-      align-items: center;
       margin-bottom: 22px;
-      flex-wrap: wrap;
     }
 
-    .search-box {
-      flex: 1;
-      min-width: 280px;
-      position: relative;
-    }
-
-    .search-box i {
-      position: absolute;
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #8a8a8a;
-    }
-
-    .search-box input {
-      width: 100%;
-      padding: 14px 14px 14px 42px;
-      border: 1px solid #d7cec2;
-      border-radius: 18px;
-      background: #fffdf9;
-      font-size: 0.95rem;
-      outline: none;
-    }
-
-    .filter-tags {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .filter-tags a {
-  padding: 12px 16px;
-  border-radius: 16px;
-  background: #efe6da;
-  color: #6c4b2d;
-  font-weight: 700;
-  font-size: 0.9rem;
-  display: inline-block;
-  transition: 0.2s;
-}
-
-.filter-tags a:hover {
-  opacity: 0.9;
-}
-
-.filter-tags a.active {
-  background: #1f1f1f;
-  color: white;
-}
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-    }
-
-    .content-card {
+    .video-frame {
       background: #fffdf9;
       border: 1px solid #ddd4c8;
-      border-radius: 22px;
+      border-radius: 26px;
       overflow: hidden;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.03);
+      margin-bottom: 22px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.03);
     }
 
-    .content-thumb {
-      height: 210px;
+    .video-embed {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: none;
+      display: block;
       background: #ece2d6;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 3rem;
-      color: #7a6b5c;
     }
 
-    .content-body {
-      padding: 18px;
-    }
-
-    .content-tag {
-      display: inline-block;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: #efe6da;
-      color: #6c4b2d;
-      font-size: 0.78rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .content-body h3 {
-      font-size: 1.05rem;
-      margin-bottom: 10px;
-    }
-
-    .content-body p {
+    .description {
       color: #5c5c5c;
-      line-height: 1.6;
-      font-size: 0.94rem;
-      margin-bottom: 14px;
-      min-height: 52px;
+      font-size: 1rem;
+      line-height: 1.8;
+      margin-bottom: 28px;
+      max-width: 900px;
     }
 
-    .content-footer {
+    .action-row {
       display: flex;
-      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-dark {
+      display: inline-flex;
       align-items: center;
-      font-size: 0.9rem;
-      color: #7a6b5c;
-    }
-
-    .content-footer a {
+      gap: 10px;
+      background: #1f1f1f;
+      color: white;
+      padding: 14px 20px;
+      border-radius: 999px;
       font-weight: 800;
+      border: 1px solid #1f1f1f;
+    }
+
+    .btn-light {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #fffdf9;
       color: #1f1f1f;
-    }
-
-    @media (max-width: 1100px) {
-      .cards-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 900px) {
-      .dashboard {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #ddd4c8;
-      }
-
-      .cards-grid {
-        grid-template-columns: 1fr;
-      }
+      padding: 14px 20px;
+      border-radius: 999px;
+      font-weight: 800;
+      border: 1px solid #d7cec2;
     }
   </style>
 </head>
@@ -346,50 +262,44 @@
       </div>
 
       <section class="content">
+        <a href="/conteudos" class="back-link">
+          <i class="fa-solid fa-arrow-left"></i>
+          Voltar aos conteúdos
+        </a>
+
         <div class="page-header">
-          <h1>Conteúdos</h1>
-          <p>Explora vídeos sobre cibersegurança</p>
+          <h1 th:text="${conteudo.titulo}">Título</h1>
         </div>
 
-        <div class="search-row">
-          <form action="/conteudos" method="get" class="search-box">
-  <i class="fa-solid fa-magnifying-glass"></i>
-  <input type="text" name="q" placeholder="Pesquisar vídeos..." th:value="${pesquisa}">
-  <input type="hidden" name="tema" th:value="${temaSelecionado}">
-</form>
-
-          <div class="filter-tags">
-  <a th:href="@{/conteudos(q=${pesquisa})}"
-     th:classappend="${temaSelecionado == ''} ? ' active' : ''">Todos</a>
-
-  <a th:href="@{/conteudos(tema='Phishing', q=${pesquisa})}"
-     th:classappend="${temaSelecionado == 'Phishing'} ? ' active' : ''">Phishing</a>
-
-  <a th:href="@{/conteudos(tema='Senhas', q=${pesquisa})}"
-     th:classappend="${temaSelecionado == 'Senhas'} ? ' active' : ''">Senhas</a>
-
-  <a th:href="@{/conteudos(tema='Privacidade', q=${pesquisa})}"
-     th:classappend="${temaSelecionado == 'Privacidade'} ? ' active' : ''">Privacidade</a>
-</div>
+        <div class="meta">
+          <span th:text="${conteudo.tema}">Tema</span>
+          ·
+          <span th:text="${conteudo.duracao}">0:00</span>
         </div>
 
-        <div class="cards-grid">
-          <div class="content-card" th:each="c : ${conteudos}">
-            <div class="content-thumb">
-              <i class="fa-regular fa-circle-play"></i>
-            </div>
+        <div class="video-frame">
+          <iframe class="video-embed"
+                  th:src="${conteudo.videoUrl}"
+                  title="Vídeo"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen>
+          </iframe>
+        </div>
 
-            <div class="content-body">
-              <div class="content-tag" th:text="${c.tema}">Tema</div>
-              <h3 th:text="${c.titulo}">Título</h3>
-              <p th:text="${c.descricao}">Descrição</p>
+        <p class="description" th:text="${conteudo.descricao}">
+          Descrição
+        </p>
 
-              <div class="content-footer">
-                <span th:text="${c.duracao}">0:00</span>
-                <a th:href="@{'/conteudo/' + ${c.id}}">Ver →</a>
-              </div>
-            </div>
-          </div>
+        <div class="action-row">
+          <a th:href="@{'/quiz-associado/' + ${conteudo.id}}" class="btn-dark">
+            <i class="fa-solid fa-book-open"></i>
+            Fazer quiz associado
+          </a>
+
+          <a href="/conteudos" class="btn-light">
+            <i class="fa-solid fa-arrow-left"></i>
+            Voltar
+          </a>
         </div>
       </section>
     </main>

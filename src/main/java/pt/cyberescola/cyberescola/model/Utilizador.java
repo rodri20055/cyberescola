@@ -15,6 +15,9 @@ public class Utilizador {
 
     private String email;
 
+    @Column(name = "foto_perfil")
+    private String fotoPerfil;
+
     @Column(name = "palavra_passe")
     private String palavraPasse;
 
@@ -23,6 +26,8 @@ public class Utilizador {
     private Integer pontos;
 
     private Boolean ativo;
+
+    private String turma;
 
     public Utilizador() {
     }
@@ -49,6 +54,14 @@ public class Utilizador {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
     }
 
     public String getPalavraPasse() {
@@ -81,5 +94,13 @@ public class Utilizador {
 
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public String getTurma() {
+        return turma;
+    }
+
+    public void setTurma(String turma) {
+        this.turma = turma;
     }
 }

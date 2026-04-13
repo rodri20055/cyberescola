@@ -29,6 +29,17 @@ public class Utilizador {
 
     private String turma;
 
+    @Column(name = "id_turma")
+private Long idTurma;
+
+public Long getIdTurma() {
+    return idTurma;
+}
+
+public void setIdTurma(Long idTurma) {
+    this.idTurma = idTurma;
+}
+
     public Utilizador() {
     }
 

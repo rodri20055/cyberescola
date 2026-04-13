@@ -9,4 +9,6 @@ public interface AtividadeAlunoRepository extends JpaRepository<AtividadeAluno, 
     List<AtividadeAluno> findTop5ByIdUtilizadorOrderByDataAtividadeDescIdDesc(Integer idUtilizador);
 
     long countByIdUtilizadorAndTipoAtividade(Integer idUtilizador, String tipoAtividade);
+
+    boolean existsByIdUtilizador(Integer idUtilizador);
 }

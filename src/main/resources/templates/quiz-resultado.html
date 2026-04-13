@@ -33,14 +33,19 @@
     }
 
     .sidebar {
-      width: 290px;
-      background: #fffdf9;
-      border-right: 1px solid #ddd4c8;
-      padding: 28px 18px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+  width: 290px;
+  background: #fffdf9;
+  border-right: 1px solid #ddd4c8;
+  padding: 28px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
 
     .sidebar-top {
       display: flex;
@@ -93,21 +98,20 @@
     }
 
     .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  margin-left: 290px;
+  min-height: 100vh;
+  width: calc(100% - 290px);
+}
 
     .topbar {
-      width: 100%;
-      background: #fffdf9;
-      border-bottom: 1px solid #ddd4c8;
-      padding: 20px 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+  width: 100%;
+  background: #fffdf9;
+  border-bottom: 1px solid #ddd4c8;
+  padding: 20px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
     .topbar-left {
       font-weight: 700;
@@ -143,10 +147,11 @@
     }
 
     .content {
-      width: 100%;
-      max-width: 920px;
-      padding: 32px 24px 40px;
-    }
+  width: 100%;
+  max-width: 920px;
+  padding: 32px 24px 40px;
+  margin: 0 auto;
+}
 
     .result-card {
       background: #fffdf9;
@@ -312,9 +317,13 @@
             Bom trabalho! Completaste o quiz com sucesso.
           </div>
 
-          <div th:if="${percentagem < 60}" class="message warning">
-            Ainda podes melhorar. Revê o conteúdo e tenta novamente.
-          </div>
+          <div th:if="${jaRealizou}" class="message warning">
+  Já tinhas realizado este quiz antes. Desta vez não foram atribuídos novos pontos.
+</div>
+
+<div th:if="${!jaRealizou}" class="message success">
+  Esta tentativa contou para a tua pontuação e histórico.
+</div>
 
           <div class="stats">
             <div class="stat-box">

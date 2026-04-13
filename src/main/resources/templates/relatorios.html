@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatórios | CyberEscola</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    body {
+      background: #f8f5ef;
+      color: #1f1f1f;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .sidebar {
+      width: 290px;
+      background: #fffdf9;
+      border-right: 1px solid #ddd4c8;
+      padding: 28px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-top {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      padding: 0 10px;
+    }
+
+    .logo span {
+      color: #9b6b43;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .menu a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 14px;
+      border-radius: 14px;
+      color: #5c5c5c;
+      font-weight: 700;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .menu a:hover {
+      background: #efe6da;
+      color: #1f1f1f;
+      transform: translateX(4px);
+    }
+
+    .menu a.active {
+      background: #1f1f1f;
+      color: white;
+    }
+
+    .sidebar-footer {
+      padding: 0 10px;
+      font-size: 0.86rem;
+      color: #7a6b5c;
+    }
+
+    .main {
+      margin-left: 290px;
+      min-height: 100vh;
+      width: calc(100% - 290px);
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 290px;
+      width: calc(100% - 290px);
+      z-index: 1000;
+      background: rgba(255, 253, 249, 0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid #ddd4c8;
+      padding: 20px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .topbar-left {
+      font-weight: 700;
+      color: #5c5c5c;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge {
+      background: #efe6da;
+      color: #6c4b2d;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid #ddd4c8;
+      background: #fffdf9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #5c5c5c;
+      transition: 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: #1f1f1f;
+      color: white;
+      border-color: #1f1f1f;
+    }
+
+    .content {
+      width: 100%;
+      max-width: none;
+      padding: 118px 24px 40px;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .page-header h1 {
+      font-size: 2.35rem;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: #5c5c5c;
+      font-size: 1rem;
+    }
+
+    .export-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      border-radius: 999px;
+      background: #1f1f1f;
+      color: white;
+      font-weight: 800;
+      border: 1px solid #1f1f1f;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .summary-card {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+    }
+
+    .summary-card:hover,
+    .panel:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.06);
+    }
+
+    .summary-card span {
+      display: block;
+      color: #6e6258;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    .summary-card strong {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .summary-card p {
+      margin-top: 8px;
+      color: #7a6b5c;
+      font-size: 0.9rem;
+    }
+
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .panel {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      min-height: 360px;
+    }
+
+    .panel h2 {
+      font-size: 1.3rem;
+      margin-bottom: 18px;
+      letter-spacing: -0.5px;
+    }
+
+    .bars-box {
+      height: 280px;
+      border-radius: 18px;
+      border: 1px solid #ece2d6;
+      background:
+        linear-gradient(to right, rgba(221,212,200,0.55) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(221,212,200,0.55) 1px, transparent 1px);
+      background-size: 25% 25%;
+      padding: 22px 22px 42px;
+      display: flex;
+      align-items: end;
+      justify-content: space-evenly;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bar-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: end;
+      gap: 12px;
+      width: 100%;
+      max-width: 180px;
+      height: 100%;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 150px;
+      background: linear-gradient(180deg, #2d2d2d 0%, #1f1f1f 100%);
+      border-radius: 16px 16px 10px 10px;
+      position: relative;
+    }
+
+    .bar-value {
+      position: absolute;
+      top: -34px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 12px;
+      padding: 6px 10px;
+      font-size: 0.86rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .bar-label {
+      font-size: 0.9rem;
+      color: #6f6257;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .donut-wrap {
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+
+    .donut-chart {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      position: relative;
+      background: conic-gradient(
+        #9b6b43 0deg 110deg,
+        #c8ae90 110deg 210deg,
+        #e3d4c2 210deg 285deg,
+        #efe6da 285deg 360deg
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .donut-chart::after {
+      content: "";
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: #fffdf9;
+      border: 1px solid #eadfd2;
+    }
+
+    .donut-center {
+      position: absolute;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .donut-center strong {
+      display: block;
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+
+    .donut-center span {
+      color: #7a6b5c;
+      font-size: 0.9rem;
+    }
+
+    .legend {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: #5c5c5c;
+    }
+
+    .legend-color {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .line-box {
+      height: 280px;
+      border-radius: 18px;
+      border: 1px solid #ece2d6;
+      background:
+        linear-gradient(to right, rgba(221,212,200,0.55) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(221,212,200,0.55) 1px, transparent 1px);
+      background-size: 25% 25%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chart-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .chart-labels {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: #7a6b5c;
+    }
+
+    .mini-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 6px;
+    }
+
+    .mini-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: #faf6f0;
+      border: 1px solid #ece2d6;
+    }
+
+    .mini-item strong {
+      font-size: 1rem;
+    }
+
+    .mini-item span {
+      color: #7a6b5c;
+      font-size: 0.9rem;
+    }
+
+    .mini-item b {
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">Cyber<span>Escola</span></div>
+
+      <nav class="menu">
+        <a href="/professor"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="/gerir-turmas"><i class="fa-solid fa-users"></i> Turmas</a>
+        <a href="/conteudos"><i class="fa-regular fa-folder-open"></i> Conteúdos</a>
+        <a href="/alertas"><i class="fa-regular fa-bell"></i> Alertas</a>
+        <a href="/relatorios" class="active"><i class="fa-solid fa-chart-column"></i> Relatórios</a>
+        <a href="/perfil"><i class="fa-regular fa-user"></i> Perfil</a>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">
+      © 2026 CyberEscola
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-left" th:text="'Bem-vindo, ' + ${utilizador.nome}">
+        Bem-vindo, Professor
+      </div>
+
+      <div class="topbar-right">
+        <span class="badge" th:text="${utilizador.tipo}">PROFESSOR</span>
+        <a href="/perfil" class="icon-btn"><i class="fa-solid fa-user"></i></a>
+        <a href="/logout" class="icon-btn"><i class="fa-solid fa-right-from-bracket"></i></a>
+      </div>
+    </div>
+
+    <section class="content">
+      <div class="page-header">
+        <div>
+          <h1>Relatórios</h1>
+          <p>Estatísticas e análises das suas turmas.</p>
+        </div>
+
+        <a href="#" class="export-btn">
+          <i class="fa-solid fa-download"></i>
+          Exportar
+        </a>
+      </div>
+
+      <div class="summary-grid">
+  <div class="summary-card">
+    <span>Total de alunos</span>
+    <strong id="totalAlunosCard" th:text="${totalAlunos}">0</strong>
+  </div>
+
+  <div class="summary-card">
+    <span>Total de turmas</span>
+    <strong id="totalTurmasCard" th:text="${totalTurmas}">0</strong>
+  </div>
+
+  <div class="summary-card">
+    <span>Média global</span>
+    <strong id="mediaGlobalCard" th:text="${mediaGlobal} + ' pts'">0 pts</strong>
+  </div>
+
+  <div class="summary-card">
+    <span>Melhor turma</span>
+    <strong id="melhorTurmaCard" th:text="${melhorTurma}">Sem dados</strong>
+    <p id="melhorMediaCard" th:text="${melhorMedia} + ' pontos de média'">0</p>
+  </div>
+</div>
+
+      <div class="panel-grid">
+        <div class="panel">
+  <h2>Média por Turma</h2>
+  <div style="height: 320px;">
+    <canvas id="barChart"></canvas>
+  </div>
+</div>
+
+        <div class="panel">
+  <h2>Distribuição de Alunos</h2>
+  <div style="height: 320px;">
+    <canvas id="donutChart"></canvas>
+  </div>
+</div>
+
+       <div class="panel">
+  <h2>Evolução Média</h2>
+  <div style="height: 320px;">
+    <canvas id="lineChart"></canvas>
+  </div>
+</div> 
+
+        <div class="panel">
+          <h2>Resumo por Turma</h2>
+
+          <div class="mini-list">
+            <div class="mini-item" th:each="media, iter : ${mediaPontosPorTurma}">
+              <div>
+                <strong th:text="${nomesTurmas[iter.index]}">Turma</strong>
+                <span th:text="${totalAlunosPorTurma[iter.index]} + ' alunos'">0 alunos</span>
+              </div>
+
+              <b th:text="${media} + ' pts'">0 pts</b>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+  let barChart, donutChart, lineChart;
+
+  async function carregarRelatorios() {
+    const response = await fetch('/relatorios/dados');
+    const data = await response.json();
+
+    if (data.erro) return;
+
+    document.getElementById('totalAlunosCard').textContent = data.totalAlunos;
+    document.getElementById('totalTurmasCard').textContent = data.totalTurmas;
+    document.getElementById('mediaGlobalCard').textContent = data.mediaGlobal + ' pts';
+    document.getElementById('melhorTurmaCard').textContent = data.melhorTurma;
+    document.getElementById('melhorMediaCard').textContent = data.melhorMedia + ' pontos de média';
+
+    if (barChart) barChart.destroy();
+    if (donutChart) donutChart.destroy();
+    if (lineChart) lineChart.destroy();
+
+    barChart = new Chart(document.getElementById('barChart'), {
+      type: 'bar',
+      data: {
+        labels: data.nomesTurmas,
+        datasets: [{
+          label: 'Média de pontos',
+          data: data.mediaPontosPorTurma,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+
+    donutChart = new Chart(document.getElementById('donutChart'), {
+      type: 'doughnut',
+      data: {
+        labels: data.nomesTurmas,
+        datasets: [{
+          data: data.totalAlunosPorTurma,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+
+    lineChart = new Chart(document.getElementById('lineChart'), {
+      type: 'line',
+      data: {
+        labels: data.meses,
+        datasets: [{
+          label: 'Evolução média',
+          data: data.evolucaoMedia,
+          tension: 0.3,
+          fill: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  }
+
+  carregarRelatorios();
+  setInterval(carregarRelatorios, 10000);
+</script>
+
+</body>
+</html>

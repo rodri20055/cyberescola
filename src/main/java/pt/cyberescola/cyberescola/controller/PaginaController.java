@@ -32,6 +32,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
+import pt.cyberescola.cyberescola.model.Conteudo;
+import pt.cyberescola.cyberescola.repository.ConteudoRepository;
+import pt.cyberescola.cyberescola.model.QuizRealizado;
+import pt.cyberescola.cyberescola.repository.QuizRealizadoRepository;
+import pt.cyberescola.cyberescola.model.Turma;
+import pt.cyberescola.cyberescola.model.ProfessorTurma;
+import pt.cyberescola.cyberescola.repository.TurmaRepository;
+import pt.cyberescola.cyberescola.repository.ProfessorTurmaRepository;
+import java.util.HashMap;
+import java.util.Map;
+import org.springframework.web.bind.annotation.ResponseBody;
+import pt.cyberescola.cyberescola.model.Alerta;
+import pt.cyberescola.cyberescola.repository.AlertaRepository;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,18 +58,33 @@ public class PaginaController {
     private final EvolucaoPontuacaoRepository evolucaoPontuacaoRepository;
     private final AtividadeAlunoRepository atividadeAlunoRepository;
     private final QuizRepository quizRepository;
+    private final AlertaRepository alertaRepository;
 private final PerguntaQuizRepository perguntaQuizRepository;
+private final ConteudoRepository conteudoRepository;
+private final QuizRealizadoRepository quizRealizadoRepository;
+private final TurmaRepository turmaRepository;
+private final ProfessorTurmaRepository professorTurmaRepository;
 
     public PaginaController(UtilizadorRepository utilizadorRepository,
                         EvolucaoPontuacaoRepository evolucaoPontuacaoRepository,
                         AtividadeAlunoRepository atividadeAlunoRepository,
                         QuizRepository quizRepository,
-                        PerguntaQuizRepository perguntaQuizRepository) {
+                        PerguntaQuizRepository perguntaQuizRepository,
+                        ConteudoRepository conteudoRepository,
+                        QuizRealizadoRepository quizRealizadoRepository,
+                        TurmaRepository turmaRepository,
+                        AlertaRepository alertaRepository,
+                        ProfessorTurmaRepository professorTurmaRepository) {
     this.utilizadorRepository = utilizadorRepository;
     this.evolucaoPontuacaoRepository = evolucaoPontuacaoRepository;
     this.atividadeAlunoRepository = atividadeAlunoRepository;
     this.quizRepository = quizRepository;
     this.perguntaQuizRepository = perguntaQuizRepository;
+    this.conteudoRepository = conteudoRepository;
+    this.quizRealizadoRepository = quizRealizadoRepository;
+    this.turmaRepository = turmaRepository;
+    this.alertaRepository = alertaRepository;
+    this.professorTurmaRepository = professorTurmaRepository;
 }
 
     private boolean semLogin(HttpSession session) {
@@ -116,14 +145,37 @@ private final PerguntaQuizRepository perguntaQuizRepository;
     }
 
     @GetMapping("/professor")
-    public String professor(HttpSession session) {
-        if (semLogin(session)) return "redirect:/login.html";
+public String professor(HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
 
-        Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
-        if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
 
-        return "professor";
-    }
+    List<ProfessorTurma> ligacoes = professorTurmaRepository.findByIdProfessor(u.getIdUtilizador());
+    List<Long> idsTurmas = ligacoes.stream()
+            .map(ProfessorTurma::getIdTurma)
+            .toList();
+
+    List<Turma> turmasProfessor = turmaRepository.findAllById(idsTurmas);
+    long totalTurmas = turmasProfessor.size();
+    long totalAlunos = idsTurmas.isEmpty() ? 0 : utilizadorRepository.countByTipoAndIdTurmaIn("aluno", idsTurmas);
+    long totalConteudos = conteudoRepository.count();
+    long totalQuizzes = quizRepository.count();
+
+    List<Utilizador> alunos = idsTurmas.isEmpty()
+            ? List.of()
+            : utilizadorRepository.findByTipoAndIdTurmaInOrderByNomeAsc("aluno", idsTurmas);
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("turmasProfessor", turmasProfessor);
+    model.addAttribute("totalTurmas", totalTurmas);
+    model.addAttribute("totalAlunos", totalAlunos);
+    model.addAttribute("totalConteudos", totalConteudos);
+    model.addAttribute("totalQuizzes", totalQuizzes);
+    model.addAttribute("alunos", alunos);
+
+    return "professor";
+}
 
     @GetMapping("/admin")
     public String admin(HttpSession session) {
@@ -145,20 +197,13 @@ public String conteudos(HttpSession session,
     Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
     model.addAttribute("utilizadorLogado", u);
 
-    List<Map<String, String>> conteudos = new ArrayList<>();
+    List<Conteudo> conteudos = conteudoRepository.findAll();
 
-    conteudos.add(criarConteudo("1", "Phishing", "O que é Phishing?", "Aprenda a identificar tentativas de phishing e proteja as suas contas.", "5:32"));
-    conteudos.add(criarConteudo("2", "Phishing", "Phishing por SMS (Smishing)", "Conheça os perigos do phishing via SMS e como evitá-los.", "4:15"));
-    conteudos.add(criarConteudo("3", "Senhas", "Como criar senhas fortes", "Dicas práticas para criar e gerir passwords seguras.", "6:10"));
-    conteudos.add(criarConteudo("4", "Senhas", "Gestores de passwords", "Descubra como os gestores de passwords podem proteger a sua vida digital.", "7:45"));
-    conteudos.add(criarConteudo("5", "Privacidade", "Privacidade nas redes sociais", "Como configurar a privacidade nas suas redes sociais.", "8:20"));
-    conteudos.add(criarConteudo("6", "Privacidade", "Dados pessoais e RGPD", "Entenda os seus direitos sobre os dados pessoais.", "5:55"));
-
-    List<Map<String, String>> conteudosFiltrados = conteudos.stream()
-        .filter(c -> tema == null || tema.isBlank() || c.get("tema").equalsIgnoreCase(tema))
+    List<Conteudo> conteudosFiltrados = conteudos.stream()
+        .filter(c -> tema == null || tema.isBlank() || c.getTema().equalsIgnoreCase(tema))
         .filter(c -> q == null || q.isBlank()
-            || c.get("titulo").toLowerCase().contains(q.toLowerCase())
-            || c.get("descricao").toLowerCase().contains(q.toLowerCase()))
+            || c.getTitulo().toLowerCase().contains(q.toLowerCase())
+            || c.getDescricao().toLowerCase().contains(q.toLowerCase()))
         .collect(Collectors.toList());
 
     model.addAttribute("conteudos", conteudosFiltrados);
@@ -188,19 +233,21 @@ public String conteudos(HttpSession session,
     }
 
     @GetMapping("/conteudo/{id}")
-    public String detalheConteudo(@PathVariable String id, HttpSession session, Model model) {
-        if (semLogin(session)) return "redirect:/login.html";
+public String detalheConteudo(@PathVariable String id, HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
 
-        Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
-        model.addAttribute("utilizadorLogado", u);
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    model.addAttribute("utilizadorLogado", u);
 
-        Map<String, String> conteudo = buscarConteudoPorId(id);
-        if (conteudo == null) return "redirect:/conteudos";
+    Long conteudoId = Long.parseLong(id);
+    Conteudo conteudo = conteudoRepository.findById(conteudoId).orElse(null);
 
-        model.addAttribute("conteudo", conteudo);
+    if (conteudo == null) return "redirect:/conteudos";
 
-        return "conteudo-detalhe";
-    }
+    model.addAttribute("conteudo", conteudo);
+
+    return "conteudo-detalhe";
+}
 
     @GetMapping("/quiz-associado/{id}")
 public String quizAssociado(@PathVariable String id, HttpSession session, Model model) {
@@ -257,44 +304,447 @@ public String submeterQuiz(@PathVariable String id,
     int percentagem = (certas * 100) / totalPerguntas;
     int pontosGanhos = certas * 20;
 
+    boolean jaRealizou = quizRealizadoRepository
+        .findByIdUtilizadorAndIdQuiz(u.getIdUtilizador(), quiz.getId())
+        .isPresent();
+
+if (jaRealizou) {
+    pontosGanhos = 0;
+}
+
+    if (!jaRealizou) {
     Integer pontosAtuais = u.getPontos() != null ? u.getPontos() : 0;
-u.setPontos(pontosAtuais + pontosGanhos);
-utilizadorRepository.save(u);
+    u.setPontos(pontosAtuais + pontosGanhos);
+    utilizadorRepository.save(u);
 
-session.setAttribute("utilizadorLogado", u);
+    session.setAttribute("utilizadorLogado", u);
 
-AtividadeAluno atividade = new AtividadeAluno();
-atividade.setIdUtilizador(u.getIdUtilizador());
-atividade.setTipoAtividade("quiz");
-atividade.setDescricao("Completou Quiz: " + quiz.getTema() + " — " + percentagem + "%");
-atividade.setDataAtividade(LocalDate.now());
+    AtividadeAluno atividade = new AtividadeAluno();
+    atividade.setIdUtilizador(u.getIdUtilizador());
+    atividade.setTipoAtividade("quiz");
+    atividade.setDescricao("Completou Quiz: " + quiz.getTema() + " — " + percentagem + "%");
+    atividade.setDataAtividade(LocalDate.now());
+    atividadeAlunoRepository.save(atividade);
 
-atividadeAlunoRepository.save(atividade);
+    EvolucaoPontuacao novaEvolucao = new EvolucaoPontuacao();
+    novaEvolucao.setIdUtilizador(u.getIdUtilizador());
+    novaEvolucao.setSemana("Quiz " + LocalDate.now());
+    novaEvolucao.setPontos(u.getPontos());
+    evolucaoPontuacaoRepository.save(novaEvolucao);
 
-EvolucaoPontuacao novaEvolucao = new EvolucaoPontuacao();
-novaEvolucao.setIdUtilizador(u.getIdUtilizador());
-novaEvolucao.setSemana("Quiz " + LocalDate.now());
-novaEvolucao.setPontos(u.getPontos());
-
-evolucaoPontuacaoRepository.save(novaEvolucao);
+    QuizRealizado realizado = new QuizRealizado();
+    realizado.setIdUtilizador(u.getIdUtilizador());
+    realizado.setIdQuiz(quiz.getId());
+    realizado.setPontuacao(percentagem);
+    realizado.setDataRealizacao(LocalDate.now());
+    quizRealizadoRepository.save(realizado);
+} else {
+    session.setAttribute("utilizadorLogado", u);
+}
 
     model.addAttribute("certas", certas);
     model.addAttribute("totalPerguntas", totalPerguntas);
     model.addAttribute("percentagem", percentagem);
     model.addAttribute("pontosGanhos", pontosGanhos);
 
+    model.addAttribute("jaRealizou", jaRealizou);
+
     return "quiz-resultado";
 }
 
     @GetMapping("/gerir-turmas")
-    public String gerirTurmas(HttpSession session) {
-        if (semLogin(session)) return "redirect:/login.html";
+public String gerirTurmas(HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
 
-        Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
-        if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
 
-        return "gerir-turmas";
+    List<ProfessorTurma> ligacoes = professorTurmaRepository.findByIdProfessor(u.getIdUtilizador());
+    List<Long> idsTurmas = ligacoes.stream()
+            .map(ProfessorTurma::getIdTurma)
+            .toList();
+
+    List<Turma> turmasProfessor = turmaRepository.findAllById(idsTurmas);
+
+    List<Map<String, Object>> turmasComResumo = turmasProfessor.stream().map(turma -> {
+        Map<String, Object> item = new java.util.HashMap<>();
+        item.put("id", turma.getId());
+        item.put("nome", turma.getNome());
+        item.put("totalAlunos", utilizadorRepository.countByTipoAndIdTurma("aluno", turma.getId()));
+        return item;
+    }).toList();
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("turmasProfessor", turmasComResumo);
+
+    return "gerir-turmas";
+}
+
+@GetMapping("/turma/{id}")
+public String detalheTurma(@PathVariable Long id,
+                           @RequestParam(required = false) String q,
+                           HttpSession session,
+                           Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    List<ProfessorTurma> ligacoes = professorTurmaRepository.findByIdProfessor(u.getIdUtilizador());
+    List<Long> idsTurmasProfessor = ligacoes.stream()
+            .map(ProfessorTurma::getIdTurma)
+            .toList();
+
+    if (!idsTurmasProfessor.contains(id)) return "redirect:/gerir-turmas";
+
+    Turma turma = turmaRepository.findById(id).orElse(null);
+    if (turma == null) return "redirect:/gerir-turmas";
+
+   List<Utilizador> alunos = utilizadorRepository.findByTipoAndIdTurmaOrderByPontosDescNomeAsc("aluno", id);
+
+    if (q != null && !q.trim().isEmpty()) {
+        String pesquisa = q.trim().toLowerCase();
+        alunos = alunos.stream()
+                .filter(a -> a.getNome() != null && a.getNome().toLowerCase().contains(pesquisa))
+                .toList();
     }
+
+    int totalAlunos = alunos.size();
+
+    double mediaPontos = alunos.stream()
+            .map(a -> a.getPontos() != null ? a.getPontos() : 0)
+            .mapToInt(Integer::intValue)
+            .average()
+            .orElse(0);
+
+    Utilizador melhorAluno = alunos.stream()
+            .max((a1, a2) -> Integer.compare(
+                    a1.getPontos() != null ? a1.getPontos() : 0,
+                    a2.getPontos() != null ? a2.getPontos() : 0))
+            .orElse(null);
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("turma", turma);
+    model.addAttribute("alunos", alunos);
+    model.addAttribute("pesquisa", q == null ? "" : q);
+    model.addAttribute("totalAlunos", totalAlunos);
+    model.addAttribute("mediaPontos", Math.round(mediaPontos));
+    model.addAttribute("melhorAluno", melhorAluno);
+
+    return "detalhe-turma";
+}
+
+@GetMapping("/relatorios")
+public String relatorios(HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    List<ProfessorTurma> ligacoes = professorTurmaRepository.findByIdProfessor(u.getIdUtilizador());
+    List<Long> idsTurmas = ligacoes.stream()
+            .map(ProfessorTurma::getIdTurma)
+            .toList();
+
+    List<Turma> turmasProfessor = turmaRepository.findAllById(idsTurmas);
+
+    List<Utilizador> alunos = idsTurmas.isEmpty()
+            ? List.of()
+            : utilizadorRepository.findByTipoAndIdTurmaInOrderByNomeAsc("aluno", idsTurmas);
+
+    List<String> nomesTurmas = new ArrayList<>();
+    List<Long> totalAlunosPorTurma = new ArrayList<>();
+    List<Long> mediaPontosPorTurma = new ArrayList<>();
+
+    for (Turma turma : turmasProfessor) {
+        List<Utilizador> alunosTurma = utilizadorRepository.findByTipoAndIdTurmaOrderByNomeAsc("aluno", turma.getId());
+
+        long total = alunosTurma.size();
+
+        long media = Math.round(
+                alunosTurma.stream()
+                        .map(a -> a.getPontos() != null ? a.getPontos() : 0)
+                        .mapToInt(Integer::intValue)
+                        .average()
+                        .orElse(0)
+        );
+
+        nomesTurmas.add(turma.getNome());
+        totalAlunosPorTurma.add(total);
+        mediaPontosPorTurma.add(media);
+    }
+
+    long totalAlunos = alunos.size();
+
+    long mediaGlobal = Math.round(
+            alunos.stream()
+                    .map(a -> a.getPontos() != null ? a.getPontos() : 0)
+                    .mapToInt(Integer::intValue)
+                    .average()
+                    .orElse(0)
+    );
+
+    Turma melhorTurma = null;
+    long melhorMedia = 0;
+
+    for (int i = 0; i < turmasProfessor.size(); i++) {
+        if (mediaPontosPorTurma.get(i) > melhorMedia) {
+            melhorMedia = mediaPontosPorTurma.get(i);
+            melhorTurma = turmasProfessor.get(i);
+        }
+    }
+
+    List<String> meses = List.of("Jan", "Fev", "Mar", "Abr");
+    List<Integer> evolucaoMedia = List.of(
+            (int) Math.max(0, mediaGlobal - 18),
+            (int) Math.max(0, mediaGlobal - 10),
+            (int) Math.max(0, mediaGlobal - 5),
+            (int) mediaGlobal
+    );
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("nomesTurmas", nomesTurmas);
+    model.addAttribute("totalAlunosPorTurma", totalAlunosPorTurma);
+    model.addAttribute("mediaPontosPorTurma", mediaPontosPorTurma);
+    model.addAttribute("totalAlunos", totalAlunos);
+    model.addAttribute("totalTurmas", turmasProfessor.size());
+    model.addAttribute("mediaGlobal", mediaGlobal);
+    model.addAttribute("melhorTurma", melhorTurma != null ? melhorTurma.getNome() : "Sem dados");
+    model.addAttribute("melhorMedia", melhorMedia);
+    model.addAttribute("meses", meses);
+    model.addAttribute("evolucaoMedia", evolucaoMedia);
+
+    return "relatorios";
+}
+
+
+@GetMapping("/alertas")
+public String alertas(@RequestParam(required = false) String tipo,
+                      HttpSession session,
+                      Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    List<ProfessorTurma> ligacoes = professorTurmaRepository.findByIdProfessor(u.getIdUtilizador());
+    List<Long> idsTurmas = ligacoes.stream()
+            .map(ProfessorTurma::getIdTurma)
+            .toList();
+
+    List<Utilizador> alunos = idsTurmas.isEmpty()
+            ? List.of()
+            : utilizadorRepository.findByTipoAndIdTurmaInOrderByNomeAsc("aluno", idsTurmas);
+
+    for (Utilizador aluno : alunos) {
+        int pontos = aluno.getPontos() != null ? aluno.getPontos() : 0;
+
+        if (pontos < 100) {
+            String titulo = "Pontuação baixa";
+            if (!alertaRepository.existsByIdProfessorAndIdAlunoAndTipoAndTitulo(
+                    u.getIdUtilizador(), aluno.getIdUtilizador(), "desempenho", titulo)) {
+
+                Alerta alerta = new Alerta();
+                alerta.setIdProfessor(u.getIdUtilizador());
+                alerta.setIdAluno(aluno.getIdUtilizador());
+                alerta.setIdTurma(aluno.getIdTurma());
+                alerta.setTipo("desempenho");
+                alerta.setTitulo(titulo);
+                alerta.setDescricao(aluno.getNome() + " está abaixo dos 100 pontos.");
+                alerta.setDataAlerta(java.time.LocalDate.now());
+                alerta.setLido(false);
+                alertaRepository.save(alerta);
+            }
+        }
+
+        long quizzesFeitos = atividadeAlunoRepository.countByIdUtilizadorAndTipoAtividade(aluno.getIdUtilizador(), "quiz");
+        if (quizzesFeitos == 0) {
+            String titulo = "Quiz por realizar";
+            if (!alertaRepository.existsByIdProfessorAndIdAlunoAndTipoAndTitulo(
+                    u.getIdUtilizador(), aluno.getIdUtilizador(), "pendencia", titulo)) {
+
+                Alerta alerta = new Alerta();
+                alerta.setIdProfessor(u.getIdUtilizador());
+                alerta.setIdAluno(aluno.getIdUtilizador());
+                alerta.setIdTurma(aluno.getIdTurma());
+                alerta.setTipo("pendencia");
+                alerta.setTitulo(titulo);
+                alerta.setDescricao(aluno.getNome() + " ainda não realizou nenhum quiz.");
+                alerta.setDataAlerta(java.time.LocalDate.now());
+                alerta.setLido(false);
+                alertaRepository.save(alerta);
+            }
+        }
+
+        boolean temAtividade = atividadeAlunoRepository.existsByIdUtilizador(aluno.getIdUtilizador());
+        if (!temAtividade) {
+            String titulo = "Sem atividade";
+            if (!alertaRepository.existsByIdProfessorAndIdAlunoAndTipoAndTitulo(
+                    u.getIdUtilizador(), aluno.getIdUtilizador(), "atividade", titulo)) {
+
+                Alerta alerta = new Alerta();
+                alerta.setIdProfessor(u.getIdUtilizador());
+                alerta.setIdAluno(aluno.getIdUtilizador());
+                alerta.setIdTurma(aluno.getIdTurma());
+                alerta.setTipo("atividade");
+                alerta.setTitulo(titulo);
+                alerta.setDescricao(aluno.getNome() + " ainda não tem atividade registada.");
+                alerta.setDataAlerta(java.time.LocalDate.now());
+                alerta.setLido(false);
+                alertaRepository.save(alerta);
+            }
+        }
+    }
+
+    List<Alerta> alertas = (tipo == null || tipo.isBlank() || tipo.equalsIgnoreCase("todos"))
+            ? alertaRepository.findByIdProfessorOrderByDataAlertaDescIdDesc(u.getIdUtilizador())
+            : alertaRepository.findByIdProfessorAndTipoOrderByDataAlertaDescIdDesc(u.getIdUtilizador(), tipo);
+
+    long totalNaoLidos = alertaRepository.countByIdProfessorAndLidoFalse(u.getIdUtilizador());
+    long totalDesempenho = alertaRepository.countByIdProfessorAndTipoAndLidoFalse(u.getIdUtilizador(), "desempenho");
+    long totalPendencia = alertaRepository.countByIdProfessorAndTipoAndLidoFalse(u.getIdUtilizador(), "pendencia");
+    long totalAtividade = alertaRepository.countByIdProfessorAndTipoAndLidoFalse(u.getIdUtilizador(), "atividade");
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("alertas", alertas);
+    model.addAttribute("tipoSelecionado", tipo == null ? "todos" : tipo);
+    model.addAttribute("totalNaoLidos", totalNaoLidos);
+    model.addAttribute("totalDesempenho", totalDesempenho);
+    model.addAttribute("totalPendencia", totalPendencia);
+    model.addAttribute("totalAtividade", totalAtividade);
+
+    return "alertas";
+}
+
+
+@PostMapping("/alertas/lida/{id}")
+public String marcarAlertaComoLida(@PathVariable Long id,
+                                   HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    Alerta alerta = alertaRepository.findById(id).orElse(null);
+    if (alerta != null && alerta.getIdProfessor().equals(u.getIdUtilizador())) {
+        alerta.setLido(true);
+        alertaRepository.save(alerta);
+    }
+
+    return "redirect:/alertas";
+}
+
+
+@PostMapping("/alertas/lidas")
+public String marcarTodosComoLidos(HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    List<Alerta> alertas = alertaRepository.findByIdProfessorOrderByDataAlertaDescIdDesc(u.getIdUtilizador());
+
+    for (Alerta alerta : alertas) {
+        if (Boolean.FALSE.equals(alerta.getLido())) {
+            alerta.setLido(true);
+            alertaRepository.save(alerta);
+        }
+    }
+
+    return "redirect:/alertas";
+}
+
+@GetMapping("/relatorios/dados")
+@ResponseBody
+public Map<String, Object> relatoriosDados(HttpSession session) {
+    Map<String, Object> resposta = new HashMap<>();
+
+    if (semLogin(session)) {
+        resposta.put("erro", "Sem login");
+        return resposta;
+    }
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) {
+        resposta.put("erro", "Acesso negado");
+        return resposta;
+    }
+
+    List<ProfessorTurma> ligacoes = professorTurmaRepository.findByIdProfessor(u.getIdUtilizador());
+    List<Long> idsTurmas = ligacoes.stream()
+            .map(ProfessorTurma::getIdTurma)
+            .toList();
+
+    List<Turma> turmasProfessor = turmaRepository.findAllById(idsTurmas);
+
+    List<Utilizador> alunos = idsTurmas.isEmpty()
+            ? List.of()
+            : utilizadorRepository.findByTipoAndIdTurmaInOrderByNomeAsc("aluno", idsTurmas);
+
+    List<String> nomesTurmas = new ArrayList<>();
+    List<Long> totalAlunosPorTurma = new ArrayList<>();
+    List<Long> mediaPontosPorTurma = new ArrayList<>();
+
+    for (Turma turma : turmasProfessor) {
+        List<Utilizador> alunosTurma = utilizadorRepository.findByTipoAndIdTurmaOrderByNomeAsc("aluno", turma.getId());
+
+        long total = alunosTurma.size();
+
+        long media = Math.round(
+                alunosTurma.stream()
+                        .map(a -> a.getPontos() != null ? a.getPontos() : 0)
+                        .mapToInt(Integer::intValue)
+                        .average()
+                        .orElse(0)
+        );
+
+        nomesTurmas.add(turma.getNome());
+        totalAlunosPorTurma.add(total);
+        mediaPontosPorTurma.add(media);
+    }
+
+    long totalAlunos = alunos.size();
+
+    long mediaGlobal = Math.round(
+            alunos.stream()
+                    .map(a -> a.getPontos() != null ? a.getPontos() : 0)
+                    .mapToInt(Integer::intValue)
+                    .average()
+                    .orElse(0)
+    );
+
+    String melhorTurma = "Sem dados";
+    long melhorMedia = 0;
+
+    for (int i = 0; i < turmasProfessor.size(); i++) {
+        if (mediaPontosPorTurma.get(i) > melhorMedia) {
+            melhorMedia = mediaPontosPorTurma.get(i);
+            melhorTurma = turmasProfessor.get(i).getNome();
+        }
+    }
+
+    List<String> meses = List.of("Jan", "Fev", "Mar", "Abr");
+    List<Integer> evolucaoMedia = List.of(
+            (int) Math.max(0, mediaGlobal - 18),
+            (int) Math.max(0, mediaGlobal - 10),
+            (int) Math.max(0, mediaGlobal - 5),
+            (int) mediaGlobal
+    );
+
+    resposta.put("totalAlunos", totalAlunos);
+    resposta.put("totalTurmas", turmasProfessor.size());
+    resposta.put("mediaGlobal", mediaGlobal);
+    resposta.put("melhorTurma", melhorTurma);
+    resposta.put("melhorMedia", melhorMedia);
+    resposta.put("nomesTurmas", nomesTurmas);
+    resposta.put("totalAlunosPorTurma", totalAlunosPorTurma);
+    resposta.put("mediaPontosPorTurma", mediaPontosPorTurma);
+    resposta.put("meses", meses);
+    resposta.put("evolucaoMedia", evolucaoMedia);
+
+    return resposta;
+}
+
 
     @PostMapping("/perfil/editar")
 public String editarPerfil(@RequestParam String nome,

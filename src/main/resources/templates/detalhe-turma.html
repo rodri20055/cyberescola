@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gerir Turmas | CyberEscola</title>
+  <title>Detalhe da Turma | CyberEscola</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -147,13 +147,6 @@
       align-items: center;
       justify-content: center;
       color: #5c5c5c;
-      transition: 0.2s;
-    }
-
-    .icon-btn:hover {
-      background: #1f1f1f;
-      color: white;
-      border-color: #1f1f1f;
     }
 
     .content {
@@ -166,6 +159,13 @@
       margin-bottom: 24px;
     }
 
+    .page-header a {
+      font-weight: 700;
+      color: #6c4b2d;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
     .page-header h1 {
       font-size: 2.35rem;
       letter-spacing: -1px;
@@ -176,107 +176,50 @@
       color: #5c5c5c;
       font-size: 1rem;
     }
+    
 
-    .turmas-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .turma-card {
+    .table-card {
       background: #fffdf9;
       border: 1px solid #ddd4c8;
       border-radius: 24px;
       padding: 24px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.03);
-      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
     }
 
-    .turma-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 14px 28px rgba(0,0,0,0.06);
-      border-color: #cdbca9;
+    table {
+      width: 100%;
+      border-collapse: collapse;
     }
 
-    .turma-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 18px;
-    }
-
-    .turma-top h2 {
-      font-size: 1.35rem;
-      letter-spacing: -0.5px;
-      margin-bottom: 6px;
-    }
-
-    .turma-top p {
-      color: #6f6257;
-      font-size: 0.95rem;
-    }
-
-    .turma-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 16px;
-      background: linear-gradient(180deg, #f2eadf 0%, #e8dccd 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      color: #1f1f1f;
-      flex-shrink: 0;
-    }
-
-    .turma-stats {
-      margin: 18px 0 22px;
-      padding: 16px;
-      border-radius: 18px;
-      background: #faf6f0;
-      border: 1px solid #ece2d6;
-    }
-
-    .turma-stats span {
-      display: block;
-      color: #7a6b5c;
+    th {
+      text-align: left;
       font-size: 0.92rem;
-      margin-bottom: 8px;
+      color: #74685d;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #eadfd2;
     }
 
-    .turma-stats strong {
-      font-size: 2rem;
+    td {
+      padding: 18px 0;
+      border-bottom: 1px solid #f0e7dc;
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .student-name {
       font-weight: 800;
     }
 
-    .turma-actions {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 12px;
-}
+    .student-email {
+      color: #6f6257;
+    }
 
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 16px;
-      border-radius: 999px;
-      border: 1px solid #d7cec2;
-      background: #fffdf9;
+    .student-score {
       font-weight: 800;
-      transition: 0.2s;
-    }
-
-    .btn-dark {
-      background: #1f1f1f;
-      color: white;
-      border-color: #1f1f1f;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
+      color: #1f1f1f;
     }
 
     .empty-box {
@@ -287,6 +230,96 @@
       color: #6f6257;
       font-weight: 700;
     }
+
+    .search-form {
+  margin-bottom: 22px;
+}
+
+.search-box {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fffdf9;
+  border: 1px solid #ddd4c8;
+  border-radius: 16px;
+  padding: 12px 14px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+}
+
+.search-box i {
+  color: #7a6b5c;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 0.95rem;
+  color: #1f1f1f;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.summary-card {
+  background: #fffdf9;
+  border: 1px solid #ddd4c8;
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+}
+
+.summary-card span {
+  display: block;
+  color: #6e6258;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.summary-card strong {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.summary-card p {
+  color: #6f6257;
+  font-size: 0.95rem;
+}
+
+.top-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.top-1 {
+  background: #f3e3b2;
+  color: #7a5a00;
+}
+
+.top-2 {
+  background: #e4e4e4;
+  color: #5f5f5f;
+}
+
+.top-3 {
+  background: #e6c7ad;
+  color: #7a4a22;
+}
   </style>
 </head>
 <body>
@@ -318,49 +351,71 @@
 
       <div class="topbar-right">
         <span class="badge" th:text="${utilizador.tipo}">PROFESSOR</span>
-
-        <a href="/perfil" class="icon-btn" title="Perfil">
-          <i class="fa-solid fa-user"></i>
-        </a>
-
-        <a href="/logout" class="icon-btn" title="Sair">
-          <i class="fa-solid fa-right-from-bracket"></i>
-        </a>
+        <a href="/perfil" class="icon-btn"><i class="fa-solid fa-user"></i></a>
+        <a href="/logout" class="icon-btn"><i class="fa-solid fa-right-from-bracket"></i></a>
       </div>
     </div>
 
     <section class="content">
       <div class="page-header">
-        <h1>Gerir Turmas</h1>
-        <p>Consulta as turmas que te estão associadas e acompanha os teus alunos.</p>
+        <a href="/gerir-turmas">← Voltar às turmas</a>
+        <h1 th:text="${turma.nome}">Turma</h1>
+        <p>Consulta os alunos associados a esta turma.</p>
       </div>
 
-      <div th:if="${#lists.isEmpty(turmasProfessor)}" class="empty-box">
-        Ainda não tens turmas associadas.
-      </div>
+      <form class="search-form" method="get">
+  <div class="search-box">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" name="q" placeholder="Pesquisar aluno pelo nome..." th:value="${pesquisa}">
+  </div>
+</form>
 
-      <div th:if="${!#lists.isEmpty(turmasProfessor)}" class="turmas-grid">
-        <div class="turma-card" th:each="t : ${turmasProfessor}">
-          <div class="turma-top">
-            <div>
-              <h2 th:text="${t.nome}">10.º A</h2>
-              <p>Turma associada ao professor</p>
-            </div>
+<div class="summary-grid">
+  <div class="summary-card">
+    <span>Total de alunos</span>
+    <strong th:text="${totalAlunos}">0</strong>
+  </div>
 
-            <div class="turma-icon">
-              <i class="fa-solid fa-users"></i>
-            </div>
-          </div>
+  <div class="summary-card">
+    <span>Média de pontos</span>
+    <strong th:text="${mediaPontos}">0</strong>
+  </div>
 
-          <div class="turma-stats">
-            <span>Total de alunos</span>
-            <strong th:text="${t.totalAlunos}">0</strong>
-          </div>
-
-          <div class="turma-actions">
-  <a th:href="@{'/turma/' + ${t.id}}" class="btn btn-dark">Ver turma</a>
+  <div class="summary-card">
+    <span>Melhor aluno</span>
+    <strong th:if="${melhorAluno != null}" th:text="${melhorAluno.nome}">Sem dados</strong>
+    <strong th:if="${melhorAluno == null}">Sem dados</strong>
+    <p th:if="${melhorAluno != null}" th:text="${melhorAluno.pontos + ' pontos'}"></p>
+  </div>
 </div>
-        </div>
+
+      <div th:if="${#lists.isEmpty(alunos)}" class="empty-box">
+        Esta turma ainda não tem alunos associados.
+      </div>
+
+      <div th:if="${!#lists.isEmpty(alunos)}" class="table-card">
+        <table>
+        <thead>
+  <tr>
+    <th>Posição</th>
+    <th>Nome</th>
+    <th>Email</th>
+    <th>Pontos</th>
+  </tr>
+</thead>
+            <tr th:each="a, iter : ${alunos}">
+  <td>
+    <span th:if="${iter.index == 0}" class="top-rank top-1">1</span>
+    <span th:if="${iter.index == 1}" class="top-rank top-2">2</span>
+    <span th:if="${iter.index == 2}" class="top-rank top-3">3</span>
+    <span th:if="${iter.index > 2}" th:text="${iter.index + 1}">4</span>
+  </td>
+  <td class="student-name" th:text="${a.nome}">Aluno</td>
+  <td class="student-email" th:text="${a.email}">email</td>
+  <td class="student-score" th:text="${a.pontos}">0</td>
+</tr>
+          </tbody>
+        </table>
       </div>
     </section>
   </main>

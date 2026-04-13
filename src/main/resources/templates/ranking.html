@@ -33,40 +33,18 @@
     }
 
     .sidebar {
-      width: 290px;
-      background: #fffdf9;
-      border-right: 1px solid #ddd4c8;
-      padding: 28px 18px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-.position-badge {
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  background: #efe6da;
-  color: #6c4b2d;
-}
-
-.position-gold {
-  background: #f3e3b2 !important;
-  color: #7a5a00 !important;
-}
-
-.position-silver {
-  background: #e4e4e4 !important;
-  color: #5f5f5f !important;
-}
-
-.position-bronze {
-  background: #e6c7ad !important;
-  color: #7a4a22 !important;
+  width: 290px;
+  background: #fffdf9;
+  border-right: 1px solid #ddd4c8;
+  padding: 28px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
 }
 
     .sidebar-top {
@@ -125,11 +103,13 @@
     }
 
     .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 290px;
+  width: calc(100% - 290px);
+}
 
     .topbar {
       width: 100%;
@@ -185,8 +165,8 @@
 
     .content {
       width: 100%;
-      max-width: 1400px;
-      padding: 30px 24px 34px;
+      max-width: 1380px;
+      padding: 30px 24px 40px;
     }
 
     .page-header {
@@ -194,7 +174,7 @@
     }
 
     .page-header h1 {
-      font-size: 2.3rem;
+      font-size: 2.35rem;
       letter-spacing: -1px;
       margin-bottom: 8px;
     }
@@ -204,11 +184,135 @@
       font-size: 1rem;
     }
 
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .summary-card {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 20px;
+      padding: 20px;
+    }
+
+    .summary-card span {
+      display: block;
+      color: #6f6257;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+
+    .summary-card strong {
+      font-size: 1.8rem;
+      font-weight: 800;
+    }
+
+    .podium-card,
     .ranking-card {
       background: #fffdf9;
       border: 1px solid #ddd4c8;
       border-radius: 24px;
       padding: 24px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+    }
+
+    .podium-card {
+      margin-bottom: 22px;
+    }
+
+    .section-title {
+      font-size: 1.35rem;
+      margin-bottom: 18px;
+      letter-spacing: -0.5px;
+    }
+
+    .podium {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr 1fr;
+      gap: 16px;
+      align-items: end;
+    }
+
+    .podium-place {
+      border-radius: 22px;
+      padding: 22px 18px;
+      text-align: center;
+      border: 1px solid #ddd4c8;
+      background: #faf5ee;
+    }
+
+    .podium-place.first {
+      background: linear-gradient(180deg, #f6ebc9 0%, #efe2b2 100%);
+      min-height: 280px;
+    }
+
+    .podium-place.second {
+      background: linear-gradient(180deg, #f0f0f0 0%, #e1e1e1 100%);
+      min-height: 240px;
+    }
+
+    .podium-place.third {
+      background: linear-gradient(180deg, #efd8c7 0%, #e2bea5 100%);
+      min-height: 220px;
+    }
+
+    .medal {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      margin: 0 auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      font-weight: 800;
+      background: rgba(255,255,255,0.7);
+      color: #1f1f1f;
+    }
+
+    .podium-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 22px;
+      margin: 0 auto 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1f1f1f;
+      color: white;
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+
+    .podium-name {
+      font-size: 1.08rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .podium-meta {
+      color: #6f6257;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    .podium-score {
+      font-size: 1.4rem;
+      font-weight: 800;
+    }
+
+    .podium-you {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #1f1f1f;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 800;
     }
 
     .ranking-table {
@@ -248,6 +352,21 @@
       font-weight: 800;
       background: #efe6da;
       color: #6c4b2d;
+    }
+
+    .position-gold {
+      background: #f3e3b2 !important;
+      color: #7a5a00 !important;
+    }
+
+    .position-silver {
+      background: #e4e4e4 !important;
+      color: #5f5f5f !important;
+    }
+
+    .position-bronze {
+      background: #e6c7ad !important;
+      color: #7a4a22 !important;
     }
 
     .name-cell {
@@ -298,22 +417,48 @@
       font-size: 1rem;
     }
 
-    @media (max-width: 900px) {
-      .dashboard {
-        flex-direction: column;
+    .empty-podium {
+      padding: 18px;
+      border-radius: 18px;
+      background: #faf5ee;
+      color: #6f6257;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1100px) {
+      .podium {
+        grid-template-columns: 1fr;
       }
 
-      .sidebar {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #ddd4c8;
-      }
-
-      .menu {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
+      .summary-grid {
+        grid-template-columns: 1fr;
       }
     }
+
+    @media (max-width: 900px) {
+  .dashboard {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #ddd4c8;
+    position: static;
+    height: auto;
+    overflow-y: visible;
+  }
+
+  .main {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .menu {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 
     @media (max-width: 700px) {
       .ranking-table,
@@ -344,7 +489,6 @@
 <body>
 
   <div class="dashboard">
-
     <aside class="sidebar">
       <div class="sidebar-top">
         <div class="logo">Cyber<span>Escola</span></div>
@@ -363,7 +507,6 @@
     </aside>
 
     <main class="main">
-
       <div class="topbar">
         <div class="topbar-left" th:text="'Bem-vindo, ' + ${utilizadorLogado.nome}">
           Bem-vindo, Aluno
@@ -388,7 +531,65 @@
           <p>Consulta a classificação geral dos utilizadores da CyberEscola.</p>
         </div>
 
+        <div class="summary-grid">
+          <div class="summary-card">
+            <span>Total de utilizadores</span>
+            <strong th:text="${#lists.size(ranking)}">0</strong>
+          </div>
+
+          <div class="summary-card">
+            <span>Tua pontuação</span>
+            <strong th:text="${utilizadorLogado.pontos}">0</strong>
+          </div>
+
+          <div class="summary-card">
+            <span>Teu perfil</span>
+            <strong th:text="${utilizadorLogado.turma != null ? utilizadorLogado.turma : 'Sem turma'}">Turma</strong>
+          </div>
+        </div>
+
+        <div class="podium-card">
+          <h2 class="section-title">Top 3</h2>
+
+          <div th:if="${#lists.size(ranking) == 0}" class="empty-podium">
+            Ainda não existem utilizadores no ranking.
+          </div>
+
+          <div th:if="${#lists.size(ranking) > 0}" class="podium">
+
+            <div class="podium-place second" th:if="${#lists.size(ranking) > 1}">
+              <div class="medal">2</div>
+              <div class="podium-avatar" th:text="${#strings.substring(ranking[1].nome,0,1)}">A</div>
+              <div class="podium-name" th:text="${ranking[1].nome}">Nome</div>
+              <div class="podium-meta" th:text="${ranking[1].turma != null ? ranking[1].turma : 'Por atribuir'}">Turma</div>
+              <div class="podium-score" th:text="${ranking[1].pontos}">0</div>
+              <span th:if="${ranking[1].idUtilizador == utilizadorLogado.idUtilizador}" class="podium-you">Tu</span>
+            </div>
+
+            <div class="podium-place first" th:if="${#lists.size(ranking) > 0}">
+              <div class="medal">1</div>
+              <div class="podium-avatar" th:text="${#strings.substring(ranking[0].nome,0,1)}">A</div>
+              <div class="podium-name" th:text="${ranking[0].nome}">Nome</div>
+              <div class="podium-meta" th:text="${ranking[0].turma != null ? ranking[0].turma : 'Por atribuir'}">Turma</div>
+              <div class="podium-score" th:text="${ranking[0].pontos}">0</div>
+              <span th:if="${ranking[0].idUtilizador == utilizadorLogado.idUtilizador}" class="podium-you">Tu</span>
+            </div>
+
+            <div class="podium-place third" th:if="${#lists.size(ranking) > 2}">
+              <div class="medal">3</div>
+              <div class="podium-avatar" th:text="${#strings.substring(ranking[2].nome,0,1)}">A</div>
+              <div class="podium-name" th:text="${ranking[2].nome}">Nome</div>
+              <div class="podium-meta" th:text="${ranking[2].turma != null ? ranking[2].turma : 'Por atribuir'}">Turma</div>
+              <div class="podium-score" th:text="${ranking[2].pontos}">0</div>
+              <span th:if="${ranking[2].idUtilizador == utilizadorLogado.idUtilizador}" class="podium-you">Tu</span>
+            </div>
+
+          </div>
+        </div>
+
         <div class="ranking-card">
+          <h2 class="section-title">Classificação completa</h2>
+
           <table class="ranking-table">
             <thead>
               <tr>
@@ -405,13 +606,13 @@
                   th:classappend="${u.idUtilizador == utilizadorLogado.idUtilizador} ? 'user-row' : ''">
 
                 <td>
-                  <span class="position-badge"
-      th:classappend="${iter.index == 0} ? ' position-gold' :
-                      (${iter.index == 1} ? ' position-silver' :
-                      (${iter.index == 2} ? ' position-bronze' : ''))"
-      th:text="${iter.index + 1}">
-  1
-</span>
+                  <span th:class="'position-badge ' +
+                                  (iter.index == 0 ? 'position-gold' :
+                                  (iter.index == 1 ? 'position-silver' :
+                                  (iter.index == 2 ? 'position-bronze' : '')))"
+                        th:text="${iter.index + 1}">
+                    1
+                  </span>
                 </td>
 
                 <td>
@@ -425,7 +626,7 @@
                   </div>
                 </td>
 
-                <td class="turma-cell" th:text="${u.turma}">Turma</td>
+                <td class="turma-cell" th:text="${u.turma != null ? u.turma : 'Por atribuir'}">Turma</td>
 
                 <td class="tipo" th:text="${u.tipo}">aluno</td>
 
@@ -435,7 +636,6 @@
           </table>
         </div>
       </section>
-
     </main>
   </div>
 

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alertas | CyberEscola</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Manrope', sans-serif; }
+    body { background: #f8f5ef; color: #1f1f1f; }
+    a { text-decoration: none; color: inherit; }
+
+    .sidebar {
+      width: 290px; background: #fffdf9; border-right: 1px solid #ddd4c8;
+      padding: 28px 18px; display: flex; flex-direction: column; justify-content: space-between;
+      position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto;
+    }
+
+    .sidebar-top { display: flex; flex-direction: column; gap: 28px; }
+    .logo { font-size: 1.6rem; font-weight: 800; letter-spacing: -1px; padding: 0 10px; }
+    .logo span { color: #9b6b43; }
+
+    .menu { display: flex; flex-direction: column; gap: 10px; }
+    .menu a {
+      display: flex; align-items: center; gap: 12px; padding: 14px 14px; border-radius: 14px;
+      color: #5c5c5c; font-weight: 700; transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+    .menu a:hover { background: #efe6da; color: #1f1f1f; transform: translateX(4px); }
+    .menu a.active { background: #1f1f1f; color: white; }
+
+    .sidebar-footer { padding: 0 10px; font-size: 0.86rem; color: #7a6b5c; }
+
+    .main { margin-left: 290px; min-height: 100vh; width: calc(100% - 290px); }
+
+    .topbar {
+      position: fixed; top: 0; left: 290px; width: calc(100% - 290px); z-index: 1000;
+      background: rgba(255, 253, 249, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid #ddd4c8; padding: 20px 28px;
+      display: flex; justify-content: space-between; align-items: center; gap: 15px;
+    }
+
+    .topbar-left { font-weight: 700; color: #5c5c5c; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+    .badge {
+      background: #efe6da; color: #6c4b2d; padding: 8px 14px; border-radius: 999px;
+      font-size: 0.8rem; font-weight: 800; text-transform: uppercase;
+    }
+
+    .icon-btn {
+      width: 40px; height: 40px; border-radius: 12px; border: 1px solid #ddd4c8;
+      background: #fffdf9; display: flex; align-items: center; justify-content: center; color: #5c5c5c;
+    }
+
+    .content { width: 100%; max-width: none; padding: 118px 24px 40px; }
+
+    .page-header {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; margin-bottom: 24px;
+    }
+
+    .page-header h1 { font-size: 2.2rem; margin-bottom: 8px; }
+    .page-header p { color: #5c5c5c; }
+
+    .read-all-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 18px; border-radius: 999px; background: #1f1f1f; color: white;
+      font-weight: 800; border: 1px solid #1f1f1f;
+    }
+
+    .summary-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 22px;
+    }
+
+    .summary-card {
+  background: #fffdf9;
+  border: 1px solid #ddd4c8;
+  border-radius: 20px;
+  padding: 22px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.06);
+  border-color: #cdbca9;
+}
+
+    .summary-card span { display: block; color: #6e6258; font-size: 0.9rem; margin-bottom: 8px; }
+    .summary-card strong { font-size: 2rem; font-weight: 800; }
+
+    .filters {
+      display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
+    }
+
+   .filter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid #ddd4c8;
+  background: #fffdf9;
+  font-weight: 800;
+  color: #5c5c5c;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  background: #efe6da;
+  color: #1f1f1f;
+  transform: translateY(-1px);
+}
+
+.filter-btn.active {
+  background: #1f1f1f;
+  color: white;
+  border-color: #1f1f1f;
+}
+
+    .alerts-list {
+      display: flex; flex-direction: column; gap: 14px;
+    }
+
+    .alert-card {
+  background: #fffdf9;
+  border: 1px solid #ddd4c8;
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.alert-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.06);
+  border-color: #cdbca9;
+}
+
+    .alert-card.lido {
+      opacity: 0.65;
+    }
+
+    .alert-left {
+      display: flex; gap: 14px; flex: 1;
+    }
+
+    .alert-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #f2eadf 0%, #e8dccd 100%);
+  color: #6c4b2d;
+  transition: transform 0.2s ease;
+}
+
+.alert-card:hover .alert-icon {
+  transform: scale(1.06);
+}
+
+    .alert-title-row {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px;
+    }
+
+    .alert-title-row strong {
+      font-size: 1.02rem;
+    }
+
+    .alert-tag {
+      padding: 5px 10px; border-radius: 999px; font-size: 0.74rem; font-weight: 800;
+    }
+
+    .tag-desempenho { background: #fdeaea; color: #b24141; }
+    .tag-pendencia { background: #fff2dc; color: #b77800; }
+    .tag-atividade { background: #e8f8ef; color: #218c5b; }
+
+    .alert-desc {
+      color: #5c5c5c; line-height: 1.6; margin-bottom: 8px;
+    }
+
+    .alert-meta {
+      color: #7a6b5c; font-size: 0.9rem;
+    }
+
+    .alert-right {
+      display: flex; align-items: center;
+    }
+
+    .mark-read-btn {
+      padding: 10px 14px; border-radius: 999px; border: 1px solid #ddd4c8;
+      background: #fffdf9; font-weight: 800; cursor: pointer;
+    }
+
+    .empty-box {
+      background: #fffdf9; border: 1px solid #ddd4c8; border-radius: 24px;
+      padding: 28px; color: #6f6257; font-weight: 700;
+    }
+
+    @keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert-card {
+  animation: fadeUp 0.35s ease;
+}
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">Cyber<span>Escola</span></div>
+
+      <nav class="menu">
+        <a href="/professor"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="/gerir-turmas"><i class="fa-solid fa-users"></i> Turmas</a>
+        <a href="/conteudos"><i class="fa-regular fa-folder-open"></i> Conteúdos</a>
+        <a href="/alertas" class="active"><i class="fa-regular fa-bell"></i> Alertas</a>
+        <a href="/relatorios"><i class="fa-solid fa-chart-column"></i> Relatórios</a>
+        <a href="/perfil"><i class="fa-regular fa-user"></i> Perfil</a>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">© 2026 CyberEscola</div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-left" th:text="'Bem-vindo, ' + ${utilizador.nome}">Bem-vindo</div>
+
+      <div class="topbar-right">
+        <span class="badge" th:text="${utilizador.tipo}">PROFESSOR</span>
+        <a href="/perfil" class="icon-btn"><i class="fa-solid fa-user"></i></a>
+        <a href="/logout" class="icon-btn"><i class="fa-solid fa-right-from-bracket"></i></a>
+      </div>
+    </div>
+
+    <section class="content">
+      <div class="page-header">
+        <div>
+          <h1>Alertas e Notificações</h1>
+          <p th:text="${totalNaoLidos} + ' alertas por ler'">0 alertas por ler</p>
+        </div>
+
+        <form action="/alertas/lidas" method="post">
+          <button type="submit" class="read-all-btn">
+            <i class="fa-solid fa-check"></i>
+            Marcar todos como lidos
+          </button>
+        </form>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <span>Desempenho</span>
+          <strong th:text="${totalDesempenho}">0</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Pendência</span>
+          <strong th:text="${totalPendencia}">0</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Atividade</span>
+          <strong th:text="${totalAtividade}">0</strong>
+        </div>
+      </div>
+
+      <div class="filters">
+        <a th:href="@{/alertas}" class="filter-btn" th:classappend="${tipoSelecionado == 'todos'} ? ' active' : ''">Todos</a>
+        <a th:href="@{/alertas(tipo='desempenho')}" class="filter-btn" th:classappend="${tipoSelecionado == 'desempenho'} ? ' active' : ''">Desempenho</a>
+        <a th:href="@{/alertas(tipo='pendencia')}" class="filter-btn" th:classappend="${tipoSelecionado == 'pendencia'} ? ' active' : ''">Pendência</a>
+        <a th:href="@{/alertas(tipo='atividade')}" class="filter-btn" th:classappend="${tipoSelecionado == 'atividade'} ? ' active' : ''">Atividade</a>
+      </div>
+
+      <div th:if="${#lists.isEmpty(alertas)}" class="empty-box">
+        Não existem alertas para mostrar.
+      </div>
+
+      <div th:if="${!#lists.isEmpty(alertas)}" class="alerts-list">
+        <div class="alert-card"
+             th:each="a : ${alertas}"
+             th:classappend="${a.lido} ? ' lido' : ''">
+
+          <div class="alert-left">
+            <div class="alert-icon">
+              <i th:if="${a.tipo == 'desempenho'}" class="fa-solid fa-arrow-trend-down"></i>
+              <i th:if="${a.tipo == 'pendencia'}" class="fa-regular fa-clock"></i>
+              <i th:if="${a.tipo == 'atividade'}" class="fa-solid fa-book-open"></i>
+            </div>
+
+            <div>
+              <div class="alert-title-row">
+                <strong th:text="${a.titulo}">Título</strong>
+                <span class="alert-tag"
+                      th:classappend="${a.tipo == 'desempenho'} ? ' tag-desempenho' :
+                                      (${a.tipo == 'pendencia'} ? ' tag-pendencia' : ' tag-atividade')"
+                      th:text="${a.tipo}">
+                  tipo
+                </span>
+              </div>
+
+              <div class="alert-desc" th:text="${a.descricao}">Descrição</div>
+              <div class="alert-meta" th:text="${a.dataAlerta}">Data</div>
+            </div>
+          </div>
+
+          <div class="alert-right">
+            <form th:if="${!a.lido}" th:action="@{'/alertas/lida/' + ${a.id}}" method="post">
+              <button type="submit" class="mark-read-btn">Marcar como lida</button>
+            </form>
+
+            <span th:if="${a.lido}" class="mark-read-btn">Lida</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>

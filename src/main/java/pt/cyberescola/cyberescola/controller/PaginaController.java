@@ -1,55 +1,53 @@
 package pt.cyberescola.cyberescola.controller;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
-import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpSession;
-import pt.cyberescola.cyberescola.model.AtividadeAluno;
-import pt.cyberescola.cyberescola.model.EvolucaoPontuacao;
-import pt.cyberescola.cyberescola.model.Utilizador;
-import pt.cyberescola.cyberescola.repository.AtividadeAlunoRepository;
-import pt.cyberescola.cyberescola.repository.EvolucaoPontuacaoRepository;
-import pt.cyberescola.cyberescola.repository.UtilizadorRepository;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import pt.cyberescola.cyberescola.model.Quiz;
-import pt.cyberescola.cyberescola.model.PerguntaQuiz;
-import pt.cyberescola.cyberescola.repository.QuizRepository;
-import pt.cyberescola.cyberescola.repository.PerguntaQuizRepository;
-import java.util.Optional;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.UUID;
-import pt.cyberescola.cyberescola.model.Conteudo;
-import pt.cyberescola.cyberescola.repository.ConteudoRepository;
-import pt.cyberescola.cyberescola.model.QuizRealizado;
-import pt.cyberescola.cyberescola.repository.QuizRealizadoRepository;
-import pt.cyberescola.cyberescola.model.Turma;
-import pt.cyberescola.cyberescola.model.ProfessorTurma;
-import pt.cyberescola.cyberescola.repository.TurmaRepository;
-import pt.cyberescola.cyberescola.repository.ProfessorTurmaRepository;
-import java.util.HashMap;
-import java.util.Map;
-import org.springframework.web.bind.annotation.ResponseBody;
 import pt.cyberescola.cyberescola.model.Alerta;
+import pt.cyberescola.cyberescola.model.AtividadeAluno;
+import pt.cyberescola.cyberescola.model.Conteudo;
+import pt.cyberescola.cyberescola.model.ConteudoTurma;
+import pt.cyberescola.cyberescola.model.EvolucaoPontuacao;
+import pt.cyberescola.cyberescola.model.PerguntaQuiz;
+import pt.cyberescola.cyberescola.model.ProfessorTurma;
+import pt.cyberescola.cyberescola.model.Quiz;
+import pt.cyberescola.cyberescola.model.QuizRealizado;
+import pt.cyberescola.cyberescola.model.QuizTurma;
+import pt.cyberescola.cyberescola.model.Turma;
+import pt.cyberescola.cyberescola.model.Utilizador;
 import pt.cyberescola.cyberescola.repository.AlertaRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import pt.cyberescola.cyberescola.repository.AtividadeAlunoRepository;
+import pt.cyberescola.cyberescola.repository.ConteudoRepository;
+import pt.cyberescola.cyberescola.repository.ConteudoTurmaRepository;
+import pt.cyberescola.cyberescola.repository.EvolucaoPontuacaoRepository;
+import pt.cyberescola.cyberescola.repository.PerguntaQuizRepository;
+import pt.cyberescola.cyberescola.repository.ProfessorTurmaRepository;
+import pt.cyberescola.cyberescola.repository.QuizRealizadoRepository;
+import pt.cyberescola.cyberescola.repository.QuizRepository;
+import pt.cyberescola.cyberescola.repository.QuizTurmaRepository;
+import pt.cyberescola.cyberescola.repository.TurmaRepository;
+import pt.cyberescola.cyberescola.repository.UtilizadorRepository;
 
 @Controller
 public class PaginaController {
@@ -58,34 +56,40 @@ public class PaginaController {
     private final EvolucaoPontuacaoRepository evolucaoPontuacaoRepository;
     private final AtividadeAlunoRepository atividadeAlunoRepository;
     private final QuizRepository quizRepository;
+    private final PerguntaQuizRepository perguntaQuizRepository;
+    private final ConteudoRepository conteudoRepository;
+    private final QuizRealizadoRepository quizRealizadoRepository;
+    private final TurmaRepository turmaRepository;
+    private final ProfessorTurmaRepository professorTurmaRepository;
     private final AlertaRepository alertaRepository;
-private final PerguntaQuizRepository perguntaQuizRepository;
-private final ConteudoRepository conteudoRepository;
-private final QuizRealizadoRepository quizRealizadoRepository;
-private final TurmaRepository turmaRepository;
-private final ProfessorTurmaRepository professorTurmaRepository;
+    private final ConteudoTurmaRepository conteudoTurmaRepository;
+    private final QuizTurmaRepository quizTurmaRepository;
 
     public PaginaController(UtilizadorRepository utilizadorRepository,
-                        EvolucaoPontuacaoRepository evolucaoPontuacaoRepository,
-                        AtividadeAlunoRepository atividadeAlunoRepository,
-                        QuizRepository quizRepository,
-                        PerguntaQuizRepository perguntaQuizRepository,
-                        ConteudoRepository conteudoRepository,
-                        QuizRealizadoRepository quizRealizadoRepository,
-                        TurmaRepository turmaRepository,
-                        AlertaRepository alertaRepository,
-                        ProfessorTurmaRepository professorTurmaRepository) {
-    this.utilizadorRepository = utilizadorRepository;
-    this.evolucaoPontuacaoRepository = evolucaoPontuacaoRepository;
-    this.atividadeAlunoRepository = atividadeAlunoRepository;
-    this.quizRepository = quizRepository;
-    this.perguntaQuizRepository = perguntaQuizRepository;
-    this.conteudoRepository = conteudoRepository;
-    this.quizRealizadoRepository = quizRealizadoRepository;
-    this.turmaRepository = turmaRepository;
-    this.alertaRepository = alertaRepository;
-    this.professorTurmaRepository = professorTurmaRepository;
-}
+                            EvolucaoPontuacaoRepository evolucaoPontuacaoRepository,
+                            AtividadeAlunoRepository atividadeAlunoRepository,
+                            QuizRepository quizRepository,
+                            PerguntaQuizRepository perguntaQuizRepository,
+                            ConteudoRepository conteudoRepository,
+                            QuizRealizadoRepository quizRealizadoRepository,
+                            TurmaRepository turmaRepository,
+                            ProfessorTurmaRepository professorTurmaRepository,
+                            AlertaRepository alertaRepository,
+                            ConteudoTurmaRepository conteudoTurmaRepository,
+                            QuizTurmaRepository quizTurmaRepository) {
+        this.utilizadorRepository = utilizadorRepository;
+        this.evolucaoPontuacaoRepository = evolucaoPontuacaoRepository;
+        this.atividadeAlunoRepository = atividadeAlunoRepository;
+        this.quizRepository = quizRepository;
+        this.perguntaQuizRepository = perguntaQuizRepository;
+        this.conteudoRepository = conteudoRepository;
+        this.quizRealizadoRepository = quizRealizadoRepository;
+        this.turmaRepository = turmaRepository;
+        this.professorTurmaRepository = professorTurmaRepository;
+        this.alertaRepository = alertaRepository;
+        this.conteudoTurmaRepository = conteudoTurmaRepository;
+        this.quizTurmaRepository = quizTurmaRepository;
+    }
 
     private boolean semLogin(HttpSession session) {
         return session.getAttribute("utilizadorLogado") == null;
@@ -177,16 +181,59 @@ public String professor(HttpSession session, Model model) {
     return "professor";
 }
 
-    @GetMapping("/admin")
-    public String admin(HttpSession session) {
-        if (semLogin(session)) return "redirect:/login.html";
+   @GetMapping("/admin")
+public String admin(HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
 
-        Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
-        if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
 
-        return "admin";
-    }
+    List<Utilizador> utilizadores = utilizadorRepository.findAll();
 
+    long totalUtilizadores = utilizadores.size();
+    long totalAlunos = utilizadores.stream()
+            .filter(x -> x.getTipo() != null && x.getTipo().equalsIgnoreCase("aluno"))
+            .count();
+
+    long totalProfessores = utilizadores.stream()
+            .filter(x -> x.getTipo() != null && x.getTipo().equalsIgnoreCase("professor"))
+            .count();
+
+    long totalAdmins = utilizadores.stream()
+            .filter(x -> x.getTipo() != null && x.getTipo().equalsIgnoreCase("admin"))
+            .count();
+
+    long totalTurmas = turmaRepository.count();
+    long totalConteudos = conteudoRepository.count();
+    long totalQuizzes = quizRepository.count();
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("utilizadores", utilizadores);
+    model.addAttribute("totalUtilizadores", totalUtilizadores);
+    model.addAttribute("totalAlunos", totalAlunos);
+    model.addAttribute("totalProfessores", totalProfessores);
+    model.addAttribute("totalAdmins", totalAdmins);
+    model.addAttribute("totalTurmas", totalTurmas);
+    model.addAttribute("totalConteudos", totalConteudos);
+    model.addAttribute("totalQuizzes", totalQuizzes);
+
+    return "admin";
+}
+
+@GetMapping("/admin/utilizadores")
+public String adminUtilizadores(HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+
+    List<Utilizador> utilizadores = utilizadorRepository.findAll();
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("utilizadores", utilizadores);
+
+    return "admin-utilizadores";
+}
     @GetMapping("/conteudos")
 public String conteudos(HttpSession session,
                         Model model,
@@ -231,6 +278,8 @@ public String conteudos(HttpSession session,
 
         return "ranking";
     }
+
+    
 
     @GetMapping("/conteudo/{id}")
 public String detalheConteudo(@PathVariable String id, HttpSession session, Model model) {
@@ -350,6 +399,100 @@ if (jaRealizou) {
     model.addAttribute("jaRealizou", jaRealizou);
 
     return "quiz-resultado";
+}
+
+@PostMapping("/admin/utilizadores/editar/{id}")
+public String editarUtilizadorAdmin(@PathVariable Integer id,
+                                    @RequestParam String nome,
+                                    @RequestParam String email,
+                                    @RequestParam String tipo,
+                                    @RequestParam(required = false) String turma,
+                                    @RequestParam(required = false, defaultValue = "false") boolean ativo,
+                                    HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador admin = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!admin.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+
+    Utilizador utilizador = utilizadorRepository.findById(id).orElse(null);
+    if (utilizador == null) return "redirect:/admin/utilizadores";
+
+    utilizador.setNome(nome);
+    utilizador.setEmail(email);
+    utilizador.setTipo(tipo);
+    utilizador.setTurma(turma);
+    utilizador.setAtivo(ativo);
+
+    utilizadorRepository.save(utilizador);
+
+    return "redirect:/admin/utilizadores";
+}
+
+@GetMapping("/admin/conteudos")
+public String adminConteudos(@RequestParam(required = false) String tipo,
+                             HttpSession session,
+                             Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+
+    String tipoSelecionado = (tipo == null || tipo.isBlank()) ? "videos" : tipo;
+
+    List<Conteudo> conteudos = conteudoRepository.findAllByOrderByIdDesc();
+    List<Quiz> quizzes = quizRepository.findAll();
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("conteudos", conteudos);
+    model.addAttribute("quizzes", quizzes);
+    model.addAttribute("tipoSelecionado", tipoSelecionado);
+
+    return "admin-conteudos";
+}
+
+@GetMapping("/admin/configuracao")
+public String adminConfiguracao(HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+
+    model.addAttribute("utilizador", u);
+
+    return "admin-configuracao";
+}
+
+
+@GetMapping("/admin/perfil")
+public String adminPerfil(HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+
+    model.addAttribute("utilizador", u);
+
+    return "admin-perfil";
+}
+
+@PostMapping("/admin/utilizadores/apagar/{id}")
+public String apagarUtilizadorAdmin(@PathVariable Integer id,
+                                    HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador admin = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!admin.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+
+    Utilizador utilizador = utilizadorRepository.findById(id).orElse(null);
+    if (utilizador == null) return "redirect:/admin/utilizadores";
+
+    if (utilizador.getIdUtilizador().equals(admin.getIdUtilizador())) {
+        return "redirect:/admin/utilizadores";
+    }
+
+    utilizadorRepository.deleteById(id);
+
+    return "redirect:/admin/utilizadores";
 }
 
     @GetMapping("/gerir-turmas")
@@ -634,6 +777,490 @@ public String marcarAlertaComoLida(@PathVariable Long id,
     return "redirect:/alertas";
 }
 
+@GetMapping("/conteudos-professor")
+public String conteudosProfessor(@RequestParam(required = false) String tipo,
+                                 HttpSession session,
+                                 Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    List<ProfessorTurma> ligacoes = professorTurmaRepository.findByIdProfessor(u.getIdUtilizador());
+    List<Long> idsTurmasProfessor = ligacoes.stream()
+            .map(ProfessorTurma::getIdTurma)
+            .toList();
+
+    List<Turma> turmasProfessor = turmaRepository.findAllById(idsTurmasProfessor);
+
+    String tipoSelecionado = (tipo == null || tipo.isBlank()) ? "videos" : tipo;
+
+    List<Conteudo> conteudos = conteudoRepository.findAllByOrderByIdDesc();
+
+    List<Map<String, Object>> conteudosView = conteudos.stream().map(c -> {
+        Map<String, Object> item = new HashMap<>();
+        item.put("id", c.getId());
+        item.put("titulo", c.getTitulo());
+        item.put("tema", c.getTema());
+        item.put("descricao", c.getDescricao());
+        item.put("duracao", c.getDuracao());
+        item.put("videoUrl", c.getVideoUrl());
+        item.put("temQuiz", quizRepository.existsByIdConteudo(String.valueOf(c.getId())));
+
+        long totalTurmasAtribuidas = conteudoTurmaRepository.findByIdConteudo(c.getId()).size();
+        item.put("totalTurmas", totalTurmasAtribuidas);
+
+        return item;
+    }).toList();
+
+    List<Quiz> quizzes = quizRepository.findAll();
+
+    List<Map<String, Object>> quizzesView = quizzes.stream().map(q -> {
+        Map<String, Object> item = new HashMap<>();
+        item.put("id", q.getId());
+        item.put("titulo", q.getTitulo());
+        item.put("tema", q.getTema());
+        item.put("idConteudo", q.getIdConteudo());
+        item.put("totalPerguntas", perguntaQuizRepository.countByIdQuiz(q.getId()));
+
+        String tituloConteudo = conteudoRepository.findById(Long.valueOf(q.getIdConteudo()))
+                .map(Conteudo::getTitulo)
+                .orElse("Sem conteúdo");
+
+        item.put("tituloConteudo", tituloConteudo);
+
+        long totalTurmasAtribuidas = quizTurmaRepository.findByIdQuiz(q.getId()).size();
+        item.put("totalTurmas", totalTurmasAtribuidas);
+
+        return item;
+    }).toList();
+
+    long totalVideos = conteudos.size();
+    long totalQuizzes = quizzes.size();
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("conteudos", conteudosView);
+    model.addAttribute("quizzes", quizzesView);
+    model.addAttribute("totalVideos", totalVideos);
+    model.addAttribute("totalQuizzes", totalQuizzes);
+    model.addAttribute("tipoSelecionado", tipoSelecionado);
+    model.addAttribute("turmasProfessor", turmasProfessor);
+
+    return "conteudos-professor";
+}
+
+@PostMapping("/conteudos-professor/atribuir-conteudo/{id}")
+public String atribuirConteudoTurmas(@PathVariable Long id,
+                                     @RequestParam(required = false, name = "turmas") List<Long> turmas,
+                                     HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    conteudoTurmaRepository.deleteByIdConteudo(id);
+
+    if (turmas != null) {
+        for (Long idTurma : turmas) {
+            ConteudoTurma ct = new ConteudoTurma();
+            ct.setIdConteudo(id);
+            ct.setIdTurma(idTurma);
+            conteudoTurmaRepository.save(ct);
+        }
+    }
+
+    return "redirect:/conteudos-professor?tipo=videos";
+}
+
+@PostMapping("/conteudos-professor/atribuir-quiz/{id}")
+public String atribuirQuizTurmas(@PathVariable Long id,
+                                 @RequestParam(required = false, name = "turmas") List<Long> turmas,
+                                 HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    quizTurmaRepository.deleteByIdQuiz(id);
+
+    if (turmas != null) {
+        for (Long idTurma : turmas) {
+            QuizTurma qt = new QuizTurma();
+            qt.setIdQuiz(id);
+            qt.setIdTurma(idTurma);
+            quizTurmaRepository.save(qt);
+        }
+    }
+
+    return "redirect:/conteudos-professor?tipo=quizzes";
+}
+
+@PostMapping("/conteudos-professor/apagar-quiz/{id}")
+public String apagarQuiz(@PathVariable Long id,
+                         HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    if (quizRepository.existsById(id)) {
+        perguntaQuizRepository.deleteByIdQuiz(id);
+        quizRepository.deleteById(id);
+    }
+
+    return "redirect:/conteudos-professor?tipo=quizzes";
+}
+
+@GetMapping("/quiz-professor/{id}")
+public String gerirPerguntasQuiz(@PathVariable Long id,
+                                 HttpSession session,
+                                 Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    Quiz quiz = quizRepository.findById(id).orElse(null);
+    if (quiz == null) return "redirect:/conteudos-professor?tipo=quizzes";
+
+    List<PerguntaQuiz> perguntas = perguntaQuizRepository.findByIdQuizOrderByOrdemAsc(id);
+
+    List<Conteudo> todosConteudos = conteudoRepository.findAllByOrderByIdDesc();
+    List<Conteudo> conteudosDisponiveis = todosConteudos.stream()
+            .filter(c -> !quizRepository.existsByIdConteudo(String.valueOf(c.getId()))
+                    || String.valueOf(c.getId()).equals(quiz.getIdConteudo()))
+            .toList();
+
+            String tituloConteudo = conteudoRepository.findById(Long.valueOf(quiz.getIdConteudo()))
+        .map(Conteudo::getTitulo)
+        .orElse("Sem conteúdo");
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("quiz", quiz);
+    model.addAttribute("perguntas", perguntas);
+    model.addAttribute("conteudos", conteudosDisponiveis);
+    model.addAttribute("tituloConteudo", tituloConteudo);
+
+    return "quiz-professor";
+}
+
+@PostMapping("/quiz-professor/{id}/editar")
+public String editarQuizProfessor(@PathVariable Long id,
+                                  @RequestParam String titulo,
+                                  @RequestParam String tema,
+                                  @RequestParam String idConteudo,
+                                  HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    Quiz quiz = quizRepository.findById(id).orElse(null);
+    if (quiz == null) return "redirect:/conteudos-professor?tipo=quizzes";
+
+    boolean conteudoJaUsado = quizRepository.existsByIdConteudo(idConteudo)
+            && !idConteudo.equals(quiz.getIdConteudo());
+
+    if (conteudoJaUsado) {
+        return "redirect:/quiz-professor/" + id;
+    }
+
+    quiz.setTitulo(titulo);
+    quiz.setTema(tema);
+    quiz.setIdConteudo(idConteudo);
+
+    quizRepository.save(quiz);
+
+    return "redirect:/quiz-professor/" + id;
+}
+
+
+@PostMapping("/conteudos-professor/criar")
+public String criarConteudo(@RequestParam String titulo,
+                            @RequestParam String tema,
+                            @RequestParam String descricao,
+                            @RequestParam String duracao,
+                            @RequestParam String videoUrl,
+                            HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    Conteudo conteudo = new Conteudo();
+    conteudo.setTitulo(titulo);
+    conteudo.setTema(tema);
+    conteudo.setDescricao(descricao);
+    conteudo.setDuracao(duracao);
+    conteudo.setVideoUrl(videoUrl);
+
+    conteudoRepository.save(conteudo);
+
+    return "redirect:/conteudos-professor";
+}
+
+
+@PostMapping("/conteudos-professor/editar/{id}")
+public String editarConteudo(@PathVariable Long id,
+                             @RequestParam String titulo,
+                             @RequestParam String tema,
+                             @RequestParam String descricao,
+                             @RequestParam String duracao,
+                             @RequestParam String videoUrl,
+                             HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    Conteudo conteudo = conteudoRepository.findById(id).orElse(null);
+    if (conteudo == null) return "redirect:/conteudos-professor";
+
+    conteudo.setTitulo(titulo);
+    conteudo.setTema(tema);
+    conteudo.setDescricao(descricao);
+    conteudo.setDuracao(duracao);
+    conteudo.setVideoUrl(videoUrl);
+
+    conteudoRepository.save(conteudo);
+
+    return "redirect:/conteudos-professor";
+}
+
+
+@PostMapping("/conteudos-professor/apagar/{id}")
+public String apagarConteudo(@PathVariable Long id,
+                             HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    if (conteudoRepository.existsById(id)) {
+        conteudoRepository.deleteById(id);
+    }
+
+    return "redirect:/conteudos-professor";
+}
+
+@PostMapping("/quiz-professor/{idQuiz}/pergunta/criar")
+public String criarPerguntaQuiz(@PathVariable Long idQuiz,
+                                @RequestParam String enunciado,
+                                @RequestParam String opcao1,
+                                @RequestParam String opcao2,
+                                @RequestParam String opcao3,
+                                @RequestParam String opcao4,
+                                @RequestParam String respostaCorreta,
+                                HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    List<PerguntaQuiz> perguntas = perguntaQuizRepository.findByIdQuizOrderByOrdemAsc(idQuiz);
+
+    PerguntaQuiz pergunta = new PerguntaQuiz();
+    pergunta.setIdQuiz(idQuiz);
+    pergunta.setEnunciado(enunciado);
+    pergunta.setOpcao1(opcao1);
+    pergunta.setOpcao2(opcao2);
+    pergunta.setOpcao3(opcao3);
+    pergunta.setOpcao4(opcao4);
+    pergunta.setRespostaCorreta(respostaCorreta);
+    pergunta.setOrdem(perguntas.size() + 1);
+
+    perguntaQuizRepository.save(pergunta);
+
+    return "redirect:/quiz-professor/" + idQuiz;
+}
+
+@PostMapping("/quiz-professor/{idQuiz}/pergunta/editar/{idPergunta}")
+public String editarPerguntaQuiz(@PathVariable Long idQuiz,
+                                 @PathVariable Long idPergunta,
+                                 @RequestParam String enunciado,
+                                 @RequestParam String opcao1,
+                                 @RequestParam String opcao2,
+                                 @RequestParam String opcao3,
+                                 @RequestParam String opcao4,
+                                 @RequestParam String respostaCorreta,
+                                 HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    PerguntaQuiz pergunta = perguntaQuizRepository.findById(idPergunta).orElse(null);
+    if (pergunta == null) return "redirect:/quiz-professor/" + idQuiz;
+
+    pergunta.setEnunciado(enunciado);
+    pergunta.setOpcao1(opcao1);
+    pergunta.setOpcao2(opcao2);
+    pergunta.setOpcao3(opcao3);
+    pergunta.setOpcao4(opcao4);
+    pergunta.setRespostaCorreta(respostaCorreta);
+
+    perguntaQuizRepository.save(pergunta);
+
+    return "redirect:/quiz-professor/" + idQuiz;
+}
+
+@PostMapping("/quiz-professor/{idQuiz}/pergunta/apagar/{idPergunta}")
+public String apagarPerguntaQuiz(@PathVariable Long idQuiz,
+                                 @PathVariable Long idPergunta,
+                                 HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    if (perguntaQuizRepository.existsById(idPergunta)) {
+        perguntaQuizRepository.deleteById(idPergunta);
+    }
+
+    List<PerguntaQuiz> perguntas = perguntaQuizRepository.findByIdQuizOrderByOrdemAsc(idQuiz);
+    int ordem = 1;
+    for (PerguntaQuiz p : perguntas) {
+        p.setOrdem(ordem++);
+        perguntaQuizRepository.save(p);
+    }
+
+    return "redirect:/quiz-professor/" + idQuiz;
+}
+
+@GetMapping("/novo-quiz-professor")
+public String novoQuizProfessor(HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+    List<Conteudo> todosConteudos = conteudoRepository.findAllByOrderByIdDesc();
+
+    List<Conteudo> conteudosDisponiveis = todosConteudos.stream()
+            .filter(c -> !quizRepository.existsByIdConteudo(String.valueOf(c.getId())))
+            .toList();
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("conteudos", conteudosDisponiveis);
+
+    return "novo-quiz-professor";
+}
+
+@PostMapping("/novo-quiz-professor")
+public String guardarNovoQuizProfessor(
+        @RequestParam String titulo,
+        @RequestParam String tema,
+        @RequestParam String idConteudo,
+
+        @RequestParam String enunciado1,
+        @RequestParam String opcao1_1,
+        @RequestParam String opcao1_2,
+        @RequestParam String opcao1_3,
+        @RequestParam String opcao1_4,
+        @RequestParam String respostaCorreta1,
+
+        @RequestParam String enunciado2,
+        @RequestParam String opcao2_1,
+        @RequestParam String opcao2_2,
+        @RequestParam String opcao2_3,
+        @RequestParam String opcao2_4,
+        @RequestParam String respostaCorreta2,
+
+        @RequestParam String enunciado3,
+        @RequestParam String opcao3_1,
+        @RequestParam String opcao3_2,
+        @RequestParam String opcao3_3,
+        @RequestParam String opcao3_4,
+        @RequestParam String respostaCorreta3,
+
+        @RequestParam String enunciado4,
+        @RequestParam String opcao4_1,
+        @RequestParam String opcao4_2,
+        @RequestParam String opcao4_3,
+        @RequestParam String opcao4_4,
+        @RequestParam String respostaCorreta4,
+
+        @RequestParam String enunciado5,
+        @RequestParam String opcao5_1,
+        @RequestParam String opcao5_2,
+        @RequestParam String opcao5_3,
+        @RequestParam String opcao5_4,
+        @RequestParam String respostaCorreta5,
+
+        HttpSession session) {
+
+    if (semLogin(session)) return "redirect:/login.html";
+
+Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+
+if (quizRepository.existsByIdConteudo(idConteudo)) {
+    return "redirect:/conteudos-professor?tipo=quizzes";
+}
+
+Quiz quiz = new Quiz();
+quiz.setTitulo(titulo);
+quiz.setTema(tema);
+quiz.setIdConteudo(idConteudo);
+quizRepository.save(quiz);
+
+    PerguntaQuiz p1 = new PerguntaQuiz();
+    p1.setIdQuiz(quiz.getId());
+    p1.setOrdem(1);
+    p1.setEnunciado(enunciado1);
+    p1.setOpcao1(opcao1_1);
+    p1.setOpcao2(opcao1_2);
+    p1.setOpcao3(opcao1_3);
+    p1.setOpcao4(opcao1_4);
+    p1.setRespostaCorreta(respostaCorreta1);
+    perguntaQuizRepository.save(p1);
+
+    PerguntaQuiz p2 = new PerguntaQuiz();
+    p2.setIdQuiz(quiz.getId());
+    p2.setOrdem(2);
+    p2.setEnunciado(enunciado2);
+    p2.setOpcao1(opcao2_1);
+    p2.setOpcao2(opcao2_2);
+    p2.setOpcao3(opcao2_3);
+    p2.setOpcao4(opcao2_4);
+    p2.setRespostaCorreta(respostaCorreta2);
+    perguntaQuizRepository.save(p2);
+
+    PerguntaQuiz p3 = new PerguntaQuiz();
+    p3.setIdQuiz(quiz.getId());
+    p3.setOrdem(3);
+    p3.setEnunciado(enunciado3);
+    p3.setOpcao1(opcao3_1);
+    p3.setOpcao2(opcao3_2);
+    p3.setOpcao3(opcao3_3);
+    p3.setOpcao4(opcao3_4);
+    p3.setRespostaCorreta(respostaCorreta3);
+    perguntaQuizRepository.save(p3);
+
+    PerguntaQuiz p4 = new PerguntaQuiz();
+    p4.setIdQuiz(quiz.getId());
+    p4.setOrdem(4);
+    p4.setEnunciado(enunciado4);
+    p4.setOpcao1(opcao4_1);
+    p4.setOpcao2(opcao4_2);
+    p4.setOpcao3(opcao4_3);
+    p4.setOpcao4(opcao4_4);
+    p4.setRespostaCorreta(respostaCorreta4);
+    perguntaQuizRepository.save(p4);
+
+    PerguntaQuiz p5 = new PerguntaQuiz();
+    p5.setIdQuiz(quiz.getId());
+    p5.setOrdem(5);
+    p5.setEnunciado(enunciado5);
+    p5.setOpcao1(opcao5_1);
+    p5.setOpcao2(opcao5_2);
+    p5.setOpcao3(opcao5_3);
+    p5.setOpcao4(opcao5_4);
+    p5.setRespostaCorreta(respostaCorreta5);
+    perguntaQuizRepository.save(p5);
+
+    return "redirect:/conteudos-professor?tipo=quizzes";
+}
 
 @PostMapping("/alertas/lidas")
 public String marcarTodosComoLidos(HttpSession session) {
@@ -829,6 +1456,19 @@ public String perfil(HttpSession session, Model model) {
 
     Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
     model.addAttribute("utilizador", u);
+
+    if ("professor".equalsIgnoreCase(u.getTipo())) {
+        List<ProfessorTurma> ligacoes = professorTurmaRepository.findByIdProfessor(u.getIdUtilizador());
+        List<Long> idsTurmas = ligacoes.stream()
+                .map(ProfessorTurma::getIdTurma)
+                .toList();
+
+        long totalTurmas = idsTurmas.size();
+        long totalAlunos = idsTurmas.isEmpty() ? 0 : utilizadorRepository.countByTipoAndIdTurmaIn("aluno", idsTurmas);
+
+        model.addAttribute("totalTurmas", totalTurmas);
+        model.addAttribute("totalAlunos", totalAlunos);
+    }
 
     return "perfil";
 }

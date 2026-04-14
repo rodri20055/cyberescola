@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestão de Conteúdos | CyberEscola</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Manrope', sans-serif; }
+    body { background: #f8f5ef; color: #1f1f1f; }
+    a { text-decoration: none; color: inherit; }
+
+    .sidebar {
+      width: 290px; background: #fffdf9; border-right: 1px solid #ddd4c8;
+      padding: 28px 18px; display: flex; flex-direction: column; justify-content: space-between;
+      position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto;
+    }
+
+    .sidebar-top { display: flex; flex-direction: column; gap: 28px; }
+    .logo { font-size: 1.6rem; font-weight: 800; letter-spacing: -1px; padding: 0 10px; }
+    .logo span { color: #9b6b43; }
+
+    .menu { display: flex; flex-direction: column; gap: 10px; }
+    .menu a {
+      display: flex; align-items: center; gap: 12px; padding: 14px 14px; border-radius: 14px;
+      color: #5c5c5c; font-weight: 700; transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+    .menu a:hover { background: #efe6da; color: #1f1f1f; transform: translateX(4px); }
+    .menu a.active { background: #1f1f1f; color: white; }
+
+    .sidebar-footer { padding: 0 10px; font-size: 0.86rem; color: #7a6b5c; }
+
+    .main { margin-left: 290px; min-height: 100vh; width: calc(100% - 290px); }
+
+    .topbar {
+      position: fixed; top: 0; left: 290px; width: calc(100% - 290px); z-index: 1000;
+      background: rgba(255, 253, 249, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid #ddd4c8; padding: 20px 28px;
+      display: flex; justify-content: space-between; align-items: center; gap: 15px;
+    }
+
+    .topbar-left { font-weight: 700; color: #5c5c5c; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+    .badge {
+      background: #efe6da; color: #6c4b2d; padding: 8px 14px; border-radius: 999px;
+      font-size: 0.8rem; font-weight: 800; text-transform: uppercase;
+    }
+
+    .icon-btn {
+      width: 40px; height: 40px; border-radius: 12px; border: 1px solid #ddd4c8;
+      background: #fffdf9; display: flex; align-items: center; justify-content: center; color: #5c5c5c;
+    }
+
+    .content { width: 100%; max-width: none; padding: 118px 24px 40px; }
+
+    .page-header {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; margin-bottom: 24px;
+    }
+
+    .page-header h1 { font-size: 2.2rem; margin-bottom: 8px; }
+    .page-header p { color: #5c5c5c; }
+
+    .new-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      border-radius: 999px;
+      background: #1f1f1f;
+      color: white;
+      font-weight: 800;
+      border: 1px solid #1f1f1f;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .new-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 20px rgba(0,0,0,0.08);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 16px;
+      border-radius: 999px;
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      font-weight: 800;
+      color: #5c5c5c;
+      transition: all 0.2s ease;
+    }
+
+    .tab:hover {
+      background: #efe6da;
+      color: #1f1f1f;
+      transform: translateY(-1px);
+    }
+
+    .tab.active {
+      background: #1f1f1f;
+      color: white;
+      border-color: #1f1f1f;
+    }
+
+    tbody tr {
+      transition: background 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background: #faf6f0;
+    }
+
+    .table-card {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .table-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.06);
+      border-color: #cdbca9;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      font-size: 0.88rem;
+      color: #74685d;
+      padding: 16px;
+      border-bottom: 1px solid #eadfd2;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 18px 16px;
+      border-bottom: 1px solid #f0e7dc;
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      background: #efe6da;
+      color: #6c4b2d;
+    }
+
+    .quiz-ok {
+      font-weight: 800;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.18s ease, opacity 0.18s ease;
+    }
+
+    .action-btn:hover {
+      transform: scale(1.12);
+      opacity: 0.85;
+    }
+
+    .action-green { color: #239d72; }
+    .action-blue { color: #2962ff; }
+    .action-red { color: #d63b3b; }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.28);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 20px;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 500px;
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.14);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.8rem;
+      letter-spacing: -0.5px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #6f6257;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      border: 1px solid #ddd4c8;
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: #fff;
+      font-size: 0.96rem;
+      outline: none;
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .btn {
+      padding: 14px 16px;
+      border-radius: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      border: 1px solid #ddd4c8;
+      background: #fffdf9;
+    }
+
+    .btn-dark {
+      background: #1f1f1f;
+      border-color: #1f1f1f;
+      color: white;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .page-header,
+    .tabs,
+    .table-card,
+    .modal {
+      animation: fadeUp 0.35s ease;
+    }
+
+    .quiz-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 38px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #efe6da;
+      color: #6c4b2d;
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .quiz-content-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: #f5efe6;
+      border: 1px solid #e4d8cb;
+      color: #5c5c5c;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .quiz-row-title {
+      font-weight: 800;
+      color: #1f1f1f;
+    }
+
+    .quiz-row-sub {
+      display: block;
+      margin-top: 4px;
+      color: #7a6b5c;
+      font-size: 0.84rem;
+    }
+
+    .assign-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid #ddd4c8;
+      background: #fffdf9;
+      color: #5c5c5c;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .assign-btn:hover {
+      background: #efe6da;
+      color: #1f1f1f;
+    }
+
+    .turma-count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #e9f8ee;
+      color: #246b3f;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">Cyber<span>Escola</span></div>
+
+      <nav class="menu">
+        <a href="/professor"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="/gerir-turmas"><i class="fa-solid fa-users"></i> Turmas</a>
+        <a href="/conteudos-professor" class="active"><i class="fa-regular fa-folder-open"></i> Conteúdos</a>
+        <a href="/alertas"><i class="fa-regular fa-bell"></i> Alertas</a>
+        <a href="/relatorios"><i class="fa-solid fa-chart-column"></i> Relatórios</a>
+        <a href="/perfil"><i class="fa-regular fa-user"></i> Perfil</a>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">© 2026 CyberEscola</div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-left" th:text="'Bem-vindo, ' + ${utilizador.nome}">Bem-vindo</div>
+
+      <div class="topbar-right">
+        <span class="badge" th:text="${utilizador.tipo}">PROFESSOR</span>
+        <a href="/perfil" class="icon-btn"><i class="fa-solid fa-user"></i></a>
+        <a href="/logout" class="icon-btn"><i class="fa-solid fa-right-from-bracket"></i></a>
+      </div>
+    </div>
+
+    <section class="content">
+      <div class="page-header">
+        <div>
+          <h1>Gestão de Conteúdos</h1>
+          <p>Criar, editar e gerir conteúdos da plataforma.</p>
+        </div>
+
+        <button th:if="${tipoSelecionado == 'videos'}"
+                class="new-btn"
+                type="button"
+                onclick="abrirModalCriar()">
+          <i class="fa-solid fa-plus"></i>
+          Novo Conteúdo
+        </button>
+
+        <a th:if="${tipoSelecionado == 'quizzes'}"
+           href="/novo-quiz-professor"
+           class="new-btn">
+          <i class="fa-solid fa-plus"></i>
+          Novo Quiz
+        </a>
+      </div>
+
+      <div class="tabs">
+        <a th:href="@{/conteudos-professor(tipo='videos')}"
+           class="tab"
+           th:classappend="${tipoSelecionado == 'videos'} ? ' active' : ''">
+          <i class="fa-regular fa-folder-open"></i>
+          Vídeos (<span th:text="${totalVideos}">0</span>)
+        </a>
+
+        <a th:href="@{/conteudos-professor(tipo='quizzes')}"
+           class="tab"
+           th:classappend="${tipoSelecionado == 'quizzes'} ? ' active' : ''">
+          <i class="fa-regular fa-bookmark"></i>
+          Quizzes (<span th:text="${totalQuizzes}">0</span>)
+        </a>
+      </div>
+
+      <div th:if="${tipoSelecionado == 'videos'}" class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Título</th>
+              <th>Tema</th>
+              <th>Duração</th>
+              <th>Quiz</th>
+              <th>Turmas</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="c : ${conteudos}">
+              <td th:text="${c.titulo}">Título</td>
+              <td><span class="tag" th:text="${c.tema}">Tema</span></td>
+              <td th:text="${c.duracao}">0:00</td>
+              <td class="quiz-ok" th:text="${c.temQuiz} ? '✓' : '—'">—</td>
+
+              <td>
+                <button type="button"
+                        class="assign-btn"
+                        th:attr="data-id=${c.id},data-tipo='conteudo'"
+                        onclick="abrirModalTurmas(this)">
+                  <i class="fa-solid fa-users"></i>
+                  Atribuir
+                </button>
+
+                <div style="margin-top:8px;">
+                  <span class="turma-count-badge" th:text="${c.totalTurmas} + ' turma(s)'">0 turma(s)</span>
+                </div>
+              </td>
+
+              <td>
+                <div class="actions">
+                  <button type="button"
+                          class="action-btn action-blue"
+                          title="Editar"
+                          th:attr="data-id=${c.id},
+                                   data-titulo=${c.titulo},
+                                   data-tema=${c.tema},
+                                   data-descricao=${c.descricao},
+                                   data-duracao=${c.duracao},
+                                   data-videourl=${c.videoUrl}"
+                          onclick="abrirModalEditar(this)">
+                    <i class="fa-solid fa-pen"></i>
+                  </button>
+
+                  <form th:action="@{'/conteudos-professor/apagar/' + ${c.id}}" method="post" style="display:inline;">
+                    <button type="submit" class="action-btn action-red" title="Apagar"
+                            onclick="return confirm('Tens a certeza que queres apagar este conteúdo?')">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div th:if="${tipoSelecionado == 'quizzes'}" class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Título</th>
+              <th>Tema</th>
+              <th>Perguntas</th>
+              <th>Conteúdo associado</th>
+              <th>Turmas</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="q : ${quizzes}">
+              <td>
+                <span class="quiz-row-title" th:text="${q.titulo}">Quiz</span>
+                <span class="quiz-row-sub" th:text="'ID #' + ${q.id}">ID</span>
+              </td>
+
+              <td>
+                <span class="tag" th:text="${q.tema}">Tema</span>
+              </td>
+
+              <td>
+                <span class="quiz-count" th:text="${q.totalPerguntas} + ' perguntas'">0 perguntas</span>
+              </td>
+
+              <td>
+                <span class="quiz-content-badge" th:text="${q.tituloConteudo}">Conteúdo</span>
+              </td>
+
+              <td>
+                <button type="button"
+                        class="assign-btn"
+                        th:attr="data-id=${q.id},data-tipo='quiz'"
+                        onclick="abrirModalTurmas(this)">
+                  <i class="fa-solid fa-users"></i>
+                  Atribuir
+                </button>
+
+                <div style="margin-top:8px;">
+                  <span class="turma-count-badge" th:text="${q.totalTurmas} + ' turma(s)'">0 turma(s)</span>
+                </div>
+              </td>
+
+              <td>
+                <div class="actions">
+                  <a th:href="@{'/quiz-professor/' + ${q.id}}" class="action-btn action-blue" title="Gerir perguntas">
+                    <i class="fa-solid fa-pen"></i>
+                  </a>
+
+                  <form th:action="@{'/conteudos-professor/apagar-quiz/' + ${q.id}}" method="post" style="display:inline;">
+                    <button type="submit"
+                            class="action-btn action-red"
+                            title="Apagar quiz"
+                            onclick="return confirm('Tens a certeza que queres apagar este quiz e todas as suas perguntas?')">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div id="modalCriar" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Novo Conteúdo</h2>
+        <button class="close-btn" type="button" onclick="fecharModalCriar()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form action="/conteudos-professor/criar" method="post">
+        <div class="form-group">
+          <label>Título</label>
+          <input type="text" name="titulo" required>
+        </div>
+
+        <div class="form-group">
+          <label>Tema</label>
+          <select name="tema" required>
+            <option value="Phishing">Phishing</option>
+            <option value="Senhas">Senhas</option>
+            <option value="Privacidade">Privacidade</option>
+            <option value="RGPD">RGPD</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Descrição</label>
+          <textarea name="descricao" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Duração</label>
+          <input type="text" name="duracao" placeholder="Ex: 5:32" required>
+        </div>
+
+        <div class="form-group">
+          <label>URL do vídeo</label>
+          <input type="text" name="videoUrl" required>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn" onclick="fecharModalCriar()">Cancelar</button>
+          <button type="submit" class="btn btn-dark">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modalEditar" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Editar Conteúdo</h2>
+        <button class="close-btn" type="button" onclick="fecharModalEditar()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="formEditar" method="post">
+        <div class="form-group">
+          <label>Título</label>
+          <input type="text" id="editTitulo" name="titulo" required>
+        </div>
+
+        <div class="form-group">
+          <label>Tema</label>
+          <select id="editTema" name="tema" required>
+            <option value="Phishing">Phishing</option>
+            <option value="Senhas">Senhas</option>
+            <option value="Privacidade">Privacidade</option>
+            <option value="RGPD">RGPD</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Descrição</label>
+          <textarea id="editDescricao" name="descricao" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Duração</label>
+          <input type="text" id="editDuracao" name="duracao" required>
+        </div>
+
+        <div class="form-group">
+          <label>URL do vídeo</label>
+          <input type="text" id="editVideoUrl" name="videoUrl" required>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn" onclick="fecharModalEditar()">Cancelar</button>
+          <button type="submit" class="btn btn-dark">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modalTurmas" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Atribuir a Turmas</h2>
+        <button class="close-btn" type="button" onclick="fecharModalTurmas()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="formTurmas" method="post">
+        <div class="form-group">
+          <label>Seleciona as turmas</label>
+
+          <div style="display:grid; gap:10px;">
+            <label th:each="t : ${turmasProfessor}" style="display:flex; align-items:center; gap:10px; font-weight:700;">
+              <input type="checkbox" name="turmas" th:value="${t.id}">
+              <span th:text="${t.nome}">Turma</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn" onclick="fecharModalTurmas()">Cancelar</button>
+          <button type="submit" class="btn btn-dark">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function abrirModalCriar() {
+      document.getElementById('modalCriar').classList.add('show');
+    }
+
+    function fecharModalCriar() {
+      document.getElementById('modalCriar').classList.remove('show');
+    }
+
+    function abrirModalEditar(botao) {
+      const id = botao.dataset.id;
+      const titulo = botao.dataset.titulo;
+      const tema = botao.dataset.tema;
+      const descricao = botao.dataset.descricao;
+      const duracao = botao.dataset.duracao;
+      const videoUrl = botao.dataset.videourl;
+
+      document.getElementById('formEditar').action = '/conteudos-professor/editar/' + id;
+      document.getElementById('editTitulo').value = titulo;
+      document.getElementById('editTema').value = tema;
+      document.getElementById('editDescricao').value = descricao;
+      document.getElementById('editDuracao').value = duracao;
+      document.getElementById('editVideoUrl').value = videoUrl;
+
+      document.getElementById('modalEditar').classList.add('show');
+    }
+
+    function fecharModalEditar() {
+      document.getElementById('modalEditar').classList.remove('show');
+    }
+
+    function abrirModalTurmas(botao) {
+      const id = botao.dataset.id;
+      const tipo = botao.dataset.tipo;
+
+      const form = document.getElementById('formTurmas');
+      form.action = tipo === 'conteudo'
+        ? '/conteudos-professor/atribuir-conteudo/' + id
+        : '/conteudos-professor/atribuir-quiz/' + id;
+
+      document.querySelectorAll('#modalTurmas input[type="checkbox"]').forEach(c => c.checked = false);
+
+      document.getElementById('modalTurmas').classList.add('show');
+    }
+
+    function fecharModalTurmas() {
+      document.getElementById('modalTurmas').classList.remove('show');
+    }
+  </script>
+
+</body>
+</html>

@@ -6,4 +6,5 @@ import pt.cyberescola.cyberescola.model.Conteudo;
 
 public interface ConteudoRepository extends JpaRepository<Conteudo, Long> {
     List<Conteudo> findByTemaIgnoreCase(String tema);
+    List<Conteudo> findAllByOrderByIdDesc();
 }

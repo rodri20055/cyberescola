@@ -33,19 +33,19 @@
     }
 
     .sidebar {
-  width: 290px;
-  background: #fffdf9;
-  border-right: 1px solid #ddd4c8;
-  padding: 28px 18px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  overflow-y: auto;
-}
+      width: 290px;
+      background: #fffdf9;
+      border-right: 1px solid #ddd4c8;
+      padding: 28px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
 
     .sidebar-top {
       display: flex;
@@ -98,20 +98,27 @@
     }
 
     .main {
-  margin-left: 290px;
-  min-height: 100vh;
-  width: calc(100% - 290px);
-}
+      margin-left: 290px;
+      min-height: 100vh;
+      width: calc(100% - 290px);
+    }
 
     .topbar {
-  width: 100%;
-  background: #fffdf9;
+  position: fixed;
+  top: 0;
+  left: 290px;
+  width: calc(100% - 290px);
+  z-index: 1000;
+  background: rgba(255, 253, 249, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid #ddd4c8;
   padding: 20px 28px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
     .topbar-left {
       font-weight: 700;
       color: #5c5c5c;
@@ -148,7 +155,7 @@
     .content {
   width: 100%;
   max-width: 1180px;
-  padding: 32px 24px 40px;
+  padding: 118px 24px 40px;
   margin: 0 auto;
 }
 
@@ -308,6 +315,83 @@
       border: 1px solid #efc7c7;
     }
 
+    .perfil-professor-card {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+    }
+
+    .perfil-topo {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .perfil-foto {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      background: #efe6da;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: #6c4b2d;
+      font-size: 1.8rem;
+    }
+
+    .perfil-foto img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .perfil-topo h1 {
+      font-size: 2rem;
+      margin-bottom: 6px;
+    }
+
+    .perfil-topo p {
+      color: #6f6257;
+      margin-bottom: 8px;
+    }
+
+    .perfil-badge {
+      display: inline-flex;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: #efe6da;
+      color: #6c4b2d;
+      font-size: 0.8rem;
+      font-weight: 800;
+    }
+
+    .perfil-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(180px, 220px));
+      gap: 16px;
+    }
+
+    .stat-box {
+      background: #faf6f0;
+      border: 1px solid #eadfd2;
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .stat-box span {
+      display: block;
+      color: #7a6b5c;
+      margin-bottom: 8px;
+    }
+
+    .stat-box strong {
+      font-size: 1.8rem;
+    }
+
     @media (max-width: 950px) {
       .profile-grid {
         grid-template-columns: 1fr;
@@ -322,9 +406,26 @@
       }
 
       .sidebar {
+  width: 290px;
+  background: #fffdf9;
+  border-right: 1px solid #ddd4c8;
+  padding: 28px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+      .main {
+        margin-left: 0;
         width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #ddd4c8;
+      }
+
+      .perfil-stats {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -336,11 +437,20 @@
       <div class="sidebar-top">
         <div class="logo">Cyber<span>Escola</span></div>
 
-        <nav class="menu">
+        <nav class="menu" th:if="${utilizador.tipo == 'aluno'}">
           <a href="/aluno"><i class="fa-solid fa-house"></i> Dashboard</a>
           <a href="/conteudos"><i class="fa-solid fa-book-open"></i> Conteúdos</a>
           <a href="/ranking"><i class="fa-solid fa-trophy"></i> Classificação</a>
           <a href="/perfil" class="active"><i class="fa-solid fa-user"></i> Perfil</a>
+        </nav>
+
+        <nav class="menu" th:if="${utilizador.tipo == 'professor'}">
+          <a href="/professor"><i class="fa-solid fa-house"></i> Dashboard</a>
+          <a href="/gerir-turmas"><i class="fa-solid fa-users"></i> Turmas</a>
+          <a href="/conteudos-professor"><i class="fa-regular fa-folder-open"></i> Conteúdos</a>
+          <a href="/alertas"><i class="fa-regular fa-bell"></i> Alertas</a>
+          <a href="/relatorios"><i class="fa-solid fa-chart-column"></i> Relatórios</a>
+          <a href="/perfil" class="active"><i class="fa-regular fa-user"></i> Perfil</a>
         </nav>
       </div>
 
@@ -350,11 +460,11 @@
     <main class="main">
       <div class="topbar">
         <div class="topbar-left" th:text="'Bem-vindo, ' + ${utilizador.nome}">
-          Bem-vindo, Aluno
+          Bem-vindo
         </div>
 
         <div class="topbar-right">
-          <span class="badge" th:text="${utilizador.tipo}">ALUNO</span>
+          <span class="badge" th:text="${utilizador.tipo}">UTILIZADOR</span>
           <a href="/logout" class="icon-btn"><i class="fa-solid fa-right-from-bracket"></i></a>
         </div>
       </div>
@@ -368,7 +478,7 @@
         <div th:if="${sucesso}" class="message message-success" th:text="${sucesso}"></div>
         <div th:if="${erro}" class="message message-error" th:text="${erro}"></div>
 
-        <div class="profile-grid">
+        <div th:if="${utilizador.tipo == 'aluno'}" class="profile-grid">
           <div class="card photo-box">
             <div class="photo-preview">
               <img th:if="${utilizador.fotoPerfil != null and utilizador.fotoPerfil != ''}"
@@ -450,6 +560,100 @@
               </div>
             </form>
           </div>
+        </div>
+
+        <div th:if="${utilizador.tipo == 'professor'}" class="perfil-professor-card">
+          <div class="perfil-topo">
+            <div class="perfil-foto">
+              <img th:if="${utilizador.fotoPerfil != null and utilizador.fotoPerfil != ''}"
+                   th:src="@{${utilizador.fotoPerfil}}"
+                   alt="Foto">
+              <i th:if="${utilizador.fotoPerfil == null or utilizador.fotoPerfil == ''}"
+                 class="fa-solid fa-user"></i>
+            </div>
+
+            <div>
+              <h1 th:text="${utilizador.nome}">Professor</h1>
+              <p th:text="${utilizador.email}">email</p>
+              <span class="perfil-badge">Professor</span>
+            </div>
+          </div>
+
+          <div class="perfil-stats">
+            <div class="stat-box">
+              <span>Turmas</span>
+              <strong th:text="${totalTurmas}">0</strong>
+            </div>
+
+            <div class="stat-box">
+              <span>Alunos</span>
+              <strong th:text="${totalAlunos}">0</strong>
+            </div>
+          </div>
+
+          <div class="section-divider"></div>
+
+          <h2 class="form-title">Editar dados</h2>
+
+          <form action="/perfil/editar" method="post" enctype="multipart/form-data">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Nome</label>
+                <input type="text" name="nome" th:value="${utilizador.nome}" required>
+              </div>
+
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" th:value="${utilizador.email}" required>
+              </div>
+
+              <div class="form-group">
+                <label>Turma</label>
+                <input type="text" name="turma" th:value="${utilizador.turma}">
+              </div>
+
+              <div class="form-group">
+                <label>Foto de perfil</label>
+                <input type="file" name="foto">
+              </div>
+
+              <div class="form-group">
+                <label>Tipo</label>
+                <div class="readonly-box" th:text="${utilizador.tipo}">professor</div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button type="submit" class="btn btn-dark">Guardar alterações</button>
+            </div>
+          </form>
+
+          <div class="section-divider"></div>
+
+          <h2 class="form-title">Alterar palavra-passe</h2>
+
+          <form action="/perfil/password" method="post">
+            <div class="form-grid">
+              <div class="form-group full">
+                <label>Palavra-passe atual</label>
+                <input type="password" name="passwordAtual" required>
+              </div>
+
+              <div class="form-group">
+                <label>Nova palavra-passe</label>
+                <input type="password" name="novaPassword" required>
+              </div>
+
+              <div class="form-group">
+                <label>Confirmar nova palavra-passe</label>
+                <input type="password" name="confirmarPassword" required>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button type="submit" class="btn">Alterar palavra-passe</button>
+            </div>
+          </form>
         </div>
       </section>
     </main>

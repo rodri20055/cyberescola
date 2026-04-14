@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerir Quiz | CyberEscola</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Manrope', sans-serif; }
+    body { background: #f8f5ef; color: #1f1f1f; }
+    a { text-decoration: none; color: inherit; }
+
+    .sidebar {
+      width: 290px; background: #fffdf9; border-right: 1px solid #ddd4c8;
+      padding: 28px 18px; display: flex; flex-direction: column; justify-content: space-between;
+      position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto;
+    }
+
+    .sidebar-top { display: flex; flex-direction: column; gap: 28px; }
+    .logo { font-size: 1.6rem; font-weight: 800; letter-spacing: -1px; padding: 0 10px; }
+    .logo span { color: #9b6b43; }
+
+    .menu { display: flex; flex-direction: column; gap: 10px; }
+    .menu a {
+      display: flex; align-items: center; gap: 12px; padding: 14px 14px; border-radius: 14px;
+      color: #5c5c5c; font-weight: 700; transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+    .menu a:hover { background: #efe6da; color: #1f1f1f; transform: translateX(4px); }
+    .menu a.active { background: #1f1f1f; color: white; }
+
+    .sidebar-footer { padding: 0 10px; font-size: 0.86rem; color: #7a6b5c; }
+
+    .main { margin-left: 290px; min-height: 100vh; width: calc(100% - 290px); }
+
+    .topbar {
+      position: fixed; top: 0; left: 290px; width: calc(100% - 290px); z-index: 1000;
+      background: rgba(255, 253, 249, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid #ddd4c8; padding: 20px 28px;
+      display: flex; justify-content: space-between; align-items: center; gap: 15px;
+    }
+
+    .topbar-left { font-weight: 700; color: #5c5c5c; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+    .badge {
+      background: #efe6da; color: #6c4b2d; padding: 8px 14px; border-radius: 999px;
+      font-size: 0.8rem; font-weight: 800; text-transform: uppercase;
+    }
+
+    .icon-btn {
+      width: 40px; height: 40px; border-radius: 12px; border: 1px solid #ddd4c8;
+      background: #fffdf9; display: flex; align-items: center; justify-content: center; color: #5c5c5c;
+    }
+
+    .content { width: 100%; max-width: 1180px; padding: 118px 24px 40px; margin: 0 auto; }
+
+    .page-header { margin-bottom: 24px; }
+    .page-header a { font-weight: 700; color: #6c4b2d; display: inline-block; margin-bottom: 12px; }
+    .page-header h1 { font-size: 2.2rem; margin-bottom: 8px; }
+    .page-header p { color: #5c5c5c; }
+
+    .questions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .question-card {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .question-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.06);
+    }
+
+    .question-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .question-order {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: #efe6da;
+      color: #6c4b2d;
+      font-weight: 800;
+    }
+
+    .question-title {
+      flex: 1;
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .option {
+      padding: 12px 14px;
+      border: 1px solid #e6dbcf;
+      border-radius: 14px;
+      background: #faf6f0;
+      color: #5c5c5c;
+    }
+
+    .option.correct {
+      background: #e9f8ee;
+      border-color: #bfe2ca;
+      color: #246b3f;
+      font-weight: 800;
+    }
+
+    .empty-box {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 24px;
+      padding: 28px;
+      color: #6f6257;
+      font-weight: 700;
+    }
+
+    .new-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-radius: 999px;
+  background: #1f1f1f;
+  color: white;
+  font-weight: 800;
+  border: 1px solid #1f1f1f;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.new-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.08);
+}
+
+.question-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+
+.action-btn:hover {
+  transform: scale(1.12);
+  opacity: 0.85;
+}
+
+.action-blue { color: #2962ff; }
+.action-red { color: #d63b3b; }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.28);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.modal-overlay.show {
+  display: flex;
+}
+
+.modal {
+  width: 100%;
+  max-width: 560px;
+  background: #fffdf9;
+  border: 1px solid #ddd4c8;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.14);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.modal-header h2 {
+  font-size: 1.5rem;
+  letter-spacing: -0.5px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #6f6257;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  border: 1px solid #ddd4c8;
+  border-radius: 16px;
+  padding: 14px 16px;
+  background: #fff;
+  font-size: 0.96rem;
+  outline: none;
+}
+
+.form-group textarea {
+  min-height: 95px;
+  resize: vertical;
+}
+
+.modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.btn {
+  padding: 14px 16px;
+  border-radius: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  border: 1px solid #ddd4c8;
+  background: #fffdf9;
+}
+
+.btn-dark {
+  background: #1f1f1f;
+  border-color: #1f1f1f;
+  color: white;
+}
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">Cyber<span>Escola</span></div>
+
+      <nav class="menu">
+        <a href="/professor"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="/gerir-turmas"><i class="fa-solid fa-users"></i> Turmas</a>
+        <a href="/conteudos-professor" class="active"><i class="fa-regular fa-folder-open"></i> Conteúdos</a>
+        <a href="/alertas"><i class="fa-regular fa-bell"></i> Alertas</a>
+        <a href="/relatorios"><i class="fa-solid fa-chart-column"></i> Relatórios</a>
+        <a href="/perfil"><i class="fa-regular fa-user"></i> Perfil</a>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">© 2026 CyberEscola</div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-left" th:text="'Bem-vindo, ' + ${utilizador.nome}">Bem-vindo</div>
+
+      <div class="topbar-right">
+        <span class="badge" th:text="${utilizador.tipo}">PROFESSOR</span>
+        <a href="/perfil" class="icon-btn"><i class="fa-solid fa-user"></i></a>
+        <a href="/logout" class="icon-btn"><i class="fa-solid fa-right-from-bracket"></i></a>
+      </div>
+    </div>
+
+    <section class="content">
+      <div class="page-header">
+  <a href="/conteudos-professor?tipo=quizzes">← Voltar aos quizzes</a>
+  <h1 th:text="${quiz.titulo}">Quiz</h1>
+  <p th:text="'Tema: ' + ${quiz.tema} + ' • Conteúdo associado: ' + ${tituloConteudo}">Tema</p>
+
+  <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap;">
+    <button type="button" class="new-btn" onclick="abrirModalEditarQuiz()">
+      <i class="fa-solid fa-pen"></i>
+      Editar quiz
+    </button>
+
+    <button type="button" class="new-btn" onclick="abrirModalCriarPergunta()">
+      <i class="fa-solid fa-plus"></i>
+      Nova pergunta
+    </button>
+  </div>
+</div>
+
+      <div th:if="${#lists.isEmpty(perguntas)}" class="empty-box">
+        Este quiz ainda não tem perguntas.
+      </div>
+
+      <div th:if="${!#lists.isEmpty(perguntas)}" class="questions-list">
+  <div class="question-card" th:each="p : ${perguntas}">
+    <div class="question-top">
+      <span class="question-order" th:text="${p.ordem}">1</span>
+      <div class="question-title" th:text="${p.enunciado}">Pergunta</div>
+    </div>
+
+    <div class="options">
+      <div class="option" th:classappend="${p.respostaCorreta == p.opcao1} ? ' correct' : ''" th:text="${p.opcao1}">Opção 1</div>
+      <div class="option" th:classappend="${p.respostaCorreta == p.opcao2} ? ' correct' : ''" th:text="${p.opcao2}">Opção 2</div>
+      <div class="option" th:classappend="${p.respostaCorreta == p.opcao3} ? ' correct' : ''" th:text="${p.opcao3}">Opção 3</div>
+      <div class="option" th:classappend="${p.respostaCorreta == p.opcao4} ? ' correct' : ''" th:text="${p.opcao4}">Opção 4</div>
+    </div>
+
+    <div class="question-actions">
+      <button type="button"
+              class="action-btn action-blue"
+              title="Editar"
+              th:attr="data-id=${p.id},
+                       data-enunciado=${p.enunciado},
+                       data-opcao1=${p.opcao1},
+                       data-opcao2=${p.opcao2},
+                       data-opcao3=${p.opcao3},
+                       data-opcao4=${p.opcao4},
+                       data-respostacorreta=${p.respostaCorreta}"
+              onclick="abrirModalEditarPergunta(this)">
+        <i class="fa-solid fa-pen"></i>
+      </button>
+
+      <form th:action="@{'/quiz-professor/' + ${quiz.id} + '/pergunta/apagar/' + ${p.id}}" method="post" style="display:inline;">
+        <button type="submit"
+                class="action-btn action-red"
+                title="Apagar"
+                onclick="return confirm('Tens a certeza que queres apagar esta pergunta?')">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+    </section>
+  </main>
+
+  <div id="modalCriarPergunta" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Nova pergunta</h2>
+      <button class="close-btn" type="button" onclick="fecharModalCriarPergunta()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <form th:action="@{'/quiz-professor/' + ${quiz.id} + '/pergunta/criar'}" method="post">
+      <div class="form-group">
+        <label>Enunciado</label>
+        <textarea name="enunciado" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Opção 1</label>
+        <input type="text" name="opcao1" required>
+      </div>
+
+      <div class="form-group">
+        <label>Opção 2</label>
+        <input type="text" name="opcao2" required>
+      </div>
+
+      <div class="form-group">
+        <label>Opção 3</label>
+        <input type="text" name="opcao3" required>
+      </div>
+
+      <div class="form-group">
+        <label>Opção 4</label>
+        <input type="text" name="opcao4" required>
+      </div>
+
+      <div class="form-group">
+        <label>Resposta correta</label>
+        <select id="modalCriarPerguntaResposta" name="respostaCorreta" required>
+          <option value="">Seleciona a resposta correta</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn" onclick="fecharModalCriarPergunta()">Cancelar</button>
+        <button type="submit" class="btn btn-dark">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="modalEditarPergunta" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Editar pergunta</h2>
+      <button class="close-btn" type="button" onclick="fecharModalEditarPergunta()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <form id="formEditarPergunta" method="post">
+      <div class="form-group">
+        <label>Enunciado</label>
+        <textarea id="editEnunciado" name="enunciado" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Opção 1</label>
+        <input type="text" id="editOpcao1" name="opcao1" required>
+      </div>
+
+      <div class="form-group">
+        <label>Opção 2</label>
+        <input type="text" id="editOpcao2" name="opcao2" required>
+      </div>
+
+      <div class="form-group">
+        <label>Opção 3</label>
+        <input type="text" id="editOpcao3" name="opcao3" required>
+      </div>
+
+      <div class="form-group">
+        <label>Opção 4</label>
+        <input type="text" id="editOpcao4" name="opcao4" required>
+      </div>
+
+      <div class="form-group">
+        <label>Resposta correta</label>
+        <select id="editRespostaCorreta" name="respostaCorreta" required>
+          <option value="">Seleciona a resposta correta</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn" onclick="fecharModalEditarPergunta()">Cancelar</button>
+        <button type="submit" class="btn btn-dark">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="modalEditarQuiz" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Editar Quiz</h2>
+      <button class="close-btn" type="button" onclick="fecharModalEditarQuiz()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <form th:action="@{'/quiz-professor/' + ${quiz.id} + '/editar'}" method="post">
+      <div class="form-group">
+        <label>Título</label>
+        <input type="text" name="titulo" th:value="${quiz.titulo}" required>
+      </div>
+
+      <div class="form-group">
+        <label>Tema</label>
+        <select name="tema" required>
+          <option value="Phishing" th:selected="${quiz.tema == 'Phishing'}">Phishing</option>
+          <option value="Senhas" th:selected="${quiz.tema == 'Senhas'}">Senhas</option>
+          <option value="Privacidade" th:selected="${quiz.tema == 'Privacidade'}">Privacidade</option>
+          <option value="RGPD" th:selected="${quiz.tema == 'RGPD'}">RGPD</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Conteúdo associado</label>
+        <select name="idConteudo" required>
+          <option th:each="c : ${conteudos}"
+                  th:value="${c.id}"
+                  th:text="${c.titulo}"
+                  th:selected="${quiz.idConteudo == #strings.toString(c.id)}">
+            Conteúdo
+          </option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn" onclick="fecharModalEditarQuiz()">Cancelar</button>
+        <button type="submit" class="btn btn-dark">Guardar alterações</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  function preencherSelectResposta(selectId, op1, op2, op3, op4, selecionada = '') {
+    const select = document.getElementById(selectId);
+    const quizId = document.body.dataset.quizId;
+    select.innerHTML = '<option value="">Seleciona a resposta correta</option>';
+
+    [op1, op2, op3, op4].forEach(opcao => {
+      if (!opcao) return;
+      const option = document.createElement('option');
+      option.value = opcao;
+      option.textContent = opcao;
+      if (opcao === selecionada) option.selected = true;
+      select.appendChild(option);
+    });
+  }
+
+  function abrirModalCriarPergunta() {
+    document.getElementById('modalCriarPergunta').classList.add('show');
+    atualizarRespostaCriar();
+  }
+
+  function abrirModalEditarQuiz() {
+  document.getElementById('modalEditarQuiz').classList.add('show');
+}
+
+function fecharModalEditarQuiz() {
+  document.getElementById('modalEditarQuiz').classList.remove('show');
+}
+
+  function fecharModalCriarPergunta() {
+    document.getElementById('modalCriarPergunta').classList.remove('show');
+  }
+
+  function abrirModalEditarPergunta(botao) {
+    const id = botao.dataset.id;
+    const enunciado = botao.dataset.enunciado;
+    const opcao1 = botao.dataset.opcao1;
+    const opcao2 = botao.dataset.opcao2;
+    const opcao3 = botao.dataset.opcao3;
+    const opcao4 = botao.dataset.opcao4;
+    const respostaCorreta = botao.dataset.respostacorreta;
+
+    document.getElementById('formEditarPergunta').action = '/quiz-professor/' + quizId + '/pergunta/editar/' + id;
+    document.getElementById('editEnunciado').value = enunciado;
+    document.getElementById('editOpcao1').value = opcao1;
+    document.getElementById('editOpcao2').value = opcao2;
+    document.getElementById('editOpcao3').value = opcao3;
+    document.getElementById('editOpcao4').value = opcao4;
+
+    preencherSelectResposta('editRespostaCorreta', opcao1, opcao2, opcao3, opcao4, respostaCorreta);
+
+    document.getElementById('modalEditarPergunta').classList.add('show');
+  }
+
+  function fecharModalEditarPergunta() {
+    document.getElementById('modalEditarPergunta').classList.remove('show');
+  }
+
+  const criarForm = document.querySelector('#modalCriarPergunta form');
+  const criarOp1 = criarForm.querySelector('input[name="opcao1"]');
+  const criarOp2 = criarForm.querySelector('input[name="opcao2"]');
+  const criarOp3 = criarForm.querySelector('input[name="opcao3"]');
+  const criarOp4 = criarForm.querySelector('input[name="opcao4"]');
+
+  function atualizarRespostaCriar() {
+    preencherSelectResposta(
+      'modalCriarPerguntaResposta',
+      criarOp1.value,
+      criarOp2.value,
+      criarOp3.value,
+      criarOp4.value
+    );
+  }
+
+  [criarOp1, criarOp2, criarOp3, criarOp4].forEach(input => {
+    input.addEventListener('input', atualizarRespostaCriar);
+  });
+</script>
+
+<body th:attr="data-quiz-id=${quiz.id}"></body>
+</html>

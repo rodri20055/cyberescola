@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     * {
@@ -70,40 +71,30 @@
     }
 
     .menu a {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 14px;
-  border-radius: 14px;
-  color: #5c5c5c;
-  font-weight: 700;
-  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
-}
-
-.menu a:hover {
-  background: #efe6da;
-  color: #1f1f1f;
-  transform: translateX(4px);
-}
-
-.menu a.active {
-  background: #1f1f1f;
-  color: white;
-}
-
-    .menu a i {
-      width: 18px;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 14px;
+      border-radius: 14px;
+      color: #5c5c5c;
+      font-weight: 700;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
     }
 
     .menu a:hover {
       background: #efe6da;
       color: #1f1f1f;
+      transform: translateX(4px);
     }
 
     .menu a.active {
       background: #1f1f1f;
       color: white;
+    }
+
+    .menu a i {
+      width: 18px;
+      text-align: center;
     }
 
     .sidebar-footer {
@@ -113,27 +104,27 @@
     }
 
     .main {
-  margin-left: 290px;
-  min-height: 100vh;
-  width: calc(100% - 290px);
-}
+      margin-left: 290px;
+      min-height: 100vh;
+      width: calc(100% - 290px);
+    }
 
     .topbar {
-  position: fixed;
-  top: 0;
-  left: 290px;
-  width: calc(100% - 290px);
-  z-index: 1000;
-  background: rgba(255, 253, 249, 0.92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid #ddd4c8;
-  padding: 20px 28px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-}
+      position: fixed;
+      top: 0;
+      left: 290px;
+      width: calc(100% - 290px);
+      z-index: 1000;
+      background: rgba(255, 253, 249, 0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid #ddd4c8;
+      padding: 20px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
 
     .topbar-left {
       font-weight: 700;
@@ -176,25 +167,25 @@
     }
 
     .content {
-  width: 100%;
-  max-width: none;
-  padding: 118px 24px 40px;
-}
+      width: 100%;
+      max-width: none;
+      padding: 118px 24px 40px;
+    }
 
     .page-header {
       margin-bottom: 24px;
     }
 
     .page-header h1 {
-  font-size: 2.45rem;
-  letter-spacing: -1.2px;
-  margin-bottom: 8px;
-}
+      font-size: 2.45rem;
+      letter-spacing: -1.2px;
+      margin-bottom: 8px;
+    }
 
     .page-header p {
-  color: #5c5c5c;
-  font-size: 1.02rem;
-}
+      color: #5c5c5c;
+      font-size: 1.02rem;
+    }
 
     .stats-grid {
       display: grid;
@@ -204,23 +195,23 @@
     }
 
     .stat-card {
-  background: #fffdf9;
-  border: 1px solid #ddd4c8;
-  border-radius: 20px;
-  padding: 22px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 14px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.03);
-  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-}
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 20px;
+      padding: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
 
-.stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 28px rgba(0,0,0,0.06);
-  border-color: #cdbca9;
-}
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.06);
+      border-color: #cdbca9;
+    }
 
     .stat-info span {
       display: block;
@@ -235,23 +226,23 @@
       letter-spacing: -1px;
     }
 
-   .stat-icon {
-  width: 54px;
-  height: 54px;
-  border-radius: 17px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.15rem;
-  color: #1f1f1f;
-  background: linear-gradient(180deg, #f2eadf 0%, #e8dccd 100%);
-  flex-shrink: 0;
-  transition: transform 0.22s ease;
-}
+    .stat-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 17px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      color: #1f1f1f;
+      background: linear-gradient(180deg, #f2eadf 0%, #e8dccd 100%);
+      flex-shrink: 0;
+      transition: transform 0.22s ease;
+    }
 
-.stat-card:hover .stat-icon {
-  transform: scale(1.06);
-}
+    .stat-card:hover .stat-icon {
+      transform: scale(1.06);
+    }
 
     .panel-grid-top {
       display: grid;
@@ -267,19 +258,19 @@
     }
 
     .panel {
-  background: #fffdf9;
-  border: 1px solid #ddd4c8;
-  border-radius: 24px;
-  padding: 22px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.03);
-  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-}
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
 
-.panel:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 28px rgba(0,0,0,0.06);
-  border-color: #cdbca9;
-}
+    .panel:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.06);
+      border-color: #cdbca9;
+    }
 
     .panel-header {
       display: flex;
@@ -299,91 +290,26 @@
       color: #6c4b2d;
     }
 
-    .chart-box {
-      height: 320px;
-      border-radius: 18px;
-      border: 1px solid #ece2d6;
-      background:
-        linear-gradient(to right, rgba(221,212,200,0.55) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(221,212,200,0.55) 1px, transparent 1px);
-      background-size: 25% 25%;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .chart-svg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    .chart-labels {
-      position: absolute;
-      left: 16px;
-      right: 16px;
-      bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.82rem;
-      color: #7a6b5c;
-    }
-
-    .bars-box {
-      height: 320px;
-      border-radius: 18px;
-      border: 1px solid #ece2d6;
-      background:
-        linear-gradient(to right, rgba(221,212,200,0.55) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(221,212,200,0.55) 1px, transparent 1px);
-      background-size: 25% 25%;
-      padding: 22px 22px 42px;
-      display: flex;
-      align-items: end;
-      justify-content: space-evenly;
-      gap: 26px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .bar-group {
+    .chart-panel {
+      min-height: 380px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: end;
-      gap: 12px;
-      width: 100%;
-      max-width: 220px;
-      height: 100%;
     }
 
-    .bar {
-  width: 100%;
-  max-width: 170px;
-  background: linear-gradient(180deg, #2d2d2d 0%, #1f1f1f 100%);
-  border-radius: 16px 16px 10px 10px;
-  position: relative;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
-}
-
-    .bar-label {
-      font-size: 0.9rem;
-      color: #6f6257;
-      font-weight: 700;
+    .chart-card-body {
+      flex: 1;
+      min-height: 300px;
+      height: 300px;
+      border: 1px solid #ece2d6;
+      border-radius: 18px;
+      background: #fffaf3;
+      padding: 18px;
+      position: relative;
     }
 
-    .bar-value {
-      position: absolute;
-      top: -34px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #fffdf9;
-      border: 1px solid #ddd4c8;
-      border-radius: 12px;
-      padding: 6px 10px;
-      font-size: 0.86rem;
-      font-weight: 800;
-      white-space: nowrap;
+    .chart-card-body canvas {
+      width: 100% !important;
+      height: 100% !important;
     }
 
     .games-list {
@@ -415,10 +341,10 @@
     }
 
     .game-fill {
-  height: 100%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #b17b4b 0%, #9b6b43 100%);
-}
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #b17b4b 0%, #9b6b43 100%);
+    }
 
     .game-value {
       font-weight: 800;
@@ -433,22 +359,22 @@
     }
 
     .turma-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  padding: 18px;
-  background: #faf6f0;
-  border: 1px solid #ece2d6;
-  border-radius: 18px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-}
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 18px;
+      background: #faf6f0;
+      border: 1px solid #ece2d6;
+      border-radius: 18px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
 
-.turma-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.04);
-  border-color: #d8c8b6;
-}
+    .turma-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.04);
+      border-color: #d8c8b6;
+    }
 
     .turma-info strong {
       display: block;
@@ -468,21 +394,47 @@
     }
 
     @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-.page-header,
-.stat-card,
-.panel {
-  animation: fadeUp 0.45s ease;
-}
+    .page-header,
+    .stat-card,
+    .panel {
+      animation: fadeUp 0.45s ease;
+    }
+
+    @media (max-width: 1200px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .panel-grid-bottom {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .panel-grid-top {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .game-item {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -495,7 +447,7 @@
         <nav class="menu">
           <a href="/professor" class="active"><i class="fa-solid fa-house"></i> Dashboard</a>
           <a href="/gerir-turmas"><i class="fa-solid fa-users"></i> Turmas</a>
-          <a href="/conteudos"><i class="fa-regular fa-folder-open"></i> Conteúdos</a>
+          <a href="/conteudos-professor"><i class="fa-regular fa-folder-open"></i> Conteúdos</a>
           <a href="/alertas"><i class="fa-regular fa-bell"></i> Alertas</a>
           <a href="/relatorios"><i class="fa-solid fa-chart-column"></i> Relatórios</a>
           <a href="/perfil"><i class="fa-regular fa-user"></i> Perfil</a>
@@ -575,69 +527,23 @@
         </div>
 
         <div class="panel-grid-top">
-          <div class="panel">
+          <div class="panel chart-panel">
             <div class="panel-header">
               <h2>Média por Quiz</h2>
             </div>
 
-            <div class="bars-box">
-              <div class="bar-group">
-                <div class="bar" style="height: 78%;">
-                  <div class="bar-value">78%</div>
-                </div>
-                <div class="bar-label">Phishing</div>
-              </div>
-
-              <div class="bar-group">
-                <div class="bar" style="height: 64%;">
-                  <div class="bar-value">64%</div>
-                </div>
-                <div class="bar-label">Senhas</div>
-              </div>
-
-              <div class="bar-group">
-                <div class="bar" style="height: 71%;">
-                  <div class="bar-value">71%</div>
-                </div>
-                <div class="bar-label">Privacidade</div>
-              </div>
+            <div class="chart-card-body">
+              <canvas id="quizChart"></canvas>
             </div>
           </div>
 
-          <div class="panel">
+          <div class="panel chart-panel">
             <div class="panel-header">
               <h2>Evolução Semanal</h2>
             </div>
 
-            <div class="chart-box">
-              <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="chart-svg">
-                <polyline
-                  fill="none"
-                  stroke="#1f1f1f"
-                  stroke-width="1.2"
-                  points="8,65 35,58 62,52 92,48" />
-                <circle cx="8" cy="65" r="1.6" fill="#1f1f1f"/>
-                <circle cx="35" cy="58" r="1.6" fill="#1f1f1f"/>
-                <circle cx="62" cy="52" r="1.6" fill="#1f1f1f"/>
-                <circle cx="92" cy="48" r="1.6" fill="#1f1f1f"/>
-
-                <polyline
-                  fill="none"
-                  stroke="#9b6b43"
-                  stroke-width="1.2"
-                  points="8,72 35,62 62,46 92,40" />
-                <circle cx="8" cy="72" r="1.6" fill="#9b6b43"/>
-                <circle cx="35" cy="62" r="1.6" fill="#9b6b43"/>
-                <circle cx="62" cy="46" r="1.6" fill="#9b6b43"/>
-                <circle cx="92" cy="40" r="1.6" fill="#9b6b43"/>
-              </svg>
-
-              <div class="chart-labels">
-                <span>Sem 1</span>
-                <span>Sem 2</span>
-                <span>Sem 3</span>
-                <span>Sem 4</span>
-              </div>
+            <div class="chart-card-body">
+              <canvas id="evolucaoChart"></canvas>
             </div>
           </div>
         </div>
@@ -703,6 +609,171 @@
       </section>
     </main>
   </div>
+
+  <script>
+    let quizChartInstance = null;
+    let evolucaoChartInstance = null;
+
+    async function carregarGraficosProfessor() {
+      try {
+        const response = await fetch('/relatorios/dados');
+        const data = await response.json();
+
+        if (data.erro) {
+          console.error(data.erro);
+          return;
+        }
+
+        const labelsQuiz = data.nomesTurmas || [];
+        const valoresQuiz = data.mediaPontosPorTurma || [];
+
+        const labelsEvolucao = data.meses || [];
+        const valoresEvolucao = data.evolucaoMedia || [];
+
+        if (quizChartInstance) quizChartInstance.destroy();
+        if (evolucaoChartInstance) evolucaoChartInstance.destroy();
+
+        const quizCanvas = document.getElementById('quizChart');
+        const evolucaoCanvas = document.getElementById('evolucaoChart');
+
+        if (quizCanvas) {
+          quizChartInstance = new Chart(quizCanvas, {
+            type: 'bar',
+            data: {
+              labels: labelsQuiz,
+              datasets: [{
+                data: valoresQuiz,
+                backgroundColor: '#1f1f1f',
+                borderRadius: 16,
+                borderSkipped: false
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: function(context) {
+                      return context.raw + '%';
+                    }
+                  }
+                }
+              },
+              layout: {
+                padding: {
+                  top: 10,
+                  right: 10,
+                  bottom: 0,
+                  left: 10
+                }
+              },
+              scales: {
+                x: {
+                  grid: {
+                    display: false
+                  },
+                  ticks: {
+                    color: '#6f6257',
+                    font: {
+                      weight: '700'
+                    }
+                  }
+                },
+                y: {
+                  beginAtZero: true,
+                  max: 100,
+                  ticks: {
+                    stepSize: 20,
+                    callback: function(value) {
+                      return value + '%';
+                    },
+                    color: '#7a6b5c'
+                  },
+                  grid: {
+                    color: 'rgba(221,212,200,0.55)'
+                  }
+                }
+              }
+            }
+          });
+        }
+
+        if (evolucaoCanvas) {
+          evolucaoChartInstance = new Chart(evolucaoCanvas, {
+            type: 'line',
+            data: {
+              labels: labelsEvolucao,
+              datasets: [{
+                data: valoresEvolucao,
+                borderColor: '#9b6b43',
+                backgroundColor: '#9b6b43',
+                pointRadius: 4,
+                pointHoverRadius: 5,
+                tension: 0.35,
+                fill: false
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  callbacks: {
+                    label: function(context) {
+                      return context.raw + '%';
+                    }
+                  }
+                }
+              },
+              layout: {
+                padding: {
+                  top: 10,
+                  right: 10,
+                  bottom: 0,
+                  left: 10
+                }
+              },
+              scales: {
+                x: {
+                  ticks: {
+                    color: '#6f6257',
+                    font: {
+                      weight: '700'
+                    }
+                  },
+                  grid: {
+                    color: 'rgba(221,212,200,0.55)'
+                  }
+                },
+                y: {
+                  beginAtZero: true,
+                  max: 100,
+                  ticks: {
+                    stepSize: 20,
+                    callback: function(value) {
+                      return value + '%';
+                    },
+                    color: '#7a6b5c'
+                  },
+                  grid: {
+                    color: 'rgba(221,212,200,0.55)'
+                  }
+                }
+              }
+            }
+          });
+        }
+
+      } catch (error) {
+        console.error('Erro ao carregar gráficos do professor:', error);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', carregarGraficosProfessor);
+  </script>
 
 </body>
 </html>

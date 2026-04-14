@@ -6,4 +6,5 @@ import pt.cyberescola.cyberescola.model.Quiz;
 
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
     Optional<Quiz> findByIdConteudo(String idConteudo);
+    boolean existsByIdConteudo(String idConteudo);
 }

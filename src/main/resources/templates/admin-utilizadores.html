@@ -443,10 +443,10 @@
           <p>Gerir contas da plataforma.</p>
         </div>
 
-        <button class="new-btn" type="button">
-          <i class="fa-solid fa-plus"></i>
-          Novo utilizador
-        </button>
+        <button class="new-btn" type="button" onclick="abrirModalNovoUtilizador()">
+  <i class="fa-solid fa-plus"></i>
+  Novo utilizador
+</button>
       </div>
 
       <div class="table-card">
@@ -564,28 +564,105 @@
   </div>
 
   <script>
-    function abrirModalEditarUtilizador(botao) {
-      const id = botao.dataset.id;
-      const nome = botao.dataset.nome;
-      const email = botao.dataset.email;
-      const tipo = botao.dataset.tipo;
-      const turma = botao.dataset.turma || '';
-      const ativo = botao.dataset.ativo;
+  function abrirModalEditarUtilizador(botao) {
+    const id = botao.dataset.id;
+    const nome = botao.dataset.nome;
+    const email = botao.dataset.email;
+    const tipo = botao.dataset.tipo;
+    const turma = botao.dataset.turma || '';
+    const ativo = botao.dataset.ativo;
 
-      document.getElementById('formEditarUtilizador').action = '/admin/utilizadores/editar/' + id;
-      document.getElementById('editNome').value = nome;
-      document.getElementById('editEmail').value = email;
-      document.getElementById('editTipo').value = tipo;
-      document.getElementById('editTurma').value = turma;
-      document.getElementById('editAtivo').value = (ativo === 'true') ? 'true' : 'false';
+    document.getElementById('formEditarUtilizador').action = '/admin/utilizadores/editar/' + id;
+    document.getElementById('editNome').value = nome;
+    document.getElementById('editEmail').value = email;
+    document.getElementById('editTipo').value = tipo;
+    document.getElementById('editTurma').value = turma;
+    document.getElementById('editAtivo').value = (ativo === 'true') ? 'true' : 'false';
 
-      document.getElementById('modalEditarUtilizador').classList.add('show');
+    document.getElementById('modalEditarUtilizador').classList.add('show');
+  }
+
+  function fecharModalEditarUtilizador() {
+    document.getElementById('modalEditarUtilizador').classList.remove('show');
+  }
+
+  function abrirModalNovoUtilizador() {
+    document.getElementById('modalNovoUtilizador').classList.add('show');
+    toggleTurmaNovoUtilizador();
+  }
+
+  function fecharModalNovoUtilizador() {
+    document.getElementById('modalNovoUtilizador').classList.remove('show');
+  }
+
+  function toggleTurmaNovoUtilizador() {
+    const tipo = document.getElementById('novoTipo').value;
+    const grupoTurma = document.getElementById('grupoTurmaNovo');
+    const campoTurma = document.getElementById('novoTurma');
+
+    if (tipo === 'admin') {
+      grupoTurma.style.display = 'none';
+      campoTurma.value = '';
+    } else {
+      grupoTurma.style.display = 'block';
     }
+  }
+</script>
 
-    function fecharModalEditarUtilizador() {
-      document.getElementById('modalEditarUtilizador').classList.remove('show');
-    }
-  </script>
+  <div id="modalNovoUtilizador" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Novo Utilizador</h2>
+      <button class="close-btn" type="button" onclick="fecharModalNovoUtilizador()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <form action="/admin/utilizadores/criar" method="post">
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" name="nome" required>
+      </div>
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" required>
+      </div>
+
+      <div class="form-group">
+        <label>Palavra-passe</label>
+        <input type="text" name="palavraPasse" required>
+      </div>
+
+      <div class="form-group">
+        <label>Tipo</label>
+        <select name="tipo" id="novoTipo" required onchange="toggleTurmaNovoUtilizador()">
+          <option value="aluno">aluno</option>
+          <option value="professor">professor</option>
+          <option value="admin">admin</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="grupoTurmaNovo">
+        <label>Turma</label>
+        <input type="text" name="turma" id="novoTurma">
+      </div>
+
+      <div class="form-group">
+        <label>Estado</label>
+        <select name="ativo" required>
+          <option value="true">Ativo</option>
+          <option value="false">Inativo</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn" onclick="fecharModalNovoUtilizador()">Cancelar</button>
+        <button type="submit" class="btn btn-dark">Criar utilizador</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 </body>
 </html>

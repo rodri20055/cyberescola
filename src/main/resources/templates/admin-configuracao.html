@@ -10,104 +10,269 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Manrope', sans-serif; }
-    body { background: #f8f5ef; color: #1f1f1f; }
-    a { text-decoration: none; color: inherit; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    body {
+      background: #f8f5ef;
+      color: #1f1f1f;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
 
     .sidebar {
-      width: 290px; background: #fffdf9; border-right: 1px solid #ddd4c8;
-      padding: 28px 18px; display: flex; flex-direction: column; justify-content: space-between;
-      position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto;
+      width: 290px;
+      background: #fffdf9;
+      border-right: 1px solid #ddd4c8;
+      padding: 28px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      overflow-y: auto;
     }
 
-    .sidebar-top { display: flex; flex-direction: column; gap: 28px; }
-    .logo { font-size: 1.6rem; font-weight: 800; letter-spacing: -1px; padding: 0 10px; }
-    .logo span { color: #9b6b43; }
+    .sidebar-top {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
 
-    .menu { display: flex; flex-direction: column; gap: 10px; }
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      padding: 0 10px;
+    }
+
+    .logo span {
+      color: #9b6b43;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     .menu a {
-      display: flex; align-items: center; gap: 12px; padding: 14px 14px;
-      border-radius: 14px; color: #5c5c5c; font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 14px;
+      border-radius: 14px;
+      color: #5c5c5c;
+      font-weight: 700;
       transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
     }
-    .menu a:hover { background: #efe6da; color: #1f1f1f; transform: translateX(4px); }
-    .menu a.active { background: #2563eb; color: white; }
 
-    .sidebar-footer { padding: 0 10px; font-size: 0.86rem; color: #7a6b5c; }
-
-    .main { margin-left: 290px; min-height: 100vh; width: calc(100% - 290px); }
-
-    .topbar {
-      position: fixed; top: 0; left: 290px; width: calc(100% - 290px); z-index: 1000;
-      background: rgba(255,253,249,0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-      border-bottom: 1px solid #ddd4c8; padding: 20px 28px;
-      display: flex; justify-content: space-between; align-items: center;
+    .menu a:hover {
+      background: #efe6da;
+      color: #1f1f1f;
+      transform: translateX(4px);
     }
 
-    .topbar-left { font-weight: 700; color: #5c5c5c; }
-    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .menu a.active {
+      background: #1f1f1f;
+      color: white;
+    }
+
+    .sidebar-footer {
+      padding: 0 10px;
+      font-size: 0.86rem;
+      color: #7a6b5c;
+    }
+
+    .main {
+      margin-left: 290px;
+      min-height: 100vh;
+      width: calc(100% - 290px);
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 290px;
+      width: calc(100% - 290px);
+      z-index: 1000;
+      background: rgba(255, 253, 249, 0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid #ddd4c8;
+      padding: 20px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .topbar-left {
+      font-weight: 700;
+      color: #5c5c5c;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
     .badge {
-      background: #dbeafe; color: #2563eb; padding: 8px 14px; border-radius: 999px;
-      font-size: 0.8rem; font-weight: 800; text-transform: uppercase;
+      background: #efe6da;
+      color: #6c4b2d;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
     }
 
     .icon-btn {
-      width: 40px; height: 40px; border-radius: 12px; border: 1px solid #ddd4c8;
-      background: #fffdf9; display: flex; align-items: center; justify-content: center; color: #5c5c5c;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid #ddd4c8;
+      background: #fffdf9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #5c5c5c;
+      transition: 0.2s ease;
     }
 
-    .content { width: 100%; max-width: none; padding: 118px 24px 40px; }
+    .icon-btn:hover {
+      background: #1f1f1f;
+      color: white;
+      border-color: #1f1f1f;
+    }
+
+    .content {
+      width: 100%;
+      max-width: none;
+      padding: 118px 24px 40px;
+    }
 
     .page-header {
       margin-bottom: 24px;
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
       gap: 16px;
       flex-wrap: wrap;
     }
 
-    .page-header h1 { font-size: 2.2rem; margin-bottom: 8px; }
-    .page-header p { color: #5c5c5c; }
+    .page-header h1 {
+      font-size: 2.4rem;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: #5c5c5c;
+    }
 
     .save-btn {
       display: inline-flex;
       align-items: center;
       gap: 10px;
       padding: 14px 18px;
-      border-radius: 14px;
-      background: #2563eb;
+      border-radius: 999px;
+      background: #1f1f1f;
       color: white;
       font-weight: 800;
-      border: 1px solid #2563eb;
+      border: 1px solid #1f1f1f;
       cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .save-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 20px rgba(0,0,0,0.08);
     }
 
     .config-card {
-      max-width: 700px;
+      max-width: 760px;
       background: #fffdf9;
       border: 1px solid #ddd4c8;
-      border-radius: 18px;
-      padding: 20px;
+      border-radius: 24px;
+      padding: 24px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
     }
 
-    .form-group { margin-bottom: 18px; }
+    .config-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.06);
+      border-color: #cdbca9;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
     .form-group label {
       display: block;
       margin-bottom: 8px;
       font-weight: 800;
+      font-size: 0.98rem;
+      color: #1f1f1f;
     }
 
-    .form-group input {
+    .form-group input,
+    .form-group select {
       width: 100%;
-      border: 1px solid #d7cec2;
-      border-radius: 14px;
-      background: #fff;
+      border: 1px solid #ddd4c8;
+      border-radius: 16px;
       padding: 14px 16px;
-      font-size: 1rem;
+      background: #fff;
+      font-size: 0.96rem;
       outline: none;
+      color: #1f1f1f;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #cdbca9;
+      box-shadow: 0 0 0 3px rgba(239, 230, 218, 0.65);
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        width: 100%;
+        position: relative;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #ddd4c8;
+      }
+
+      .main {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .topbar {
+        left: 0;
+        width: 100%;
+      }
+
+      .content {
+        padding-top: 108px;
+      }
     }
   </style>
 </head>
@@ -135,45 +300,51 @@
 
       <div class="topbar-right">
         <span class="badge" th:text="${utilizador.tipo}">ADMIN</span>
-        <a href="/admin/perfil" class="icon-btn"><i class="fa-solid fa-user"></i></a>
-        <a href="/logout" class="icon-btn"><i class="fa-solid fa-right-from-bracket"></i></a>
+        <a href="/admin/perfil" class="icon-btn" title="Perfil">
+          <i class="fa-solid fa-user"></i>
+        </a>
+        <a href="/logout" class="icon-btn" title="Sair">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </a>
       </div>
     </div>
 
     <section class="content">
-      <div class="page-header">
-        <div>
-          <h1>Configuração</h1>
-          <p>Parâmetros da plataforma</p>
+      <form action="/admin/configuracao/guardar" method="post">
+        <div class="page-header">
+          <div>
+            <h1>Configuração</h1>
+            <p>Parâmetros da plataforma.</p>
+          </div>
+
+          <button class="save-btn" type="submit">
+            <i class="fa-regular fa-floppy-disk"></i>
+            Guardar
+          </button>
         </div>
 
-        <button class="save-btn" type="button">
-          <i class="fa-regular fa-floppy-disk"></i>
-          Guardar
-        </button>
-      </div>
+        <div class="config-card">
+          <div class="form-group">
+            <label>MAX_TENTATIVAS_QUIZ</label>
+            <input type="text" name="maxTentativasQuiz" th:value="${maxTentativasQuiz}">
+          </div>
 
-      <div class="config-card">
-        <div class="form-group">
-          <label>MAX_TENTATIVAS_QUIZ</label>
-          <input type="text" value="3">
-        </div>
+          <div class="form-group">
+            <label>PONTOS_POR_QUIZ</label>
+            <input type="text" name="pontosPorQuiz" th:value="${pontosPorQuiz}">
+          </div>
 
-        <div class="form-group">
-          <label>PONTOS_POR_QUIZ</label>
-          <input type="text" value="100">
-        </div>
+          <div class="form-group">
+            <label>MODO_MANUTENCAO</label>
+            <input type="text" name="modoManutencao" th:value="${modoManutencao}">
+          </div>
 
-        <div class="form-group">
-          <label>MODO_MANUTENCAO</label>
-          <input type="text" value="false">
+          <div class="form-group">
+            <label>EMAIL_SUPORTE</label>
+            <input type="text" name="emailSuporte" th:value="${emailSuporte}">
+          </div>
         </div>
-
-        <div class="form-group">
-          <label>EMAIL_SUPORTE</label>
-          <input type="text" value="suporte@cyberescola.pt">
-        </div>
-      </div>
+      </form>
     </section>
   </main>
 

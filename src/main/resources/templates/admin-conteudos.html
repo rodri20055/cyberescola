@@ -10,9 +10,22 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Manrope', sans-serif; }
-    body { background: #f8f5ef; color: #1f1f1f; }
-    a { text-decoration: none; color: inherit; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    body {
+      background: #f8f5ef;
+      color: #1f1f1f;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
 
     .sidebar {
       width: 290px;
@@ -29,20 +42,56 @@
       overflow-y: auto;
     }
 
-    .sidebar-top { display: flex; flex-direction: column; gap: 28px; }
-    .logo { font-size: 1.6rem; font-weight: 800; letter-spacing: -1px; padding: 0 10px; }
-    .logo span { color: #9b6b43; }
+    .sidebar-top {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
 
-    .menu { display: flex; flex-direction: column; gap: 10px; }
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      padding: 0 10px;
+    }
+
+    .logo span {
+      color: #9b6b43;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     .menu a {
-      display: flex; align-items: center; gap: 12px; padding: 14px 14px;
-      border-radius: 14px; color: #5c5c5c; font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 14px;
+      border-radius: 14px;
+      color: #5c5c5c;
+      font-weight: 700;
       transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
     }
-    .menu a:hover { background: #efe6da; color: #1f1f1f; transform: translateX(4px); }
-    .menu a.active { background: #2563eb; color: white; }
 
-    .sidebar-footer { padding: 0 10px; font-size: 0.86rem; color: #7a6b5c; }
+    .menu a:hover {
+      background: #efe6da;
+      color: #1f1f1f;
+      transform: translateX(4px);
+    }
+
+    .menu a.active {
+      background: #1f1f1f;
+      color: white;
+    }
+
+    .sidebar-footer {
+      padding: 0 10px;
+      font-size: 0.86rem;
+      color: #7a6b5c;
+    }
 
     .main {
       margin-left: 290px;
@@ -56,7 +105,7 @@
       left: 290px;
       width: calc(100% - 290px);
       z-index: 1000;
-      background: rgba(255,253,249,0.92);
+      background: rgba(255, 253, 249, 0.92);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border-bottom: 1px solid #ddd4c8;
@@ -64,14 +113,23 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 15px;
     }
 
-    .topbar-left { font-weight: 700; color: #5c5c5c; }
-    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .topbar-left {
+      font-weight: 700;
+      color: #5c5c5c;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
     .badge {
-      background: #dbeafe;
-      color: #2563eb;
+      background: #efe6da;
+      color: #6c4b2d;
       padding: 8px 14px;
       border-radius: 999px;
       font-size: 0.8rem;
@@ -80,58 +138,126 @@
     }
 
     .icon-btn {
-      width: 40px; height: 40px; border-radius: 12px; border: 1px solid #ddd4c8;
-      background: #fffdf9; display: flex; align-items: center; justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid #ddd4c8;
+      background: #fffdf9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #5c5c5c;
+      transition: 0.2s ease;
+    }
+
+    .icon-btn:hover {
+      background: #1f1f1f;
+      color: white;
+      border-color: #1f1f1f;
+    }
+
+    .content {
+      width: 100%;
+      max-width: none;
+      padding: 118px 24px 40px;
+    }
+
+    .page-header {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .page-header h1 {
+      font-size: 2.4rem;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
       color: #5c5c5c;
     }
 
-    .content { width: 100%; max-width: none; padding: 118px 24px 40px; }
-
-    .page-header {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      gap: 18px; margin-bottom: 24px; flex-wrap: wrap;
+    .new-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      border-radius: 999px;
+      background: #1f1f1f;
+      color: white;
+      font-weight: 800;
+      border: 1px solid #1f1f1f;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .page-header h1 { font-size: 2.2rem; margin-bottom: 8px; }
-    .page-header p { color: #5c5c5c; }
-
-    .new-btn {
-      display: inline-flex; align-items: center; gap: 10px; padding: 14px 18px;
-      border-radius: 14px; background: #2563eb; color: white; font-weight: 800;
-      border: 1px solid #2563eb; cursor: pointer;
+    .new-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 20px rgba(0,0,0,0.08);
     }
 
     .tabs {
       display: flex;
       gap: 12px;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
     }
 
     .tab {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 16px;
-      border-radius: 14px;
-      background: #f1f5f9;
-      color: #64748b;
+      padding: 11px 16px;
+      border-radius: 999px;
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
       font-weight: 800;
+      color: #5c5c5c;
+      transition: all 0.2s ease;
+    }
+
+    .tab:hover {
+      background: #efe6da;
+      color: #1f1f1f;
+      transform: translateY(-1px);
     }
 
     .tab.active {
-      background: #2563eb;
+      background: #1f1f1f;
       color: white;
+      border-color: #1f1f1f;
     }
 
     .table-card {
       background: #fffdf9;
       border: 1px solid #ddd4c8;
-      border-radius: 18px;
+      border-radius: 24px;
       overflow: hidden;
       box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
     }
 
-    table { width: 100%; border-collapse: collapse; }
+    .table-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.06);
+      border-color: #cdbca9;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
     th {
       text-align: left;
       font-size: 0.84rem;
@@ -142,12 +268,22 @@
     }
 
     td {
-      padding: 16px;
+      padding: 18px 16px;
       border-bottom: 1px solid #f0e7dc;
       vertical-align: middle;
     }
 
-    tbody tr:hover { background: #faf6f0; }
+    tbody tr {
+      transition: background 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background: #faf6f0;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
 
     .tag {
       display: inline-flex;
@@ -156,15 +292,15 @@
       border-radius: 999px;
       font-size: 0.78rem;
       font-weight: 800;
-      background: #dbeafe;
-      color: #2563eb;
+      background: #efe6da;
+      color: #6c4b2d;
     }
 
     .actions {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 12px;
+      gap: 14px;
     }
 
     .action-btn {
@@ -172,10 +308,144 @@
       border: none;
       cursor: pointer;
       font-size: 1rem;
+      transition: transform 0.18s ease, opacity 0.18s ease;
     }
 
-    .action-blue { color: #2563eb; }
-    .action-red { color: #dc2626; }
+    .action-btn:hover {
+      transform: scale(1.12);
+      opacity: 0.85;
+    }
+
+    .action-blue {
+      color: #2962ff;
+    }
+
+    .action-red {
+      color: #d63b3b;
+    }
+
+    .empty-row td {
+      color: #7a6b5c;
+      font-weight: 700;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.28);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 20px;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 560px;
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.14);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .modal-header h2 {
+      font-size: 1.5rem;
+      letter-spacing: -0.5px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #6f6257;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      border: 1px solid #ddd4c8;
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: #fff;
+      font-size: 0.96rem;
+      outline: none;
+    }
+
+    .form-group textarea {
+      min-height: 95px;
+      resize: vertical;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .btn {
+      padding: 14px 16px;
+      border-radius: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      border: 1px solid #ddd4c8;
+      background: #fffdf9;
+    }
+
+    .btn-dark {
+      background: #1f1f1f;
+      border-color: #1f1f1f;
+      color: white;
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        width: 100%;
+        position: relative;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #ddd4c8;
+      }
+
+      .main {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .topbar {
+        left: 0;
+        width: 100%;
+      }
+
+      .content {
+        padding-top: 108px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -185,12 +455,12 @@
       <div class="logo">Cyber<span>Escola</span></div>
 
       <nav class="menu">
-  <a href="/admin"><i class="fa-solid fa-house"></i> Dashboard</a>
-  <a href="/admin/utilizadores"><i class="fa-solid fa-users"></i> Utilizadores</a>
-  <a href="/admin/conteudos" class="active"><i class="fa-regular fa-folder-open"></i> Conteúdos</a>
-  <a href="/admin/configuracao"><i class="fa-solid fa-gear"></i> Configuração</a>
-  <a href="/admin/perfil"><i class="fa-regular fa-user"></i> Perfil</a>
-</nav>
+        <a href="/admin"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="/admin/utilizadores"><i class="fa-solid fa-users"></i> Utilizadores</a>
+        <a href="/admin/conteudos" class="active"><i class="fa-regular fa-folder-open"></i> Conteúdos</a>
+        <a href="/admin/configuracao"><i class="fa-solid fa-gear"></i> Configuração</a>
+        <a href="/admin/perfil"><i class="fa-regular fa-user"></i> Perfil</a>
+      </nav>
     </div>
 
     <div class="sidebar-footer">© 2026 CyberEscola</div>
@@ -202,21 +472,25 @@
 
       <div class="topbar-right">
         <span class="badge" th:text="${utilizador.tipo}">ADMIN</span>
-        <a href="/admin/perfil" class="icon-btn"><i class="fa-solid fa-user"></i></a>
-        <a href="/logout" class="icon-btn"><i class="fa-solid fa-right-from-bracket"></i></a>
+        <a href="/admin/perfil" class="icon-btn" title="Perfil">
+          <i class="fa-solid fa-user"></i>
+        </a>
+        <a href="/logout" class="icon-btn" title="Sair">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </a>
       </div>
     </div>
 
     <section class="content">
       <div class="page-header">
         <div>
-          <h1>Gestão de Conteúdos</h1>
-          <p>Gerir vídeos e quizzes</p>
+          <h1>Conteúdos</h1>
+          <p>Gerir vídeos e quizzes da plataforma.</p>
         </div>
 
-        <button class="new-btn" type="button">
+        <button class="new-btn" type="button" onclick="abrirModalNovoConteudo()">
           <i class="fa-solid fa-plus"></i>
-          Novo Conteúdo
+          Novo conteúdo
         </button>
       </div>
 
@@ -237,72 +511,290 @@
       </div>
 
       <div class="table-card" th:if="${tipoSelecionado == null or tipoSelecionado == 'videos'}">
-        <table>
-          <thead>
-            <tr>
-              <th>Título</th>
-              <th>Tema</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="c : ${conteudos}">
-              <td th:text="${c.titulo}">Título</td>
-              <td><span class="tag" th:text="${c.tema}">Tema</span></td>
-              <td>
-                <div class="actions">
-                  <button type="button" class="action-btn action-blue" title="Editar">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                  </button>
-                  <form th:action="@{'/admin/conteudos/apagar/' + ${c.id}}" method="post" style="display:inline;">
-                    <button type="submit"
-                            class="action-btn action-red"
-                            title="Apagar"
-                            onclick="return confirm('Tens a certeza que queres apagar este conteúdo?')">
-                      <i class="fa-solid fa-trash"></i>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Tema</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="c : ${conteudos}">
+                <td th:text="${c.titulo}">Título</td>
+                <td>
+                  <span class="tag" th:text="${c.tema}">Tema</span>
+                </td>
+                <td>
+                  <div class="actions">
+                    <button type="button"
+                            class="action-btn action-blue"
+                            title="Editar"
+                            th:attr="data-id=${c.id},
+                                     data-titulo=${c.titulo},
+                                     data-tema=${c.tema},
+                                     data-descricao=${c.descricao},
+                                     data-duracao=${c.duracao},
+                                     data-videourl=${c.videoUrl}"
+                            onclick="abrirModalEditarConteudo(this)">
+                      <i class="fa-regular fa-pen-to-square"></i>
                     </button>
-                  </form>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+
+                    <form th:action="@{'/admin/conteudos/apagar/' + ${c.id}}" method="post" style="display:inline;">
+                      <button type="submit"
+                              class="action-btn action-red"
+                              title="Apagar"
+                              onclick="return confirm('Tens a certeza que queres apagar este conteúdo?')">
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+
+              <tr th:if="${#lists.isEmpty(conteudos)}" class="empty-row">
+                <td colspan="3">Sem conteúdos registados.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div class="table-card" th:if="${tipoSelecionado == 'quizzes'}">
-        <table>
-          <thead>
-            <tr>
-              <th>Título</th>
-              <th>Tema</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="q : ${quizzes}">
-              <td th:text="${q.titulo}">Quiz</td>
-              <td><span class="tag" th:text="${q.tema}">Tema</span></td>
-              <td>
-                <div class="actions">
-                  <button type="button" class="action-btn action-blue" title="Editar">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                  </button>
-                  <form th:action="@{'/admin/quizzes/apagar/' + ${q.id}}" method="post" style="display:inline;">
-                    <button type="submit"
-                            class="action-btn action-red"
-                            title="Apagar quiz"
-                            onclick="return confirm('Tens a certeza que queres apagar este quiz?')">
-                      <i class="fa-solid fa-trash"></i>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Tema</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="q : ${quizzes}">
+                <td th:text="${q.titulo}">Quiz</td>
+                <td>
+                  <span class="tag" th:text="${q.tema}">Tema</span>
+                </td>
+                <td>
+                  <div class="actions">
+                    <button type="button"
+                            class="action-btn action-blue"
+                            title="Editar"
+                            th:attr="data-id=${q.id},
+                                     data-titulo=${q.titulo},
+                                     data-tema=${q.tema}"
+                            onclick="abrirModalEditarQuiz(this)">
+                      <i class="fa-regular fa-pen-to-square"></i>
                     </button>
-                  </form>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+
+                    <form th:action="@{'/admin/quizzes/apagar/' + ${q.id}}" method="post" style="display:inline;">
+                      <button type="submit"
+                              class="action-btn action-red"
+                              title="Apagar quiz"
+                              onclick="return confirm('Tens a certeza que queres apagar este quiz?')">
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+
+              <tr th:if="${#lists.isEmpty(quizzes)}" class="empty-row">
+                <td colspan="3">Sem quizzes registados.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
   </main>
+
+  <div id="modalNovoConteudo" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Novo conteúdo</h2>
+        <button class="close-btn" type="button" onclick="fecharModalNovoConteudo()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form action="/admin/conteudos/criar" method="post">
+        <div class="form-group">
+          <label>Título</label>
+          <input type="text" name="titulo" required>
+        </div>
+
+        <div class="form-group">
+          <label>Tema</label>
+          <select name="tema" required>
+            <option value="Phishing">Phishing</option>
+<option value="Senhas">Senhas</option>
+<option value="Privacidade">Privacidade</option>
+<option value="RGPD">RGPD</option>
+<option value="Malware">Malware</option>
+<option value="Engenharia Social">Engenharia Social</option>
+<option value="Redes Sociais">Redes Sociais</option>
+<option value="Segurança Digital">Segurança Digital</option>
+<option value="Ciberbullying">Ciberbullying</option>
+<option value="Fraudes Online">Fraudes Online</option>
+<option value="Proteção de Dados">Proteção de Dados</option>
+<option value="Navegação Segura">Navegação Segura</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Descrição</label>
+          <textarea name="descricao" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Duração</label>
+          <input type="text" name="duracao" placeholder="Ex: 5:32" required>
+        </div>
+
+        <div class="form-group">
+          <label>URL do vídeo</label>
+          <input type="text" name="videoUrl" required>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn" onclick="fecharModalNovoConteudo()">Cancelar</button>
+          <button type="submit" class="btn btn-dark">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modalEditarConteudo" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Editar conteúdo</h2>
+        <button class="close-btn" type="button" onclick="fecharModalEditarConteudo()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="formEditarConteudo" method="post">
+        <div class="form-group">
+          <label>Título</label>
+          <input type="text" id="editConteudoTitulo" name="titulo" required>
+        </div>
+
+        <div class="form-group">
+          <label>Tema</label>
+          <select id="editConteudoTema" name="tema" required>
+            <option value="Phishing">Phishing</option>
+            <option value="Senhas">Senhas</option>
+            <option value="Privacidade">Privacidade</option>
+            <option value="RGPD">RGPD</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Descrição</label>
+          <textarea id="editConteudoDescricao" name="descricao" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Duração</label>
+          <input type="text" id="editConteudoDuracao" name="duracao" required>
+        </div>
+
+        <div class="form-group">
+          <label>URL do vídeo</label>
+          <input type="text" id="editConteudoVideoUrl" name="videoUrl" required>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn" onclick="fecharModalEditarConteudo()">Cancelar</button>
+          <button type="submit" class="btn btn-dark">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modalEditarQuiz" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Editar quiz</h2>
+        <button class="close-btn" type="button" onclick="fecharModalEditarQuiz()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="formEditarQuiz" method="post">
+        <div class="form-group">
+          <label>Título</label>
+          <input type="text" id="editQuizTitulo" name="titulo" required>
+        </div>
+
+        <div class="form-group">
+          <label>Tema</label>
+          <select id="editQuizTema" name="tema" required>
+            <option value="Phishing">Phishing</option>
+            <option value="Senhas">Senhas</option>
+            <option value="Privacidade">Privacidade</option>
+            <option value="RGPD">RGPD</option>
+          </select>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn" onclick="fecharModalEditarQuiz()">Cancelar</button>
+          <button type="submit" class="btn btn-dark">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function abrirModalNovoConteudo() {
+      document.getElementById('modalNovoConteudo').classList.add('show');
+    }
+
+    function fecharModalNovoConteudo() {
+      document.getElementById('modalNovoConteudo').classList.remove('show');
+    }
+
+    function abrirModalEditarConteudo(botao) {
+      const id = botao.dataset.id;
+      const titulo = botao.dataset.titulo;
+      const tema = botao.dataset.tema;
+      const descricao = botao.dataset.descricao;
+      const duracao = botao.dataset.duracao;
+      const videoUrl = botao.dataset.videourl;
+
+      document.getElementById('formEditarConteudo').action = '/admin/conteudos/editar/' + id;
+      document.getElementById('editConteudoTitulo').value = titulo;
+      document.getElementById('editConteudoTema').value = tema;
+      document.getElementById('editConteudoDescricao').value = descricao;
+      document.getElementById('editConteudoDuracao').value = duracao;
+      document.getElementById('editConteudoVideoUrl').value = videoUrl;
+
+      document.getElementById('modalEditarConteudo').classList.add('show');
+    }
+
+    function fecharModalEditarConteudo() {
+      document.getElementById('modalEditarConteudo').classList.remove('show');
+    }
+
+    function abrirModalEditarQuiz(botao) {
+      const id = botao.dataset.id;
+      const titulo = botao.dataset.titulo;
+      const tema = botao.dataset.tema;
+
+      document.getElementById('formEditarQuiz').action = '/admin/quizzes/editar/' + id;
+      document.getElementById('editQuizTitulo').value = titulo;
+      document.getElementById('editQuizTema').value = tema;
+
+      document.getElementById('modalEditarQuiz').classList.add('show');
+    }
+
+    function fecharModalEditarQuiz() {
+      document.getElementById('modalEditarQuiz').classList.remove('show');
+    }
+  </script>
 
 </body>
 </html>

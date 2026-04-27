@@ -48,6 +48,8 @@ import pt.cyberescola.cyberescola.repository.QuizRepository;
 import pt.cyberescola.cyberescola.repository.QuizTurmaRepository;
 import pt.cyberescola.cyberescola.repository.TurmaRepository;
 import pt.cyberescola.cyberescola.repository.UtilizadorRepository;
+import pt.cyberescola.cyberescola.model.Configuracao;
+import pt.cyberescola.cyberescola.repository.ConfiguracaoRepository;
 
 @Controller
 public class PaginaController {
@@ -64,6 +66,7 @@ public class PaginaController {
     private final AlertaRepository alertaRepository;
     private final ConteudoTurmaRepository conteudoTurmaRepository;
     private final QuizTurmaRepository quizTurmaRepository;
+    private final ConfiguracaoRepository configuracaoRepository;
 
     public PaginaController(UtilizadorRepository utilizadorRepository,
                             EvolucaoPontuacaoRepository evolucaoPontuacaoRepository,
@@ -76,6 +79,7 @@ public class PaginaController {
                             ProfessorTurmaRepository professorTurmaRepository,
                             AlertaRepository alertaRepository,
                             ConteudoTurmaRepository conteudoTurmaRepository,
+                            ConfiguracaoRepository configuracaoRepository,
                             QuizTurmaRepository quizTurmaRepository) {
         this.utilizadorRepository = utilizadorRepository;
         this.evolucaoPontuacaoRepository = evolucaoPontuacaoRepository;
@@ -89,6 +93,7 @@ public class PaginaController {
         this.alertaRepository = alertaRepository;
         this.conteudoTurmaRepository = conteudoTurmaRepository;
         this.quizTurmaRepository = quizTurmaRepository;
+        this.configuracaoRepository = configuracaoRepository;
     }
 
     private boolean semLogin(HttpSession session) {
@@ -450,6 +455,110 @@ public String adminConteudos(@RequestParam(required = false) String tipo,
     return "admin-conteudos";
 }
 
+@PostMapping("/admin/utilizadores/criar")
+public String criarUtilizadorAdmin(@RequestParam String nome,
+                                   @RequestParam String email,
+                                   @RequestParam String palavraPasse,
+                                   @RequestParam String tipo,
+                                   @RequestParam(required = false) String turma,
+                                   @RequestParam(required = false, defaultValue = "true") boolean ativo,
+                                   HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador admin = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!admin.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+
+    Utilizador utilizador = new Utilizador();
+    utilizador.setNome(nome);
+    utilizador.setEmail(email);
+    utilizador.setPalavraPasse(palavraPasse);
+    utilizador.setTipo(tipo);
+    utilizador.setTurma(turma);
+    utilizador.setAtivo(ativo);
+
+    if (tipo.equalsIgnoreCase("admin")) {
+        utilizador.setTurma(null);
+        utilizador.setIdTurma(null);
+    }
+
+    utilizadorRepository.save(utilizador);
+
+    return "redirect:/admin/utilizadores";
+}
+
+
+@PostMapping("/admin/conteudos/criar")
+public String criarConteudoAdmin(@RequestParam String titulo,
+                                 @RequestParam String tema,
+                                 @RequestParam String descricao,
+                                 @RequestParam String duracao,
+                                 @RequestParam String videoUrl,
+                                 HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+
+    Conteudo conteudo = new Conteudo();
+    conteudo.setTitulo(titulo);
+    conteudo.setTema(tema);
+    conteudo.setDescricao(descricao);
+    conteudo.setDuracao(duracao);
+    conteudo.setVideoUrl(videoUrl);
+
+    conteudoRepository.save(conteudo);
+
+    return "redirect:/admin/conteudos?tipo=videos";
+}
+
+@PostMapping("/admin/conteudos/editar/{id}")
+public String editarConteudoAdmin(@PathVariable Long id,
+                                  @RequestParam String titulo,
+                                  @RequestParam String tema,
+                                  @RequestParam String descricao,
+                                  @RequestParam String duracao,
+                                  @RequestParam String videoUrl,
+                                  HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+
+    Conteudo conteudo = conteudoRepository.findById(id).orElse(null);
+    if (conteudo == null) return "redirect:/admin/conteudos?tipo=videos";
+
+    conteudo.setTitulo(titulo);
+    conteudo.setTema(tema);
+    conteudo.setDescricao(descricao);
+    conteudo.setDuracao(duracao);
+    conteudo.setVideoUrl(videoUrl);
+
+    conteudoRepository.save(conteudo);
+
+    return "redirect:/admin/conteudos?tipo=videos";
+}
+
+@PostMapping("/admin/quizzes/editar/{id}")
+public String editarQuizAdmin(@PathVariable Long id,
+                              @RequestParam String titulo,
+                              @RequestParam String tema,
+                              HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+
+    Quiz quiz = quizRepository.findById(id).orElse(null);
+    if (quiz == null) return "redirect:/admin/conteudos?tipo=quizzes";
+
+    quiz.setTitulo(titulo);
+    quiz.setTema(tema);
+
+    quizRepository.save(quiz);
+
+    return "redirect:/admin/conteudos?tipo=quizzes";
+}
+
 @GetMapping("/admin/configuracao")
 public String adminConfiguracao(HttpSession session, Model model) {
     if (semLogin(session)) return "redirect:/login.html";
@@ -457,9 +566,48 @@ public String adminConfiguracao(HttpSession session, Model model) {
     Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
     if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
 
+    String maxTentativasQuiz = configuracaoRepository.findById("MAX_TENTATIVAS_QUIZ")
+            .map(Configuracao::getValor)
+            .orElse("3");
+
+    String pontosPorQuiz = configuracaoRepository.findById("PONTOS_POR_QUIZ")
+            .map(Configuracao::getValor)
+            .orElse("100");
+
+    String modoManutencao = configuracaoRepository.findById("MODO_MANUTENCAO")
+            .map(Configuracao::getValor)
+            .orElse("false");
+
+    String emailSuporte = configuracaoRepository.findById("EMAIL_SUPORTE")
+            .map(Configuracao::getValor)
+            .orElse("suporte@cyberescola.pt");
+
     model.addAttribute("utilizador", u);
+    model.addAttribute("maxTentativasQuiz", maxTentativasQuiz);
+    model.addAttribute("pontosPorQuiz", pontosPorQuiz);
+    model.addAttribute("modoManutencao", modoManutencao);
+    model.addAttribute("emailSuporte", emailSuporte);
 
     return "admin-configuracao";
+}
+
+@PostMapping("/admin/configuracao/guardar")
+public String guardarConfiguracaoAdmin(@RequestParam String maxTentativasQuiz,
+                                       @RequestParam String pontosPorQuiz,
+                                       @RequestParam String modoManutencao,
+                                       @RequestParam String emailSuporte,
+                                       HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+
+    configuracaoRepository.save(new Configuracao("MAX_TENTATIVAS_QUIZ", maxTentativasQuiz));
+    configuracaoRepository.save(new Configuracao("PONTOS_POR_QUIZ", pontosPorQuiz));
+    configuracaoRepository.save(new Configuracao("MODO_MANUTENCAO", modoManutencao));
+    configuracaoRepository.save(new Configuracao("EMAIL_SUPORTE", emailSuporte));
+
+    return "redirect:/admin/configuracao";
 }
 
 

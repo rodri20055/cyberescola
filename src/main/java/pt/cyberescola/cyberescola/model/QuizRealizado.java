@@ -22,6 +22,9 @@ public class QuizRealizado {
     @Column(name = "data_realizacao")
     private LocalDate dataRealizacao;
 
+    @Column(name = "tentativas")
+private Integer tentativas;
+
     public QuizRealizado() {
     }
 
@@ -64,4 +67,12 @@ public class QuizRealizado {
     public void setDataRealizacao(LocalDate dataRealizacao) {
         this.dataRealizacao = dataRealizacao;
     }
+
+    public Integer getTentativas() {
+    return tentativas;
+}
+
+public void setTentativas(Integer tentativas) {
+    this.tentativas = tentativas;
+}
 }

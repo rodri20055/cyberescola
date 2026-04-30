@@ -26,5 +26,7 @@ public interface UtilizadorRepository extends JpaRepository<Utilizador, Integer>
 
     List<Utilizador> findByTipoAndIdTurmaOrderByPontosDescNomeAsc(String tipo, Long idTurma);
 
+    List<Utilizador> findByTipoAndAtivoTrueOrderByPontosDesc(String tipo);
+
     
 }

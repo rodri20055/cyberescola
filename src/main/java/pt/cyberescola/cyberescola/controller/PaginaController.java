@@ -105,6 +105,11 @@ public class PaginaController {
                 .orElse(valorDefault);
     }
 
+    private boolean passwordSegura(String password) {
+    if (password == null) return false;
+    return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}$");
+}
+
     private boolean modoManutencaoAtivo() {
         return Boolean.parseBoolean(obterConfiguracao("MODO_MANUTENCAO", "false"));
     }
@@ -253,31 +258,48 @@ public class PaginaController {
     }
 
     @GetMapping("/conteudos")
-    public String conteudos(HttpSession session,
-                            Model model,
-                            @RequestParam(required = false) String tema,
-                            @RequestParam(required = false) String q) {
-        if (semLogin(session)) return "redirect:/login.html";
-        if (modoManutencaoAtivo()) return "redirect:/manutencao";
+public String conteudos(HttpSession session,
+                        Model model,
+                        @RequestParam(required = false) String tema,
+                        @RequestParam(required = false) String q) {
+    if (semLogin(session)) return "redirect:/login.html";
+    if (modoManutencaoAtivo()) return "redirect:/manutencao";
 
-        Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
-        model.addAttribute("utilizadorLogado", u);
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    model.addAttribute("utilizadorLogado", u);
 
-        List<Conteudo> conteudos = conteudoRepository.findAll();
+    List<Conteudo> conteudos = new ArrayList<>();
 
-        List<Conteudo> conteudosFiltrados = conteudos.stream()
+    if ("aluno".equalsIgnoreCase(u.getTipo())) {
+        if (u.getIdTurma() != null) {
+            List<ConteudoTurma> atribuicoes = conteudoTurmaRepository.findByIdTurma(u.getIdTurma());
+
+            List<Long> idsConteudos = atribuicoes.stream()
+                    .map(ConteudoTurma::getIdConteudo)
+                    .distinct()
+                    .toList();
+
+            if (!idsConteudos.isEmpty()) {
+                conteudos = conteudoRepository.findAllById(idsConteudos);
+            }
+        }
+    } else {
+        conteudos = conteudoRepository.findAll();
+    }
+
+    List<Conteudo> conteudosFiltrados = conteudos.stream()
             .filter(c -> tema == null || tema.isBlank() || c.getTema().equalsIgnoreCase(tema))
             .filter(c -> q == null || q.isBlank()
-                || c.getTitulo().toLowerCase().contains(q.toLowerCase())
-                || c.getDescricao().toLowerCase().contains(q.toLowerCase()))
-            .collect(Collectors.toList());
+                    || c.getTitulo().toLowerCase().contains(q.toLowerCase())
+                    || c.getDescricao().toLowerCase().contains(q.toLowerCase()))
+            .toList();
 
-        model.addAttribute("conteudos", conteudosFiltrados);
-        model.addAttribute("temaSelecionado", tema == null ? "" : tema);
-        model.addAttribute("pesquisa", q == null ? "" : q);
+    model.addAttribute("conteudos", conteudosFiltrados);
+    model.addAttribute("temaSelecionado", tema == null ? "" : tema);
+    model.addAttribute("pesquisa", q == null ? "" : q);
 
-        return "conteudos";
-    }
+    return "conteudos";
+}
 
     @GetMapping("/quiz")
     public String quiz(HttpSession session) {
@@ -505,6 +527,10 @@ public String submeterQuiz(@PathVariable String id,
 
         Utilizador admin = (Utilizador) session.getAttribute("utilizadorLogado");
         if (!admin.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+
+        if (!passwordSegura(palavraPasse)) {
+    return "redirect:/admin/utilizadores?erro=password-fraca";
+}
 
         Utilizador utilizador = new Utilizador();
         utilizador.setNome(nome);
@@ -794,89 +820,98 @@ public String submeterQuiz(@PathVariable String id,
         return "detalhe-turma";
     }
 
-    @GetMapping("/relatorios")
-    public String relatorios(HttpSession session, Model model) {
-        if (semLogin(session)) return "redirect:/login.html";
-        if (modoManutencaoAtivo()) return "redirect:/manutencao";
+   @GetMapping("/relatorios")
+public String relatorios(HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+    if (modoManutencaoAtivo()) return "redirect:/manutencao";
 
-        Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
-        if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
 
-        List<ProfessorTurma> ligacoes = professorTurmaRepository.findByIdProfessor(u.getIdUtilizador());
-        List<Long> idsTurmas = ligacoes.stream()
-                .map(ProfessorTurma::getIdTurma)
+    List<ProfessorTurma> ligacoes = professorTurmaRepository.findByIdProfessor(u.getIdUtilizador());
+    List<Long> idsTurmas = ligacoes.stream()
+            .map(ProfessorTurma::getIdTurma)
+            .toList();
+
+    List<Turma> turmasProfessor = turmaRepository.findAllById(idsTurmas);
+
+    List<Utilizador> alunos = idsTurmas.isEmpty()
+            ? List.of()
+            : utilizadorRepository.findByTipoAndIdTurmaInOrderByNomeAsc("aluno", idsTurmas);
+
+    List<String> nomesTurmas = new ArrayList<>();
+    List<Long> totalAlunosPorTurma = new ArrayList<>();
+    List<Long> mediaPontosPorTurma = new ArrayList<>();
+
+    for (Turma turma : turmasProfessor) {
+        List<Utilizador> alunosTurma = utilizadorRepository.findByTipoAndIdTurmaOrderByNomeAsc("aluno", turma.getId());
+
+        long total = alunosTurma.size();
+
+        List<Integer> idsAlunosTurma = alunosTurma.stream()
+                .map(Utilizador::getIdUtilizador)
                 .toList();
 
-        List<Turma> turmasProfessor = turmaRepository.findAllById(idsTurmas);
+        long media = 0;
 
-        List<Utilizador> alunos = idsTurmas.isEmpty()
-                ? List.of()
-                : utilizadorRepository.findByTipoAndIdTurmaInOrderByNomeAsc("aluno", idsTurmas);
+        if (!idsAlunosTurma.isEmpty()) {
+            List<QuizRealizado> quizzesTurma = quizRealizadoRepository.findByIdUtilizadorIn(idsAlunosTurma);
 
-        List<String> nomesTurmas = new ArrayList<>();
-        List<Long> totalAlunosPorTurma = new ArrayList<>();
-        List<Long> mediaPontosPorTurma = new ArrayList<>();
-
-        for (Turma turma : turmasProfessor) {
-            List<Utilizador> alunosTurma = utilizadorRepository.findByTipoAndIdTurmaOrderByNomeAsc("aluno", turma.getId());
-
-            long total = alunosTurma.size();
-
-            long media = Math.round(
-                    alunosTurma.stream()
-                            .map(a -> a.getPontos() != null ? a.getPontos() : 0)
+            media = Math.round(
+                    quizzesTurma.stream()
+                            .map(q -> q.getPontuacao() != null ? q.getPontuacao() : 0)
                             .mapToInt(Integer::intValue)
                             .average()
                             .orElse(0)
             );
-
-            nomesTurmas.add(turma.getNome());
-            totalAlunosPorTurma.add(total);
-            mediaPontosPorTurma.add(media);
         }
 
-        long totalAlunos = alunos.size();
-
-        long mediaGlobal = Math.round(
-                alunos.stream()
-                        .map(a -> a.getPontos() != null ? a.getPontos() : 0)
-                        .mapToInt(Integer::intValue)
-                        .average()
-                        .orElse(0)
-        );
-
-        Turma melhorTurma = null;
-        long melhorMedia = 0;
-
-        for (int i = 0; i < turmasProfessor.size(); i++) {
-            if (mediaPontosPorTurma.get(i) > melhorMedia) {
-                melhorMedia = mediaPontosPorTurma.get(i);
-                melhorTurma = turmasProfessor.get(i);
-            }
-        }
-
-        List<String> meses = List.of("Jan", "Fev", "Mar", "Abr");
-        List<Integer> evolucaoMedia = List.of(
-                (int) Math.max(0, mediaGlobal - 18),
-                (int) Math.max(0, mediaGlobal - 10),
-                (int) Math.max(0, mediaGlobal - 5),
-                (int) mediaGlobal
-        );
-
-        model.addAttribute("utilizador", u);
-        model.addAttribute("nomesTurmas", nomesTurmas);
-        model.addAttribute("totalAlunosPorTurma", totalAlunosPorTurma);
-        model.addAttribute("mediaPontosPorTurma", mediaPontosPorTurma);
-        model.addAttribute("totalAlunos", totalAlunos);
-        model.addAttribute("totalTurmas", turmasProfessor.size());
-        model.addAttribute("mediaGlobal", mediaGlobal);
-        model.addAttribute("melhorTurma", melhorTurma != null ? melhorTurma.getNome() : "Sem dados");
-        model.addAttribute("melhorMedia", melhorMedia);
-        model.addAttribute("meses", meses);
-        model.addAttribute("evolucaoMedia", evolucaoMedia);
-
-        return "relatorios";
+        nomesTurmas.add(turma.getNome());
+        totalAlunosPorTurma.add(total);
+        mediaPontosPorTurma.add(media);
     }
+
+    long totalAlunos = alunos.size();
+
+    long mediaGlobal = Math.round(
+            mediaPontosPorTurma.stream()
+                    .mapToLong(Long::longValue)
+                    .average()
+                    .orElse(0)
+    );
+
+    Turma melhorTurma = null;
+    long melhorMedia = 0;
+
+    for (int i = 0; i < turmasProfessor.size(); i++) {
+        if (mediaPontosPorTurma.get(i) > melhorMedia) {
+            melhorMedia = mediaPontosPorTurma.get(i);
+            melhorTurma = turmasProfessor.get(i);
+        }
+    }
+
+    List<String> meses = List.of("Jan", "Fev", "Mar", "Abr");
+    List<Integer> evolucaoMedia = List.of(
+            (int) Math.max(0, mediaGlobal - 18),
+            (int) Math.max(0, mediaGlobal - 10),
+            (int) Math.max(0, mediaGlobal - 5),
+            (int) mediaGlobal
+    );
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("nomesTurmas", nomesTurmas);
+    model.addAttribute("totalAlunosPorTurma", totalAlunosPorTurma);
+    model.addAttribute("mediaPontosPorTurma", mediaPontosPorTurma);
+    model.addAttribute("totalAlunos", totalAlunos);
+    model.addAttribute("totalTurmas", turmasProfessor.size());
+    model.addAttribute("mediaGlobal", mediaGlobal);
+    model.addAttribute("melhorTurma", melhorTurma != null ? melhorTurma.getNome() : "Sem dados");
+    model.addAttribute("melhorMedia", melhorMedia);
+    model.addAttribute("meses", meses);
+    model.addAttribute("evolucaoMedia", evolucaoMedia);
+
+    return "relatorios";
+}
 
     @GetMapping("/alertas")
     public String alertas(@RequestParam(required = false) String tipo,
@@ -1512,200 +1547,226 @@ public String submeterQuiz(@PathVariable String id,
     }
 
     @GetMapping("/relatorios/dados")
-    @ResponseBody
-    public Map<String, Object> relatoriosDados(HttpSession session) {
-        Map<String, Object> resposta = new HashMap<>();
+@ResponseBody
+public Map<String, Object> relatoriosDados(HttpSession session) {
 
-        if (semLogin(session)) {
-            resposta.put("erro", "Sem login");
-            return resposta;
+    Map<String, Object> resposta = new HashMap<>();
+
+    if (semLogin(session)) {
+        resposta.put("erro", "Sem login");
+        return resposta;
+    }
+
+    if (modoManutencaoAtivo()) {
+        resposta.put("erro", "Manutenção ativa");
+        return resposta;
+    }
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) {
+        resposta.put("erro", "Acesso negado");
+        return resposta;
+    }
+
+    List<ProfessorTurma> ligacoes = professorTurmaRepository.findByIdProfessor(u.getIdUtilizador());
+    List<Long> idsTurmas = ligacoes.stream()
+            .map(ProfessorTurma::getIdTurma)
+            .toList();
+
+    List<Turma> turmasProfessor = turmaRepository.findAllById(idsTurmas);
+
+    List<Utilizador> alunos = idsTurmas.isEmpty()
+            ? List.of()
+            : utilizadorRepository.findByTipoAndIdTurmaInOrderByNomeAsc("aluno", idsTurmas);
+
+    List<String> nomesTurmas = new ArrayList<>();
+    List<Long> totalAlunosPorTurma = new ArrayList<>();
+    List<Long> mediaPontosPorTurma = new ArrayList<>();
+
+    for (Turma turma : turmasProfessor) {
+        List<Utilizador> alunosTurma = utilizadorRepository.findByTipoAndIdTurmaOrderByNomeAsc("aluno", turma.getId());
+
+        long total = alunosTurma.size();
+
+        List<Integer> idsAlunosTurma = alunosTurma.stream()
+                .map(Utilizador::getIdUtilizador)
+                .toList();
+
+        long media = 0;
+
+        if (!idsAlunosTurma.isEmpty()) {
+            List<QuizRealizado> quizzesTurma = quizRealizadoRepository.findByIdUtilizadorIn(idsAlunosTurma);
+
+            media = Math.round(
+                    quizzesTurma.stream()
+                            .map(q -> q.getPontuacao() != null ? q.getPontuacao() : 0)
+                            .mapToInt(Integer::intValue)
+                            .average()
+                            .orElse(0)
+            );
         }
 
-        if (modoManutencaoAtivo()) {
-            resposta.put("erro", "Manutenção ativa");
-            return resposta;
+        nomesTurmas.add(turma.getNome());
+        totalAlunosPorTurma.add(total);
+        mediaPontosPorTurma.add(media);
+    }
+
+    long totalAlunos = alunos.size();
+
+    long mediaGlobal = Math.round(
+            mediaPontosPorTurma.stream()
+                    .mapToLong(Long::longValue)
+                    .average()
+                    .orElse(0)
+    );
+
+    String melhorTurma = "Sem dados";
+    long melhorMedia = 0;
+
+    for (int i = 0; i < turmasProfessor.size(); i++) {
+        if (mediaPontosPorTurma.get(i) > melhorMedia) {
+            melhorMedia = mediaPontosPorTurma.get(i);
+            melhorTurma = turmasProfessor.get(i).getNome();
+        }
+    }
+
+    List<String> meses = List.of("Jan", "Fev", "Mar", "Abr");
+    List<Integer> evolucaoMedia = List.of(
+            (int) Math.max(0, mediaGlobal - 18),
+            (int) Math.max(0, mediaGlobal - 10),
+            (int) Math.max(0, mediaGlobal - 5),
+            (int) mediaGlobal
+    );
+
+    resposta.put("totalAlunos", totalAlunos);
+    resposta.put("totalTurmas", turmasProfessor.size());
+    resposta.put("mediaGlobal", mediaGlobal);
+    resposta.put("melhorTurma", melhorTurma);
+    resposta.put("melhorMedia", melhorMedia);
+    resposta.put("nomesTurmas", nomesTurmas);
+    resposta.put("totalAlunosPorTurma", totalAlunosPorTurma);
+    resposta.put("mediaPontosPorTurma", mediaPontosPorTurma);
+    resposta.put("meses", meses);
+    resposta.put("evolucaoMedia", evolucaoMedia);
+
+    return resposta;
+}
+
+    @PostMapping("/perfil/editar")
+public String editarPerfil(@RequestParam String nome,
+                           @RequestParam String email,
+                           @RequestParam(required = false) Long idTurma,
+                           @RequestParam(required = false) MultipartFile foto,
+                           HttpSession session,
+                           Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+
+    try {
+        u.setNome(nome);
+        u.setEmail(email);
+
+        if (idTurma != null) {
+            Turma turmaObj = turmaRepository.findById(idTurma).orElse(null);
+            if (turmaObj != null) {
+                u.setIdTurma(turmaObj.getId());
+                u.setTurma(turmaObj.getNome());
+            } else {
+                u.setIdTurma(null);
+                u.setTurma("Por atribuir");
+            }
+        } else {
+            u.setIdTurma(null);
+            u.setTurma("Por atribuir");
         }
 
-        Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
-        if (!u.getTipo().equalsIgnoreCase("professor")) {
-            resposta.put("erro", "Acesso negado");
-            return resposta;
+        if (foto != null && !foto.isEmpty()) {
+            String nomeFicheiro = UUID.randomUUID() + "_" + foto.getOriginalFilename();
+
+            Path pastaUploads = Paths.get("src/main/resources/static/uploads");
+            Files.createDirectories(pastaUploads);
+
+            Path caminhoFicheiro = pastaUploads.resolve(nomeFicheiro);
+            Files.copy(foto.getInputStream(), caminhoFicheiro, StandardCopyOption.REPLACE_EXISTING);
+
+            u.setFotoPerfil("/uploads/" + nomeFicheiro);
         }
 
+        utilizadorRepository.save(u);
+        session.setAttribute("utilizadorLogado", u);
+
+        model.addAttribute("utilizador", u);
+        model.addAttribute("turmasDisponiveis", turmaRepository.findAll());
+        model.addAttribute("sucesso", "Perfil atualizado com sucesso.");
+        return "perfil";
+
+    } catch (Exception e) {
+        model.addAttribute("utilizador", u);
+        model.addAttribute("turmasDisponiveis", turmaRepository.findAll());
+        model.addAttribute("erro", "Ocorreu um erro ao atualizar o perfil.");
+        return "perfil";
+    }
+}
+
+    @PostMapping("/perfil/password")
+public String alterarPassword(@RequestParam String passwordAtual,
+                              @RequestParam String novaPassword,
+                              @RequestParam String confirmarPassword,
+                              HttpSession session,
+                              Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    model.addAttribute("utilizador", u);
+
+    if (!u.getPalavraPasse().equals(passwordAtual)) {
+        model.addAttribute("erro", "A palavra-passe atual está incorreta.");
+        return "perfil";
+    }
+
+    if (!novaPassword.equals(confirmarPassword)) {
+        model.addAttribute("erro", "A confirmação da nova palavra-passe não coincide.");
+        return "perfil";
+    }
+
+    if (!passwordSegura(novaPassword)) {
+        model.addAttribute("erro", "A nova palavra-passe deve ter pelo menos 8 caracteres, uma maiúscula, uma minúscula, um número e um símbolo.");
+        return "perfil";
+    }
+
+    u.setPalavraPasse(novaPassword);
+    utilizadorRepository.save(u);
+    session.setAttribute("utilizadorLogado", u);
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("sucesso", "Palavra-passe alterada com sucesso.");
+    return "perfil";
+}
+
+    @GetMapping("/perfil")
+public String perfil(HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    model.addAttribute("utilizador", u);
+    model.addAttribute("turmasDisponiveis", turmaRepository.findAll());
+
+    if ("professor".equalsIgnoreCase(u.getTipo())) {
         List<ProfessorTurma> ligacoes = professorTurmaRepository.findByIdProfessor(u.getIdUtilizador());
         List<Long> idsTurmas = ligacoes.stream()
                 .map(ProfessorTurma::getIdTurma)
                 .toList();
 
-        List<Turma> turmasProfessor = turmaRepository.findAllById(idsTurmas);
+        long totalTurmas = idsTurmas.size();
+        long totalAlunos = idsTurmas.isEmpty() ? 0 : utilizadorRepository.countByTipoAndIdTurmaIn("aluno", idsTurmas);
 
-        List<Utilizador> alunos = idsTurmas.isEmpty()
-                ? List.of()
-                : utilizadorRepository.findByTipoAndIdTurmaInOrderByNomeAsc("aluno", idsTurmas);
-
-        List<String> nomesTurmas = new ArrayList<>();
-        List<Long> totalAlunosPorTurma = new ArrayList<>();
-        List<Long> mediaPontosPorTurma = new ArrayList<>();
-
-        for (Turma turma : turmasProfessor) {
-            List<Utilizador> alunosTurma = utilizadorRepository.findByTipoAndIdTurmaOrderByNomeAsc("aluno", turma.getId());
-
-            long total = alunosTurma.size();
-
-            long media = Math.round(
-                    alunosTurma.stream()
-                            .map(a -> a.getPontos() != null ? a.getPontos() : 0)
-                            .mapToInt(Integer::intValue)
-                            .average()
-                            .orElse(0)
-            );
-
-            nomesTurmas.add(turma.getNome());
-            totalAlunosPorTurma.add(total);
-            mediaPontosPorTurma.add(media);
-        }
-
-        long totalAlunos = alunos.size();
-
-        long mediaGlobal = Math.round(
-                alunos.stream()
-                        .map(a -> a.getPontos() != null ? a.getPontos() : 0)
-                        .mapToInt(Integer::intValue)
-                        .average()
-                        .orElse(0)
-        );
-
-        String melhorTurma = "Sem dados";
-        long melhorMedia = 0;
-
-        for (int i = 0; i < turmasProfessor.size(); i++) {
-            if (mediaPontosPorTurma.get(i) > melhorMedia) {
-                melhorMedia = mediaPontosPorTurma.get(i);
-                melhorTurma = turmasProfessor.get(i).getNome();
-            }
-        }
-
-        List<String> meses = List.of("Jan", "Fev", "Mar", "Abr");
-        List<Integer> evolucaoMedia = List.of(
-                (int) Math.max(0, mediaGlobal - 18),
-                (int) Math.max(0, mediaGlobal - 10),
-                (int) Math.max(0, mediaGlobal - 5),
-                (int) mediaGlobal
-        );
-
-        resposta.put("totalAlunos", totalAlunos);
-        resposta.put("totalTurmas", turmasProfessor.size());
-        resposta.put("mediaGlobal", mediaGlobal);
-        resposta.put("melhorTurma", melhorTurma);
-        resposta.put("melhorMedia", melhorMedia);
-        resposta.put("nomesTurmas", nomesTurmas);
-        resposta.put("totalAlunosPorTurma", totalAlunosPorTurma);
-        resposta.put("mediaPontosPorTurma", mediaPontosPorTurma);
-        resposta.put("meses", meses);
-        resposta.put("evolucaoMedia", evolucaoMedia);
-
-        return resposta;
+        model.addAttribute("totalTurmas", totalTurmas);
+        model.addAttribute("totalAlunos", totalAlunos);
     }
 
-    @PostMapping("/perfil/editar")
-    public String editarPerfil(@RequestParam String nome,
-                               @RequestParam String email,
-                               @RequestParam(required = false) String turma,
-                               @RequestParam(required = false) MultipartFile foto,
-                               HttpSession session,
-                               Model model) {
-        if (semLogin(session)) return "redirect:/login.html";
-
-        Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
-
-        try {
-            u.setNome(nome);
-            u.setEmail(email);
-            u.setTurma(turma);
-
-            if (foto != null && !foto.isEmpty()) {
-                String nomeFicheiro = UUID.randomUUID() + "_" + foto.getOriginalFilename();
-
-                Path pastaUploads = Paths.get("src/main/resources/static/uploads");
-                Files.createDirectories(pastaUploads);
-
-                Path caminhoFicheiro = pastaUploads.resolve(nomeFicheiro);
-                Files.copy(foto.getInputStream(), caminhoFicheiro, StandardCopyOption.REPLACE_EXISTING);
-
-                u.setFotoPerfil("/uploads/" + nomeFicheiro);
-            }
-
-            utilizadorRepository.save(u);
-            session.setAttribute("utilizadorLogado", u);
-
-            model.addAttribute("utilizador", u);
-            model.addAttribute("sucesso", "Perfil atualizado com sucesso.");
-            return "perfil";
-
-        } catch (Exception e) {
-            model.addAttribute("utilizador", u);
-            model.addAttribute("erro", "Ocorreu um erro ao atualizar o perfil.");
-            return "perfil";
-        }
-    }
-
-    @PostMapping("/perfil/password")
-    public String alterarPassword(@RequestParam String passwordAtual,
-                                  @RequestParam String novaPassword,
-                                  @RequestParam String confirmarPassword,
-                                  HttpSession session,
-                                  Model model) {
-        if (semLogin(session)) return "redirect:/login.html";
-
-        Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
-        model.addAttribute("utilizador", u);
-
-        if (!u.getPalavraPasse().equals(passwordAtual)) {
-            model.addAttribute("erro", "A palavra-passe atual está incorreta.");
-            return "perfil";
-        }
-
-        if (!novaPassword.equals(confirmarPassword)) {
-            model.addAttribute("erro", "A confirmação da nova palavra-passe não coincide.");
-            return "perfil";
-        }
-
-        if (novaPassword.length() < 6) {
-            model.addAttribute("erro", "A nova palavra-passe deve ter pelo menos 6 caracteres.");
-            return "perfil";
-        }
-
-        u.setPalavraPasse(novaPassword);
-        utilizadorRepository.save(u);
-        session.setAttribute("utilizadorLogado", u);
-
-        model.addAttribute("utilizador", u);
-        model.addAttribute("sucesso", "Palavra-passe alterada com sucesso.");
-        return "perfil";
-    }
-
-    @GetMapping("/perfil")
-    public String perfil(HttpSession session, Model model) {
-        if (semLogin(session)) return "redirect:/login.html";
-
-        Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
-        model.addAttribute("utilizador", u);
-
-        if ("professor".equalsIgnoreCase(u.getTipo())) {
-            List<ProfessorTurma> ligacoes = professorTurmaRepository.findByIdProfessor(u.getIdUtilizador());
-            List<Long> idsTurmas = ligacoes.stream()
-                    .map(ProfessorTurma::getIdTurma)
-                    .toList();
-
-            long totalTurmas = idsTurmas.size();
-            long totalAlunos = idsTurmas.isEmpty() ? 0 : utilizadorRepository.countByTipoAndIdTurmaIn("aluno", idsTurmas);
-
-            model.addAttribute("totalTurmas", totalTurmas);
-            model.addAttribute("totalAlunos", totalAlunos);
-        }
-
-        return "perfil";
-    }
+    return "perfil";
+}
 
     private Map<String, String> criarConteudo(String id, String tema, String titulo, String descricao, String duracao) {
         Map<String, String> c = new HashMap<>();

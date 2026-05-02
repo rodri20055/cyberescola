@@ -33,19 +33,19 @@
     }
 
     .sidebar {
-  width: 290px;
-  background: #fffdf9;
-  border-right: 1px solid #ddd4c8;
-  padding: 28px 18px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  overflow-y: auto;
-}
+      width: 290px;
+      background: #fffdf9;
+      border-right: 1px solid #ddd4c8;
+      padding: 28px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
 
     .sidebar-top {
       display: flex;
@@ -103,20 +103,20 @@
     }
 
     .main {
-  margin-left: 290px;
-  min-height: 100vh;
-  width: calc(100% - 290px);
-}
+      margin-left: 290px;
+      min-height: 100vh;
+      width: calc(100% - 290px);
+    }
 
     .topbar {
-  width: 100%;
-  background: #fffdf9;
-  border-bottom: 1px solid #ddd4c8;
-  padding: 20px 28px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+      width: 100%;
+      background: #fffdf9;
+      border-bottom: 1px solid #ddd4c8;
+      padding: 20px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
     .topbar-left {
       font-weight: 700;
@@ -152,10 +152,10 @@
     }
 
     .content {
-  width: 100%;
-  max-width: none;
-  padding: 30px 24px 34px;
-}
+      width: 100%;
+      max-width: none;
+      padding: 30px 24px 34px;
+    }
 
     .page-header {
       margin-bottom: 22px;
@@ -211,24 +211,24 @@
     }
 
     .filter-tags a {
-  padding: 12px 16px;
-  border-radius: 16px;
-  background: #efe6da;
-  color: #6c4b2d;
-  font-weight: 700;
-  font-size: 0.9rem;
-  display: inline-block;
-  transition: 0.2s;
-}
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: #efe6da;
+      color: #6c4b2d;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: inline-block;
+      transition: 0.2s;
+    }
 
-.filter-tags a:hover {
-  opacity: 0.9;
-}
+    .filter-tags a:hover {
+      opacity: 0.9;
+    }
 
-.filter-tags a.active {
-  background: #1f1f1f;
-  color: white;
-}
+    .filter-tags a.active {
+      background: #1f1f1f;
+      color: white;
+    }
 
     .cards-grid {
       display: grid;
@@ -246,12 +246,27 @@
 
     .content-thumb {
       height: 210px;
-      background: #ece2d6;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 3rem;
-      color: #7a6b5c;
+      color: white;
+      position: relative;
+    }
+
+    .content-thumb::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.22);
+    }
+
+    .content-thumb i {
+      position: relative;
+      z-index: 1;
     }
 
     .content-body {
@@ -357,29 +372,35 @@
 
         <div class="search-row">
           <form action="/conteudos" method="get" class="search-box">
-  <i class="fa-solid fa-magnifying-glass"></i>
-  <input type="text" name="q" placeholder="Pesquisar vídeos..." th:value="${pesquisa}">
-  <input type="hidden" name="tema" th:value="${temaSelecionado}">
-</form>
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" name="q" placeholder="Pesquisar vídeos..." th:value="${pesquisa}">
+            <input type="hidden" name="tema" th:value="${temaSelecionado}">
+          </form>
 
           <div class="filter-tags">
-  <a th:href="@{/conteudos(q=${pesquisa})}"
-     th:classappend="${temaSelecionado == ''} ? ' active' : ''">Todos</a>
+            <a th:href="@{/conteudos(q=${pesquisa})}"
+               th:classappend="${temaSelecionado == ''} ? ' active' : ''">Todos</a>
 
-  <a th:href="@{/conteudos(tema='Phishing', q=${pesquisa})}"
-     th:classappend="${temaSelecionado == 'Phishing'} ? ' active' : ''">Phishing</a>
+            <a th:href="@{/conteudos(tema='Phishing', q=${pesquisa})}"
+               th:classappend="${temaSelecionado == 'Phishing'} ? ' active' : ''">Phishing</a>
 
-  <a th:href="@{/conteudos(tema='Senhas', q=${pesquisa})}"
-     th:classappend="${temaSelecionado == 'Senhas'} ? ' active' : ''">Senhas</a>
+            <a th:href="@{/conteudos(tema='Senhas', q=${pesquisa})}"
+               th:classappend="${temaSelecionado == 'Senhas'} ? ' active' : ''">Senhas</a>
 
-  <a th:href="@{/conteudos(tema='Privacidade', q=${pesquisa})}"
-     th:classappend="${temaSelecionado == 'Privacidade'} ? ' active' : ''">Privacidade</a>
-</div>
+            <a th:href="@{/conteudos(tema='Privacidade', q=${pesquisa})}"
+               th:classappend="${temaSelecionado == 'Privacidade'} ? ' active' : ''">Privacidade</a>
+          </div>
         </div>
 
         <div class="cards-grid">
           <div class="content-card" th:each="c : ${conteudos}">
-            <div class="content-thumb">
+            <div class="content-thumb"
+                 th:style="${
+                   c.tema == 'Phishing' ? 'background-image: url(/imagens/phishing.jpg);' :
+                   c.tema == 'Senhas' ? 'background-image: url(/imagens/senhas.jpg);' :
+                   c.tema == 'Privacidade' ? 'background-image: url(/imagens/privacidade.jpg);' :
+                   'background-image: url(/imagens/default.jpg);'
+                 }">
               <i class="fa-regular fa-circle-play"></i>
             </div>
 

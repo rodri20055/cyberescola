@@ -19,6 +19,11 @@ public class RegistoController {
         this.utilizadorRepository = utilizadorRepository;
     }
 
+    private boolean passwordSegura(String password) {
+        if (password == null) return false;
+        return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}$");
+    }
+
     @GetMapping("/criar-conta")
     public String paginaCriarConta() {
         return "criar-conta";
@@ -33,6 +38,10 @@ public class RegistoController {
 
         if (!password.equals(confirmarPassword)) {
             return "redirect:/criar-conta?erro=password";
+        }
+
+        if (!passwordSegura(password)) {
+            return "redirect:/criar-conta?erro=password-fraca";
         }
 
         Optional<Utilizador> existente = utilizadorRepository.findByEmail(email);
@@ -58,5 +67,4 @@ public class RegistoController {
 
         return "redirect:/login.html?contaCriada";
     }
-    
 }

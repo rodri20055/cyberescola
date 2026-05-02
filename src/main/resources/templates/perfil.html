@@ -104,20 +104,20 @@
     }
 
     .topbar {
-  position: fixed;
-  top: 0;
-  left: 290px;
-  width: calc(100% - 290px);
-  z-index: 1000;
-  background: rgba(255, 253, 249, 0.92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid #ddd4c8;
-  padding: 20px 28px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+      position: fixed;
+      top: 0;
+      left: 290px;
+      width: calc(100% - 290px);
+      z-index: 1000;
+      background: rgba(255, 253, 249, 0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid #ddd4c8;
+      padding: 20px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
     .topbar-left {
       font-weight: 700;
@@ -153,11 +153,11 @@
     }
 
     .content {
-  width: 100%;
-  max-width: 1180px;
-  padding: 118px 24px 40px;
-  margin: 0 auto;
-}
+      width: 100%;
+      max-width: 1180px;
+      padding: 118px 24px 40px;
+      margin: 0 auto;
+    }
 
     .page-header {
       margin-bottom: 24px;
@@ -248,7 +248,8 @@
       font-weight: 700;
     }
 
-    .form-group input {
+    .form-group input,
+    .form-group select {
       width: 100%;
       padding: 13px 14px;
       border: 1px solid #d7cec2;
@@ -406,19 +407,20 @@
       }
 
       .sidebar {
-  width: 290px;
-  background: #fffdf9;
-  border-right: 1px solid #ddd4c8;
-  padding: 28px 18px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  overflow-y: auto;
-}
+        width: 290px;
+        background: #fffdf9;
+        border-right: 1px solid #ddd4c8;
+        padding: 28px 18px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
       .main {
         margin-left: 0;
         width: 100%;
@@ -509,7 +511,14 @@
 
                 <div class="form-group">
                   <label>Turma</label>
-                  <input type="text" name="turma" th:value="${utilizador.turma}">
+                  <select name="idTurma">
+                    <option value="">Por atribuir</option>
+                    <option th:each="t : ${turmasDisponiveis}"
+                            th:value="${t.id}"
+                            th:text="${t.nome}"
+                            th:selected="${utilizador.idTurma != null and utilizador.idTurma == t.id}">
+                    </option>
+                  </select>
                 </div>
 
                 <div class="form-group">
@@ -546,7 +555,12 @@
 
                 <div class="form-group">
                   <label>Nova palavra-passe</label>
-                  <input type="password" name="novaPassword" required>
+                  <input type="password"
+                         name="novaPassword"
+                         required
+                         minlength="8"
+                         pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$"
+                         title="A palavra-passe deve ter pelo menos 8 caracteres, incluindo maiúscula, minúscula, número e símbolo.">
                 </div>
 
                 <div class="form-group">
@@ -609,7 +623,14 @@
 
               <div class="form-group">
                 <label>Turma</label>
-                <input type="text" name="turma" th:value="${utilizador.turma}">
+                <select name="idTurma">
+                  <option value="">Por atribuir</option>
+                  <option th:each="t : ${turmasDisponiveis}"
+                          th:value="${t.id}"
+                          th:text="${t.nome}"
+                          th:selected="${utilizador.idTurma != null and utilizador.idTurma == t.id}">
+                  </option>
+                </select>
               </div>
 
               <div class="form-group">
@@ -641,7 +662,12 @@
 
               <div class="form-group">
                 <label>Nova palavra-passe</label>
-                <input type="password" name="novaPassword" required>
+                <input type="password"
+                       name="novaPassword"
+                       required
+                       minlength="8"
+                       pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$"
+                       title="A palavra-passe deve ter pelo menos 8 caracteres, incluindo maiúscula, minúscula, número e símbolo.">
               </div>
 
               <div class="form-group">

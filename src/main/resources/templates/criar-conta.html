@@ -130,6 +130,13 @@
       border-color: #9b6b43;
     }
 
+    .password-help {
+      margin-top: 8px;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: #6f6257;
+    }
+
     .login-btn {
       width: 100%;
       border: none;
@@ -222,12 +229,26 @@
 
         <div class="form-group">
           <label for="password">Palavra-passe</label>
-          <input type="password" id="password" name="password" placeholder="Introduz a tua palavra-passe" required>
+          <input type="password"
+                 id="password"
+                 name="password"
+                 placeholder="Introduz a tua palavra-passe"
+                 required
+                 minlength="8"
+                 pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$"
+                 title="A palavra-passe deve ter pelo menos 8 caracteres, incluindo maiúscula, minúscula, número e símbolo.">
+          <div class="password-help">
+            A palavra-passe deve ter pelo menos 8 caracteres, com maiúscula, minúscula, número e símbolo.
+          </div>
         </div>
 
         <div class="form-group">
           <label for="confirmarPassword">Confirmar palavra-passe</label>
-          <input type="password" id="confirmarPassword" name="confirmarPassword" placeholder="Repete a palavra-passe" required>
+          <input type="password"
+                 id="confirmarPassword"
+                 name="confirmarPassword"
+                 placeholder="Repete a palavra-passe"
+                 required>
         </div>
 
         <button type="submit" class="login-btn">Criar conta</button>
@@ -249,14 +270,21 @@
       errorBox.textContent = "As palavras-passe não coincidem.";
     }
 
+    if (params.get("erro") === "password-fraca") {
+      errorBox.style.display = "block";
+      errorBox.textContent = "A palavra-passe deve ter pelo menos 8 caracteres, uma maiúscula, uma minúscula, um número e um símbolo.";
+    }
+
     if (params.get("erro") === "email") {
       errorBox.style.display = "block";
       errorBox.textContent = "Esse email já está registado.";
     }
-  </script>
 
-  
-  
+    if (params.get("erro") === "perfil") {
+      errorBox.style.display = "block";
+      errorBox.textContent = "Só é possível criar contas de aluno nesta página.";
+    }
+  </script>
 
 </body>
 </html>

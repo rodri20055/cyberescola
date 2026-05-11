@@ -34,21 +34,20 @@
       min-height: 100vh;
     }
 
-    /* SIDEBAR */
     .sidebar {
-  width: 290px;
-  background: #fffdf9;
-  border-right: 1px solid #ddd4c8;
-  padding: 28px 18px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  overflow-y: auto;
-}
+      width: 290px;
+      background: #fffdf9;
+      border-right: 1px solid #ddd4c8;
+      padding: 28px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
 
     .sidebar-top {
       display: flex;
@@ -105,13 +104,11 @@
       color: #7a6b5c;
     }
 
-    /* MAIN */
-   .main {
-  margin-left: 290px;
-  min-height: 100vh;
-  width: calc(100% - 290px);
-}
-
+    .main {
+      margin-left: 290px;
+      min-height: 100vh;
+      width: calc(100% - 290px);
+    }
 
     .topbar {
       background: #fffdf9;
@@ -164,10 +161,10 @@
     }
 
     .content {
-  width: 100%;
-  max-width: none;
-  padding: 30px 24px 34px;
-}
+      width: 100%;
+      max-width: none;
+      padding: 30px 24px 34px;
+    }
 
     .page-header {
       margin-bottom: 24px;
@@ -184,7 +181,6 @@
       font-size: 1rem;
     }
 
-    /* STATS */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -229,7 +225,6 @@
       flex-shrink: 0;
     }
 
-    /* MAIN GRID */
     .main-grid {
       display: grid;
       grid-template-columns: 1.1fr 1fr;
@@ -249,17 +244,14 @@
       letter-spacing: -0.5px;
     }
 
-    /* CHART PLACEHOLDER */
     .chart-box {
-  height: 260px;
-  border-radius: 18px;
-  border: 1px solid #ece2d6;
-  background: #fffdf9;
-  padding: 12px;
-}
+      height: 260px;
+      border-radius: 18px;
+      border: 1px solid #ece2d6;
+      background: #fffdf9;
+      padding: 12px;
+    }
 
-
-    /* ACTIVITY */
     .activity-list {
       display: flex;
       flex-direction: column;
@@ -298,8 +290,6 @@
       color: #7a6b5c;
       font-size: 0.84rem;
     }
-
-    
 
     @media (max-width: 1100px) {
       .stats-grid {
@@ -357,7 +347,6 @@
 
   <div class="dashboard">
 
-    <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="sidebar-top">
         <div class="logo">Cyber<span>Escola</span></div>
@@ -377,24 +366,23 @@
 
     <main class="main">
 
-  <div class="topbar">
-    <div class="topbar-left" th:text="'Bem-vindo, ' + ${utilizador.nome}">
-      Bem-vindo, Aluno
-    </div>
+      <div class="topbar">
+        <div class="topbar-left" th:text="'Bem-vindo, ' + ${utilizador.nome}">
+          Bem-vindo, Aluno
+        </div>
 
-    <<div class="topbar-right">
-  <span class="badge">ALUNO</span>
+        <div class="topbar-right">
+          <span class="badge">ALUNO</span>
 
-  <a href="/perfil" class="logout-btn" title="Perfil">
-    <i class="fa-solid fa-user"></i>
-  </a>
+          <a href="/perfil" class="logout-btn" title="Perfil">
+            <i class="fa-solid fa-user"></i>
+          </a>
 
-  <a href="/logout" class="logout-btn" title="Sair">
-    <i class="fa-solid fa-right-from-bracket"></i>
-  </a>
-</div>
-  </div>
-    
+          <a href="/logout" class="logout-btn" title="Sair">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </a>
+        </div>
+      </div>
 
       <section class="content">
         <div class="page-header">
@@ -403,101 +391,77 @@
         </div>
 
         <div class="stats-grid">
-  <div class="stat-card">
-    <div class="stat-info">
-      <span>Vídeos vistos</span>
-      <strong th:text="${videosVistos}">0</strong>
-    </div>
-    <div class="stat-icon">
-      <i class="fa-solid fa-video"></i>
-    </div>
-  </div>
+          <div class="stat-card">
+            <div class="stat-info">
+              <span>Vídeos vistos</span>
+              <strong th:text="${videosVistos}">0</strong>
+            </div>
+            <div class="stat-icon">
+              <i class="fa-solid fa-video"></i>
+            </div>
+          </div>
 
-  <div class="stat-card">
-    <div class="stat-info">
-      <span>Quizzes feitos</span>
-      <strong th:text="${quizzesFeitos}">0</strong>
-    </div>
-    <div class="stat-icon">
-      <i class="fa-solid fa-book-open"></i>
-    </div>
-  </div>
+          <div class="stat-card">
+            <div class="stat-info">
+              <span>Quizzes feitos</span>
+              <strong th:text="${quizzesFeitos}">0</strong>
+            </div>
+            <div class="stat-icon">
+              <i class="fa-solid fa-book-open"></i>
+            </div>
+          </div>
 
-  <div class="stat-card">
-    <div class="stat-info">
-      <span>Pontuação total</span>
-      <strong th:text="${pontuacaoTotal}">0</strong>
-    </div>
-    <div class="stat-icon">
-      <i class="fa-solid fa-arrow-trend-up"></i>
-    </div>
-  </div>
+          <div class="stat-card">
+            <div class="stat-info">
+              <span>Pontuação total</span>
+              <strong th:text="${pontuacaoTotal}">0</strong>
+            </div>
+            <div class="stat-icon">
+              <i class="fa-solid fa-arrow-trend-up"></i>
+            </div>
+          </div>
 
-  <div class="stat-card">
-    <div class="stat-info">
-      <span>Posição no ranking</span>
-      <strong th:text="'#' + ${posicaoRanking}">#0</strong>
-    </div>
-    <div class="stat-icon">
-      <i class="fa-solid fa-trophy"></i>
-    </div>
-  </div>
-</div>
+          <div class="stat-card">
+            <div class="stat-info">
+              <span>Posição no ranking</span>
+              <strong th:text="'#' + ${posicaoRanking}">#0</strong>
+            </div>
+            <div class="stat-icon">
+              <i class="fa-solid fa-trophy"></i>
+            </div>
+          </div>
+        </div>
 
-        <!-- CHART + ACTIVITY -->
         <div class="main-grid">
           <div class="panel">
             <h2>Evolução da Pontuação</h2>
             <div class="chart-box">
-  <canvas id="graficoPontuacao"></canvas>
-</div>
+              <canvas id="graficoPontuacao"></canvas>
+            </div>
           </div>
 
           <div class="panel">
             <h2>Últimas Atividades</h2>
 
-            <div class="activity-list">
-  <div class="activity-item" th:each="atividade : ${atividades}">
-    <div class="activity-icon">
-      <i th:class="${atividade.tipoAtividade == 'video'} ? 'fa-solid fa-video' : 'fa-solid fa-book-open'"></i>
-    </div>
-    <div class="activity-text">
-      <strong th:text="${atividade.descricao}">Descrição da atividade</strong>
-      <span th:text="${atividade.dataAtividade}">2026-03-28</span>
-    </div>
-  </div>
-</div>
-
-              <div class="activity-item">
-                <div class="activity-icon"><i class="fa-solid fa-book-open"></i></div>
+            <div class="activity-list" th:if="${not #lists.isEmpty(atividades)}">
+              <div class="activity-item" th:each="atividade : ${atividades}">
+                <div class="activity-icon">
+                  <i th:class="${atividade.tipoAtividade == 'video'} ? 'fa-solid fa-video' : 'fa-solid fa-book-open'"></i>
+                </div>
                 <div class="activity-text">
-                  <strong>Completou Quiz: Phishing — 90%</strong>
-                  <span>2026-03-28</span>
+                  <strong th:text="${atividade.descricao}">Descrição da atividade</strong>
+                  <span th:text="${atividade.dataAtividade}">2026-03-28</span>
                 </div>
               </div>
+            </div>
 
-              <div class="activity-item">
-                <div class="activity-icon"><i class="fa-solid fa-video"></i></div>
-                <div class="activity-text">
-                  <strong>Assistiu “Como criar senhas fortes”</strong>
-                  <span>2026-03-27</span>
-                </div>
+            <div class="activity-item" th:if="${#lists.isEmpty(atividades)}">
+              <div class="activity-icon">
+                <i class="fa-regular fa-clock"></i>
               </div>
-
-              <div class="activity-item">
-                <div class="activity-icon"><i class="fa-solid fa-book-open"></i></div>
-                <div class="activity-text">
-                  <strong>Completou Quiz: Senhas — 80%</strong>
-                  <span>2026-03-27</span>
-                </div>
-              </div>
-
-              <div class="activity-item">
-                <div class="activity-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                <div class="activity-text">
-                  <strong>Assistiu “Phishing por SMS”</strong>
-                  <span>2026-03-25</span>
-                </div>
+              <div class="activity-text">
+                <strong>Ainda não tens atividades registadas</strong>
+                <span>Explora conteúdos e completa quizzes para começares.</span>
               </div>
             </div>
           </div>
@@ -506,63 +470,64 @@
       </section>
     </main>
   </div>
+
   <script th:inline="javascript">
-  const semanas = /*[[${semanasGrafico}]]*/ [];
-  const pontos = /*[[${pontosGrafico}]]*/ [];
+    const semanas = /*[[${semanasGrafico}]]*/ [];
+    const pontos = /*[[${pontosGrafico}]]*/ [];
 
-  const ctx = document.getElementById('graficoPontuacao').getContext('2d');
+    const ctx = document.getElementById('graficoPontuacao').getContext('2d');
 
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: semanas,
-      datasets: [{
-        label: 'Pontuação',
-        data: pontos,
-        borderColor: '#9b6b43',
-        backgroundColor: 'rgba(155, 107, 67, 0.15)',
-        borderWidth: 3,
-        tension: 0.3,
-        fill: false,
-        pointRadius: 5,
-        pointHoverRadius: 7,
-        pointBackgroundColor: '#1f1f1f',
-        pointBorderColor: '#1f1f1f'
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false
-        },
-        tooltip: {
-          enabled: true
-        }
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: semanas,
+        datasets: [{
+          label: 'Pontuação',
+          data: pontos,
+          borderColor: '#9b6b43',
+          backgroundColor: 'rgba(155, 107, 67, 0.15)',
+          borderWidth: 3,
+          tension: 0.3,
+          fill: false,
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          pointBackgroundColor: '#1f1f1f',
+          pointBorderColor: '#1f1f1f'
+        }]
       },
-      scales: {
-        x: {
-          grid: {
-            color: '#ece2d6'
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
           },
-          ticks: {
-            color: '#7a6b5c'
+          tooltip: {
+            enabled: true
           }
         },
-        y: {
-          beginAtZero: true,
-          grid: {
-            color: '#ece2d6'
+        scales: {
+          x: {
+            grid: {
+              color: '#ece2d6'
+            },
+            ticks: {
+              color: '#7a6b5c'
+            }
           },
-          ticks: {
-            color: '#7a6b5c'
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: '#ece2d6'
+            },
+            ticks: {
+              color: '#7a6b5c'
+            }
           }
         }
       }
-    }
-  });
-</script>
+    });
+  </script>
 
 </body>
 </html>

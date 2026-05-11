@@ -1709,6 +1709,40 @@ public String editarPerfil(@RequestParam String nome,
     }
 }
 
+@PostMapping("/conteudo/{id}/marcar-visto")
+@ResponseBody
+public String marcarConteudoVisto(@PathVariable Long id, HttpSession session) {
+    if (semLogin(session)) return "erro";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (u == null || !u.getTipo().equalsIgnoreCase("aluno")) return "erro";
+
+    Conteudo conteudo = conteudoRepository.findById(id).orElse(null);
+    if (conteudo == null) return "erro";
+
+    boolean jaExisteHoje = atividadeAlunoRepository
+            .findTop5ByIdUtilizadorOrderByDataAtividadeDescIdDesc(u.getIdUtilizador())
+            .stream()
+            .anyMatch(a ->
+                    "video".equalsIgnoreCase(a.getTipoAtividade()) &&
+                    a.getDescricao() != null &&
+                    a.getDescricao().equals("Assistiu \"" + conteudo.getTitulo() + "\"") &&
+                    a.getDataAtividade() != null &&
+                    a.getDataAtividade().equals(LocalDate.now())
+            );
+
+    if (!jaExisteHoje) {
+        AtividadeAluno atividade = new AtividadeAluno();
+        atividade.setIdUtilizador(u.getIdUtilizador());
+        atividade.setTipoAtividade("video");
+        atividade.setDescricao("Assistiu \"" + conteudo.getTitulo() + "\"");
+        atividade.setDataAtividade(LocalDate.now());
+        atividadeAlunoRepository.save(atividade);
+    }
+
+    return "ok";
+}
+
     @PostMapping("/perfil/password")
 public String alterarPassword(@RequestParam String passwordAtual,
                               @RequestParam String novaPassword,

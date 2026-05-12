@@ -554,30 +554,20 @@
               <h2>Participação nos Jogos</h2>
             </div>
 
-            <div class="games-list">
-              <div class="game-item">
-                <div class="game-name">Detective Phishing</div>
-                <div class="game-bar"><div class="game-fill" style="width: 84%;"></div></div>
-                <div class="game-value">84%</div>
+            <div class="games-list" th:if="${not #lists.isEmpty(nomesJogosParticipacao)}">
+              <div class="game-item" th:each="nome, iter : ${nomesJogosParticipacao}">
+                <div class="game-name" th:text="${nome}">Nome do jogo</div>
+                <div class="game-bar">
+                  <div class="game-fill"
+                       th:style="'width:' + ${percentagensParticipacaoJogos[iter.index]} + '%;'">
+                  </div>
+                </div>
+                <div class="game-value" th:text="${percentagensParticipacaoJogos[iter.index]} + '%'">0%</div>
               </div>
+            </div>
 
-              <div class="game-item">
-                <div class="game-name">Força Password</div>
-                <div class="game-bar"><div class="game-fill" style="width: 72%;"></div></div>
-                <div class="game-value">72%</div>
-              </div>
-
-              <div class="game-item">
-                <div class="game-name">Caça ao Link</div>
-                <div class="game-bar"><div class="game-fill" style="width: 58%;"></div></div>
-                <div class="game-value">58%</div>
-              </div>
-
-              <div class="game-item">
-                <div class="game-name">Missão Privacidade</div>
-                <div class="game-bar"><div class="game-fill" style="width: 43%;"></div></div>
-                <div class="game-value">43%</div>
-              </div>
+            <div th:if="${#lists.isEmpty(nomesJogosParticipacao)}" style="color:#7a6b5c; font-weight:700;">
+              Ainda não existem jogos ativos.
             </div>
           </div>
 

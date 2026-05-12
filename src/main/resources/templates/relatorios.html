@@ -193,6 +193,7 @@
       font-weight: 800;
       border: 1px solid #1f1f1f;
       box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+      cursor: pointer;
     }
 
     .summary-grid {
@@ -258,165 +259,6 @@
       letter-spacing: -0.5px;
     }
 
-    .bars-box {
-      height: 280px;
-      border-radius: 18px;
-      border: 1px solid #ece2d6;
-      background:
-        linear-gradient(to right, rgba(221,212,200,0.55) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(221,212,200,0.55) 1px, transparent 1px);
-      background-size: 25% 25%;
-      padding: 22px 22px 42px;
-      display: flex;
-      align-items: end;
-      justify-content: space-evenly;
-      gap: 20px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .bar-group {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: end;
-      gap: 12px;
-      width: 100%;
-      max-width: 180px;
-      height: 100%;
-    }
-
-    .bar {
-      width: 100%;
-      max-width: 150px;
-      background: linear-gradient(180deg, #2d2d2d 0%, #1f1f1f 100%);
-      border-radius: 16px 16px 10px 10px;
-      position: relative;
-    }
-
-    .bar-value {
-      position: absolute;
-      top: -34px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #fffdf9;
-      border: 1px solid #ddd4c8;
-      border-radius: 12px;
-      padding: 6px 10px;
-      font-size: 0.86rem;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .bar-label {
-      font-size: 0.9rem;
-      color: #6f6257;
-      font-weight: 700;
-      text-align: center;
-    }
-
-    .donut-wrap {
-      height: 280px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 30px;
-      flex-wrap: wrap;
-    }
-
-    .donut-chart {
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      position: relative;
-      background: conic-gradient(
-        #9b6b43 0deg 110deg,
-        #c8ae90 110deg 210deg,
-        #e3d4c2 210deg 285deg,
-        #efe6da 285deg 360deg
-      );
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .donut-chart::after {
-      content: "";
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      background: #fffdf9;
-      border: 1px solid #eadfd2;
-    }
-
-    .donut-center {
-      position: absolute;
-      text-align: center;
-      z-index: 2;
-    }
-
-    .donut-center strong {
-      display: block;
-      font-size: 1.6rem;
-      font-weight: 800;
-    }
-
-    .donut-center span {
-      color: #7a6b5c;
-      font-size: 0.9rem;
-    }
-
-    .legend {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      color: #5c5c5c;
-    }
-
-    .legend-color {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .line-box {
-      height: 280px;
-      border-radius: 18px;
-      border: 1px solid #ece2d6;
-      background:
-        linear-gradient(to right, rgba(221,212,200,0.55) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(221,212,200,0.55) 1px, transparent 1px);
-      background-size: 25% 25%;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .chart-svg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-    }
-
-    .chart-labels {
-      position: absolute;
-      left: 16px;
-      right: 16px;
-      bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.82rem;
-      color: #7a6b5c;
-    }
-
     .mini-list {
       display: flex;
       flex-direction: column;
@@ -446,6 +288,50 @@
 
     .mini-item b {
       font-size: 1rem;
+    }
+
+    @media (max-width: 1100px) {
+      .summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .panel-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        width: 100%;
+        position: relative;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #ddd4c8;
+      }
+
+      .main {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      .topbar {
+        left: 0;
+        width: 100%;
+      }
+
+      .content {
+        padding-top: 108px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .page-header {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
@@ -484,74 +370,76 @@
     </div>
 
     <section class="content">
-      <div class="page-header">
-        <div>
-          <h1>Relatórios</h1>
-          <p>Estatísticas e análises das suas turmas.</p>
+      <div id="relatorioExportavel">
+        <div class="page-header">
+          <div>
+            <h1>Relatórios</h1>
+            <p>Estatísticas e análises das suas turmas.</p>
+          </div>
+
+          <button class="export-btn" type="button" onclick="exportarRelatorioPDF()">
+            <i class="fa-solid fa-download"></i>
+            Exportar
+          </button>
         </div>
 
-        <a href="#" class="export-btn">
-          <i class="fa-solid fa-download"></i>
-          Exportar
-        </a>
-      </div>
+        <div class="summary-grid">
+          <div class="summary-card">
+            <span>Total de alunos</span>
+            <strong id="totalAlunosCard" th:text="${totalAlunos}">0</strong>
+          </div>
 
-      <div class="summary-grid">
-  <div class="summary-card">
-    <span>Total de alunos</span>
-    <strong id="totalAlunosCard" th:text="${totalAlunos}">0</strong>
-  </div>
+          <div class="summary-card">
+            <span>Total de turmas</span>
+            <strong id="totalTurmasCard" th:text="${totalTurmas}">0</strong>
+          </div>
 
-  <div class="summary-card">
-    <span>Total de turmas</span>
-    <strong id="totalTurmasCard" th:text="${totalTurmas}">0</strong>
-  </div>
+          <div class="summary-card">
+            <span>Média global</span>
+            <strong id="mediaGlobalCard" th:text="${mediaGlobal} + ' pts'">0 pts</strong>
+          </div>
 
-  <div class="summary-card">
-    <span>Média global</span>
-    <strong id="mediaGlobalCard" th:text="${mediaGlobal} + ' pts'">0 pts</strong>
-  </div>
+          <div class="summary-card">
+            <span>Melhor turma</span>
+            <strong id="melhorTurmaCard" th:text="${melhorTurma}">Sem dados</strong>
+            <p id="melhorMediaCard" th:text="${melhorMedia} + ' pontos de média'">0</p>
+          </div>
+        </div>
 
-  <div class="summary-card">
-    <span>Melhor turma</span>
-    <strong id="melhorTurmaCard" th:text="${melhorTurma}">Sem dados</strong>
-    <p id="melhorMediaCard" th:text="${melhorMedia} + ' pontos de média'">0</p>
-  </div>
-</div>
+        <div class="panel-grid">
+          <div class="panel">
+            <h2>Média por Turma</h2>
+            <div style="height: 320px;">
+              <canvas id="barChart"></canvas>
+            </div>
+          </div>
 
-      <div class="panel-grid">
-        <div class="panel">
-  <h2>Média por Turma</h2>
-  <div style="height: 320px;">
-    <canvas id="barChart"></canvas>
-  </div>
-</div>
+          <div class="panel">
+            <h2>Distribuição de Alunos</h2>
+            <div style="height: 320px;">
+              <canvas id="donutChart"></canvas>
+            </div>
+          </div>
 
-        <div class="panel">
-  <h2>Distribuição de Alunos</h2>
-  <div style="height: 320px;">
-    <canvas id="donutChart"></canvas>
-  </div>
-</div>
+          <div class="panel">
+            <h2>Evolução Média</h2>
+            <div style="height: 320px;">
+              <canvas id="lineChart"></canvas>
+            </div>
+          </div>
 
-       <div class="panel">
-  <h2>Evolução Média</h2>
-  <div style="height: 320px;">
-    <canvas id="lineChart"></canvas>
-  </div>
-</div> 
+          <div class="panel">
+            <h2>Resumo por Turma</h2>
 
-        <div class="panel">
-          <h2>Resumo por Turma</h2>
+            <div class="mini-list">
+              <div class="mini-item" th:each="media, iter : ${mediaPontosPorTurma}">
+                <div>
+                  <strong th:text="${nomesTurmas[iter.index]}">Turma</strong>
+                  <span th:text="${totalAlunosPorTurma[iter.index]} + ' alunos'">0 alunos</span>
+                </div>
 
-          <div class="mini-list">
-            <div class="mini-item" th:each="media, iter : ${mediaPontosPorTurma}">
-              <div>
-                <strong th:text="${nomesTurmas[iter.index]}">Turma</strong>
-                <span th:text="${totalAlunosPorTurma[iter.index]} + ' alunos'">0 alunos</span>
+                <b th:text="${media} + ' pts'">0 pts</b>
               </div>
-
-              <b th:text="${media} + ' pts'">0 pts</b>
             </div>
           </div>
         </div>
@@ -559,77 +447,125 @@
     </section>
   </main>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <script>
-  let barChart, donutChart, lineChart;
+    let barChart, donutChart, lineChart;
 
-  async function carregarRelatorios() {
-    const response = await fetch('/relatorios/dados');
-    const data = await response.json();
+    async function carregarRelatorios() {
+      const response = await fetch('/relatorios/dados');
+      const data = await response.json();
 
-    if (data.erro) return;
+      if (data.erro) return;
 
-    document.getElementById('totalAlunosCard').textContent = data.totalAlunos;
-    document.getElementById('totalTurmasCard').textContent = data.totalTurmas;
-    document.getElementById('mediaGlobalCard').textContent = data.mediaGlobal + ' pts';
-    document.getElementById('melhorTurmaCard').textContent = data.melhorTurma;
-    document.getElementById('melhorMediaCard').textContent = data.melhorMedia + ' pontos de média';
+      document.getElementById('totalAlunosCard').textContent = data.totalAlunos;
+      document.getElementById('totalTurmasCard').textContent = data.totalTurmas;
+      document.getElementById('mediaGlobalCard').textContent = data.mediaGlobal + ' pts';
+      document.getElementById('melhorTurmaCard').textContent = data.melhorTurma;
+      document.getElementById('melhorMediaCard').textContent = data.melhorMedia + ' pontos de média';
 
-    if (barChart) barChart.destroy();
-    if (donutChart) donutChart.destroy();
-    if (lineChart) lineChart.destroy();
+      if (barChart) barChart.destroy();
+      if (donutChart) donutChart.destroy();
+      if (lineChart) lineChart.destroy();
 
-    barChart = new Chart(document.getElementById('barChart'), {
-      type: 'bar',
-      data: {
-        labels: data.nomesTurmas,
-        datasets: [{
-          label: 'Média de pontos',
-          data: data.mediaPontosPorTurma,
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false
+      barChart = new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+        data: {
+          labels: data.nomesTurmas,
+          datasets: [{
+            label: 'Média de pontos',
+            data: data.mediaPontosPorTurma,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false
+        }
+      });
+
+      donutChart = new Chart(document.getElementById('donutChart'), {
+        type: 'doughnut',
+        data: {
+          labels: data.nomesTurmas,
+          datasets: [{
+            data: data.totalAlunosPorTurma,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false
+        }
+      });
+
+      lineChart = new Chart(document.getElementById('lineChart'), {
+        type: 'line',
+        data: {
+          labels: data.meses,
+          datasets: [{
+            label: 'Evolução média',
+            data: data.evolucaoMedia,
+            tension: 0.3,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false
+        }
+      });
+    }
+
+    async function exportarRelatorioPDF() {
+      const { jsPDF } = window.jspdf;
+      const elemento = document.getElementById('relatorioExportavel');
+
+      if (!elemento) {
+        alert('Não foi encontrada a área do relatório para exportar.');
+        return;
       }
-    });
 
-    donutChart = new Chart(document.getElementById('donutChart'), {
-      type: 'doughnut',
-      data: {
-        labels: data.nomesTurmas,
-        datasets: [{
-          data: data.totalAlunosPorTurma,
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false
+      const canvas = await html2canvas(elemento, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#f8f5ef'
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = 210;
+      const pdfHeight = 297;
+      const margem = 10;
+      const larguraUtil = pdfWidth - (margem * 2);
+
+      const imgWidth = larguraUtil;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      let alturaRestante = imgHeight;
+      let posicaoY = margem;
+
+      pdf.addImage(imgData, 'PNG', margem, posicaoY, imgWidth, imgHeight);
+      alturaRestante -= (pdfHeight - margem * 2);
+
+      while (alturaRestante > 0) {
+        pdf.addPage();
+        posicaoY = margem - (imgHeight - alturaRestante);
+        pdf.addImage(imgData, 'PNG', margem, posicaoY, imgWidth, imgHeight);
+        alturaRestante -= (pdfHeight - margem * 2);
       }
-    });
 
-    lineChart = new Chart(document.getElementById('lineChart'), {
-      type: 'line',
-      data: {
-        labels: data.meses,
-        datasets: [{
-          label: 'Evolução média',
-          data: data.evolucaoMedia,
-          tension: 0.3,
-          fill: false
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
-  }
+      pdf.save('relatorio-professor.pdf');
+    }
 
-  carregarRelatorios();
-  setInterval(carregarRelatorios, 10000);
-</script>
+    carregarRelatorios();
+    setInterval(carregarRelatorios, 10000);
+  </script>
 
 </body>
 </html>

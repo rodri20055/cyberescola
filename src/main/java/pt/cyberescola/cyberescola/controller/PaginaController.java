@@ -49,6 +49,19 @@ import pt.cyberescola.cyberescola.repository.QuizRepository;
 import pt.cyberescola.cyberescola.repository.QuizTurmaRepository;
 import pt.cyberescola.cyberescola.repository.TurmaRepository;
 import pt.cyberescola.cyberescola.repository.UtilizadorRepository;
+import pt.cyberescola.cyberescola.model.Jogo;
+import pt.cyberescola.cyberescola.model.JogoRealizado;
+import pt.cyberescola.cyberescola.repository.JogoRepository;
+import pt.cyberescola.cyberescola.repository.JogoRealizadoRepository;
+import java.util.HashMap;
+import java.util.Map;
+import pt.cyberescola.cyberescola.model.JogoEstatistica;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 public class PaginaController {
@@ -65,35 +78,42 @@ public class PaginaController {
     private final AlertaRepository alertaRepository;
     private final ConteudoTurmaRepository conteudoTurmaRepository;
     private final QuizTurmaRepository quizTurmaRepository;
+    private final JogoRepository jogoRepository;
+private final JogoRealizadoRepository jogoRealizadoRepository;
     private final ConfiguracaoRepository configuracaoRepository;
 
     public PaginaController(UtilizadorRepository utilizadorRepository,
-                            EvolucaoPontuacaoRepository evolucaoPontuacaoRepository,
-                            AtividadeAlunoRepository atividadeAlunoRepository,
-                            QuizRepository quizRepository,
-                            PerguntaQuizRepository perguntaQuizRepository,
-                            ConteudoRepository conteudoRepository,
-                            QuizRealizadoRepository quizRealizadoRepository,
-                            TurmaRepository turmaRepository,
-                            ProfessorTurmaRepository professorTurmaRepository,
-                            AlertaRepository alertaRepository,
-                            ConteudoTurmaRepository conteudoTurmaRepository,
-                            ConfiguracaoRepository configuracaoRepository,
-                            QuizTurmaRepository quizTurmaRepository) {
-        this.utilizadorRepository = utilizadorRepository;
-        this.evolucaoPontuacaoRepository = evolucaoPontuacaoRepository;
-        this.atividadeAlunoRepository = atividadeAlunoRepository;
-        this.quizRepository = quizRepository;
-        this.perguntaQuizRepository = perguntaQuizRepository;
-        this.conteudoRepository = conteudoRepository;
-        this.quizRealizadoRepository = quizRealizadoRepository;
-        this.turmaRepository = turmaRepository;
-        this.professorTurmaRepository = professorTurmaRepository;
-        this.alertaRepository = alertaRepository;
-        this.conteudoTurmaRepository = conteudoTurmaRepository;
-        this.quizTurmaRepository = quizTurmaRepository;
-        this.configuracaoRepository = configuracaoRepository;
-    }
+                        EvolucaoPontuacaoRepository evolucaoPontuacaoRepository,
+                        AtividadeAlunoRepository atividadeAlunoRepository,
+                        QuizRepository quizRepository,
+                        PerguntaQuizRepository perguntaQuizRepository,
+                        ConteudoRepository conteudoRepository,
+                        QuizRealizadoRepository quizRealizadoRepository,
+                        TurmaRepository turmaRepository,
+                        ProfessorTurmaRepository professorTurmaRepository,
+                        AlertaRepository alertaRepository,
+                        ConteudoTurmaRepository conteudoTurmaRepository,
+                        ConfiguracaoRepository configuracaoRepository,
+                        QuizTurmaRepository quizTurmaRepository,
+                        JogoRepository jogoRepository,
+                        JogoRealizadoRepository jogoRealizadoRepository) {
+
+    this.utilizadorRepository = utilizadorRepository;
+    this.evolucaoPontuacaoRepository = evolucaoPontuacaoRepository;
+    this.atividadeAlunoRepository = atividadeAlunoRepository;
+    this.quizRepository = quizRepository;
+    this.perguntaQuizRepository = perguntaQuizRepository;
+    this.conteudoRepository = conteudoRepository;
+    this.quizRealizadoRepository = quizRealizadoRepository;
+    this.turmaRepository = turmaRepository;
+    this.professorTurmaRepository = professorTurmaRepository;
+    this.alertaRepository = alertaRepository;
+    this.conteudoTurmaRepository = conteudoTurmaRepository;
+    this.configuracaoRepository = configuracaoRepository;
+    this.quizTurmaRepository = quizTurmaRepository;
+    this.jogoRepository = jogoRepository;
+    this.jogoRealizadoRepository = jogoRealizadoRepository;
+}
 
     private boolean semLogin(HttpSession session) {
         return session.getAttribute("utilizadorLogado") == null;
@@ -170,77 +190,128 @@ public class PaginaController {
     }
 
     @GetMapping("/professor")
-    public String professor(HttpSession session, Model model) {
-        if (semLogin(session)) return "redirect:/login.html";
-        if (modoManutencaoAtivo()) return "redirect:/manutencao";
+public String professor(HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+    if (modoManutencaoAtivo()) return "redirect:/manutencao";
 
-        Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
-        if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("professor")) return "redirect:/login.html";
 
-        List<ProfessorTurma> ligacoes = professorTurmaRepository.findByIdProfessor(u.getIdUtilizador());
-        List<Long> idsTurmas = ligacoes.stream()
-                .map(ProfessorTurma::getIdTurma)
-                .toList();
+    List<ProfessorTurma> ligacoes = professorTurmaRepository.findByIdProfessor(u.getIdUtilizador());
+    List<Long> idsTurmas = ligacoes.stream()
+            .map(ProfessorTurma::getIdTurma)
+            .toList();
 
-        List<Turma> turmasProfessor = turmaRepository.findAllById(idsTurmas);
-        long totalTurmas = turmasProfessor.size();
-        long totalAlunos = idsTurmas.isEmpty() ? 0 : utilizadorRepository.countByTipoAndIdTurmaIn("aluno", idsTurmas);
-        long totalConteudos = conteudoRepository.count();
-        long totalQuizzes = quizRepository.count();
+    List<Turma> turmasProfessor = turmaRepository.findAllById(idsTurmas);
+    long totalTurmas = turmasProfessor.size();
+    long totalAlunos = idsTurmas.isEmpty() ? 0 : utilizadorRepository.countByTipoAndIdTurmaIn("aluno", idsTurmas);
+    long totalConteudos = conteudoRepository.count();
+    long totalQuizzes = quizRepository.count();
 
-        List<Utilizador> alunos = idsTurmas.isEmpty()
-                ? List.of()
-                : utilizadorRepository.findByTipoAndIdTurmaInOrderByNomeAsc("aluno", idsTurmas);
+    List<Utilizador> alunos = idsTurmas.isEmpty()
+            ? List.of()
+            : utilizadorRepository.findByTipoAndIdTurmaInOrderByNomeAsc("aluno", idsTurmas);
 
-        model.addAttribute("utilizador", u);
-        model.addAttribute("turmasProfessor", turmasProfessor);
-        model.addAttribute("totalTurmas", totalTurmas);
-        model.addAttribute("totalAlunos", totalAlunos);
-        model.addAttribute("totalConteudos", totalConteudos);
-        model.addAttribute("totalQuizzes", totalQuizzes);
-        model.addAttribute("alunos", alunos);
+    List<Jogo> jogosAtivos = jogoRepository.findByAtivoTrueOrderByIdAsc();
 
-        return "professor";
+    List<String> nomesJogosParticipacao = new ArrayList<>();
+    List<Integer> percentagensParticipacaoJogos = new ArrayList<>();
+
+    Set<Integer> idsAlunosProfessor = alunos.stream()
+            .map(Utilizador::getIdUtilizador)
+            .collect(Collectors.toSet());
+
+    for (Jogo jogo : jogosAtivos) {
+        List<JogoRealizado> realizacoes = jogoRealizadoRepository.findByIdJogo(jogo.getId());
+
+        long jogadoresUnicos = realizacoes.stream()
+                .map(JogoRealizado::getIdUtilizador)
+                .filter(idsAlunosProfessor::contains)
+                .distinct()
+                .count();
+
+        int percentagem = totalAlunos == 0
+                ? 0
+                : (int) Math.round((jogadoresUnicos * 100.0) / totalAlunos);
+
+        nomesJogosParticipacao.add(jogo.getTitulo());
+        percentagensParticipacaoJogos.add(percentagem);
     }
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("turmasProfessor", turmasProfessor);
+    model.addAttribute("totalTurmas", totalTurmas);
+    model.addAttribute("totalAlunos", totalAlunos);
+    model.addAttribute("totalConteudos", totalConteudos);
+    model.addAttribute("totalQuizzes", totalQuizzes);
+    model.addAttribute("alunos", alunos);
+    model.addAttribute("nomesJogosParticipacao", nomesJogosParticipacao);
+    model.addAttribute("percentagensParticipacaoJogos", percentagensParticipacaoJogos);
+
+    return "professor";
+}
 
     @GetMapping("/admin")
-    public String admin(HttpSession session, Model model) {
-        if (semLogin(session)) return "redirect:/login.html";
+public String admin(HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
 
-        Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
-        if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
 
-        List<Utilizador> utilizadores = utilizadorRepository.findAll();
+    List<Utilizador> utilizadores = utilizadorRepository.findAll();
 
-        long totalUtilizadores = utilizadores.size();
-        long totalAlunos = utilizadores.stream()
-                .filter(x -> x.getTipo() != null && x.getTipo().equalsIgnoreCase("aluno"))
+    long totalUtilizadores = utilizadores.size();
+    long totalAlunos = utilizadores.stream()
+            .filter(x -> x.getTipo() != null && x.getTipo().equalsIgnoreCase("aluno"))
+            .count();
+
+    long totalProfessores = utilizadores.stream()
+            .filter(x -> x.getTipo() != null && x.getTipo().equalsIgnoreCase("professor"))
+            .count();
+
+    long totalAdmins = utilizadores.stream()
+            .filter(x -> x.getTipo() != null && x.getTipo().equalsIgnoreCase("admin"))
+            .count();
+
+    long totalTurmas = turmaRepository.count();
+    long totalConteudos = conteudoRepository.count();
+    long totalQuizzes = quizRepository.count();
+
+    List<Jogo> jogosAtivos = jogoRepository.findByAtivoTrueOrderByIdAsc();
+
+    List<String> nomesJogosParticipacao = new ArrayList<>();
+    List<Integer> percentagensParticipacaoJogos = new ArrayList<>();
+
+    for (Jogo jogo : jogosAtivos) {
+        List<JogoRealizado> realizacoes = jogoRealizadoRepository.findByIdJogo(jogo.getId());
+
+        long jogadoresUnicos = realizacoes.stream()
+                .map(JogoRealizado::getIdUtilizador)
+                .distinct()
                 .count();
 
-        long totalProfessores = utilizadores.stream()
-                .filter(x -> x.getTipo() != null && x.getTipo().equalsIgnoreCase("professor"))
-                .count();
+        int percentagem = totalAlunos == 0
+                ? 0
+                : (int) Math.round((jogadoresUnicos * 100.0) / totalAlunos);
 
-        long totalAdmins = utilizadores.stream()
-                .filter(x -> x.getTipo() != null && x.getTipo().equalsIgnoreCase("admin"))
-                .count();
-
-        long totalTurmas = turmaRepository.count();
-        long totalConteudos = conteudoRepository.count();
-        long totalQuizzes = quizRepository.count();
-
-        model.addAttribute("utilizador", u);
-        model.addAttribute("utilizadores", utilizadores);
-        model.addAttribute("totalUtilizadores", totalUtilizadores);
-        model.addAttribute("totalAlunos", totalAlunos);
-        model.addAttribute("totalProfessores", totalProfessores);
-        model.addAttribute("totalAdmins", totalAdmins);
-        model.addAttribute("totalTurmas", totalTurmas);
-        model.addAttribute("totalConteudos", totalConteudos);
-        model.addAttribute("totalQuizzes", totalQuizzes);
-
-        return "admin";
+        nomesJogosParticipacao.add(jogo.getTitulo());
+        percentagensParticipacaoJogos.add(percentagem);
     }
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("utilizadores", utilizadores);
+    model.addAttribute("totalUtilizadores", totalUtilizadores);
+    model.addAttribute("totalAlunos", totalAlunos);
+    model.addAttribute("totalProfessores", totalProfessores);
+    model.addAttribute("totalAdmins", totalAdmins);
+    model.addAttribute("totalTurmas", totalTurmas);
+    model.addAttribute("totalConteudos", totalConteudos);
+    model.addAttribute("totalQuizzes", totalQuizzes);
+    model.addAttribute("nomesJogosParticipacao", nomesJogosParticipacao);
+    model.addAttribute("percentagensParticipacaoJogos", percentagensParticipacaoJogos);
+
+    return "admin";
+}
 
     @GetMapping("/admin/utilizadores")
     public String adminUtilizadores(HttpSession session, Model model) {
@@ -1525,6 +1596,436 @@ public String relatorios(HttpSession session, Model model) {
 
         return "redirect:/conteudos-professor?tipo=quizzes";
     }
+
+    @GetMapping("/jogos")
+public String jogos(HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+    if (modoManutencaoAtivo()) return "redirect:/manutencao";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("aluno")) return "redirect:/login.html";
+
+    List<Jogo> jogos = jogoRepository.findByAtivoTrueOrderByIdAsc();
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("jogos", jogos);
+
+    return "jogos";
+}
+
+@GetMapping("/jogo/{id}")
+public String jogoDetalhe(@PathVariable Long id, HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+    if (modoManutencaoAtivo()) return "redirect:/manutencao";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("aluno")) return "redirect:/login.html";
+
+    Jogo jogo = jogoRepository.findById(id).orElse(null);
+    if (jogo == null || Boolean.FALSE.equals(jogo.getAtivo())) return "redirect:/jogos";
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("jogo", jogo);
+
+   if ("phishing".equalsIgnoreCase(jogo.getTipo())) {
+    return "jogo-phishing";
+}
+
+if ("inbox-phishing".equalsIgnoreCase(jogo.getTipo())) {
+    model.addAttribute("dadosJson", jogo.getDadosJson());
+    return "jogo-inbox-phishing";
+}
+
+if ("password-segura".equalsIgnoreCase(jogo.getTipo())) {
+    model.addAttribute("dadosJson", jogo.getDadosJson());
+    return "jogo-password-segura";
+}
+
+if ("smishing".equalsIgnoreCase(jogo.getTipo())) {
+    model.addAttribute("dadosJson", jogo.getDadosJson());
+    return "jogo-smishing";
+}
+
+    return "redirect:/jogos";
+}
+
+@PostMapping("/jogo/{id}/submeter-smishing")
+public String submeterJogoSmishing(@PathVariable Long id,
+                                   @RequestParam Integer pontuacao,
+                                   @RequestParam Integer acertos,
+                                   @RequestParam Integer erros,
+                                   @RequestParam Integer tempoSegundos,
+                                   @RequestParam String detalheJson,
+                                   HttpSession session,
+                                   Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+    if (modoManutencaoAtivo()) return "redirect:/manutencao";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("aluno")) return "redirect:/login.html";
+
+    Jogo jogo = jogoRepository.findById(id).orElse(null);
+    if (jogo == null || Boolean.FALSE.equals(jogo.getAtivo())) return "redirect:/jogos";
+
+    if (pontuacao < 0) pontuacao = 0;
+    if (jogo.getPontosMaximos() != null && pontuacao > jogo.getPontosMaximos()) {
+        pontuacao = jogo.getPontosMaximos();
+    }
+
+    Integer pontosAtuais = u.getPontos() != null ? u.getPontos() : 0;
+    u.setPontos(pontosAtuais + pontuacao);
+    utilizadorRepository.save(u);
+    session.setAttribute("utilizadorLogado", u);
+
+    JogoRealizado realizado = new JogoRealizado();
+    realizado.setIdUtilizador(u.getIdUtilizador());
+    realizado.setIdJogo(jogo.getId());
+    realizado.setPontuacao(pontuacao);
+    realizado.setDataRealizacao(LocalDate.now());
+    realizado.setTempoSegundos(tempoSegundos);
+    realizado.setAcertos(acertos);
+    realizado.setErros(erros);
+    realizado.setDetalheJson(detalheJson);
+    jogoRealizadoRepository.save(realizado);
+
+    AtividadeAluno atividade = new AtividadeAluno();
+    atividade.setIdUtilizador(u.getIdUtilizador());
+    atividade.setTipoAtividade("jogo");
+    atividade.setDescricao("Completou jogo: " + jogo.getTitulo() + " — " + pontuacao + " pontos");
+    atividade.setDataAtividade(LocalDate.now());
+    atividadeAlunoRepository.save(atividade);
+
+    EvolucaoPontuacao novaEvolucao = new EvolucaoPontuacao();
+    novaEvolucao.setIdUtilizador(u.getIdUtilizador());
+    novaEvolucao.setSemana("Jogo " + LocalDate.now());
+    novaEvolucao.setPontos(u.getPontos());
+    evolucaoPontuacaoRepository.save(novaEvolucao);
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("jogo", jogo);
+    model.addAttribute("pontuacao", pontuacao);
+
+    return "jogo-resultado";
+}
+
+
+@GetMapping("/admin/jogos")
+public String adminJogos(HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+    if (modoManutencaoAtivo()) return "redirect:/manutencao";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+
+    List<Jogo> jogos = jogoRepository.findAllByOrderByIdDesc();
+    Map<Long, JogoEstatistica> estatisticasJogos = new HashMap<>();
+
+    for (Jogo jogo : jogos) {
+        List<JogoRealizado> realizacoes = jogoRealizadoRepository.findByIdJogo(jogo.getId());
+
+        long tentativas = realizacoes.size();
+
+        int mediaPontuacao = (int) Math.round(
+                realizacoes.stream()
+                        .map(JogoRealizado::getPontuacao)
+                        .filter(p -> p != null)
+                        .mapToInt(Integer::intValue)
+                        .average()
+                        .orElse(0)
+        );
+
+        int melhorPontuacao = realizacoes.stream()
+                .map(JogoRealizado::getPontuacao)
+                .filter(p -> p != null)
+                .mapToInt(Integer::intValue)
+                .max()
+                .orElse(0);
+
+        estatisticasJogos.put(
+                jogo.getId(),
+                new JogoEstatistica(jogo.getId(), tentativas, mediaPontuacao, melhorPontuacao)
+        );
+    }
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("jogos", jogos);
+    model.addAttribute("estatisticasJogos", estatisticasJogos);
+
+    return "admin-jogos";
+}
+
+@PostMapping("/admin/jogos/criar")
+public String criarJogoAdmin(@RequestParam String titulo,
+                             @RequestParam String tema,
+                             @RequestParam String descricao,
+                             @RequestParam String tipo,
+                             @RequestParam Integer pontosMaximos,
+                             @RequestParam Integer tempoLimite,
+                             @RequestParam Boolean ativo,
+                             @RequestParam String dadosJson,
+                             HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+
+    Jogo jogo = new Jogo();
+    jogo.setTitulo(titulo);
+    jogo.setTema(tema);
+    jogo.setDescricao(descricao);
+    jogo.setTipo(tipo);
+    jogo.setPontosMaximos(pontosMaximos);
+    jogo.setTempoLimite(tempoLimite);
+    jogo.setAtivo(ativo);
+    jogo.setDadosJson(dadosJson);
+
+    jogoRepository.save(jogo);
+
+    return "redirect:/admin/jogos";
+}
+
+@PostMapping("/admin/jogos/editar/{id}")
+public String editarJogoAdmin(@PathVariable Long id,
+                              @RequestParam String titulo,
+                              @RequestParam String tema,
+                              @RequestParam String descricao,
+                              @RequestParam String tipo,
+                              @RequestParam Integer pontosMaximos,
+                              @RequestParam Integer tempoLimite,
+                              @RequestParam Boolean ativo,
+                              @RequestParam String dadosJson,
+                              HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+
+    Jogo jogo = jogoRepository.findById(id).orElse(null);
+    if (jogo == null) return "redirect:/admin/jogos";
+
+    jogo.setTitulo(titulo);
+    jogo.setTema(tema);
+    jogo.setDescricao(descricao);
+    jogo.setTipo(tipo);
+    jogo.setPontosMaximos(pontosMaximos);
+    jogo.setTempoLimite(tempoLimite);
+    jogo.setAtivo(ativo);
+    jogo.setDadosJson(dadosJson);
+
+    jogoRepository.save(jogo);
+
+    return "redirect:/admin/jogos";
+}
+
+@PostMapping("/admin/jogos/apagar/{id}")
+public String apagarJogoAdmin(@PathVariable Long id, HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("admin")) return "redirect:/login.html";
+
+    jogoRepository.deleteById(id);
+
+    return "redirect:/admin/jogos";
+}
+
+@PostMapping("/jogo/{id}/submeter-passwords")
+public String submeterJogoPasswords(@PathVariable Long id,
+                                    @RequestParam Integer pontuacao,
+                                    @RequestParam Integer acertos,
+                                    @RequestParam Integer erros,
+                                    @RequestParam Integer tempoSegundos,
+                                    @RequestParam String detalheJson,
+                                    HttpSession session,
+                                    Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+    if (modoManutencaoAtivo()) return "redirect:/manutencao";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("aluno")) return "redirect:/login.html";
+
+    Jogo jogo = jogoRepository.findById(id).orElse(null);
+    if (jogo == null || Boolean.FALSE.equals(jogo.getAtivo())) return "redirect:/jogos";
+
+    if (pontuacao < 0) pontuacao = 0;
+    if (jogo.getPontosMaximos() != null && pontuacao > jogo.getPontosMaximos()) {
+        pontuacao = jogo.getPontosMaximos();
+    }
+
+    Integer pontosAtuais = u.getPontos() != null ? u.getPontos() : 0;
+    u.setPontos(pontosAtuais + pontuacao);
+    utilizadorRepository.save(u);
+    session.setAttribute("utilizadorLogado", u);
+
+    JogoRealizado realizado = new JogoRealizado();
+    realizado.setIdUtilizador(u.getIdUtilizador());
+    realizado.setIdJogo(jogo.getId());
+    realizado.setPontuacao(pontuacao);
+    realizado.setDataRealizacao(LocalDate.now());
+    realizado.setTempoSegundos(tempoSegundos);
+    realizado.setAcertos(acertos);
+    realizado.setErros(erros);
+    realizado.setDetalheJson(detalheJson);
+    jogoRealizadoRepository.save(realizado);
+
+    AtividadeAluno atividade = new AtividadeAluno();
+    atividade.setIdUtilizador(u.getIdUtilizador());
+    atividade.setTipoAtividade("jogo");
+    atividade.setDescricao("Completou jogo: " + jogo.getTitulo() + " — " + pontuacao + " pontos");
+    atividade.setDataAtividade(LocalDate.now());
+    atividadeAlunoRepository.save(atividade);
+
+    EvolucaoPontuacao novaEvolucao = new EvolucaoPontuacao();
+    novaEvolucao.setIdUtilizador(u.getIdUtilizador());
+    novaEvolucao.setSemana("Jogo " + LocalDate.now());
+    novaEvolucao.setPontos(u.getPontos());
+    evolucaoPontuacaoRepository.save(novaEvolucao);
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("jogo", jogo);
+    model.addAttribute("pontuacao", pontuacao);
+
+    return "jogo-resultado";
+}
+
+@PostMapping("/jogo/{id}/submeter-inbox")
+public String submeterJogoInbox(@PathVariable Long id,
+                                @RequestParam Integer pontuacao,
+                                @RequestParam Integer acertos,
+                                @RequestParam Integer erros,
+                                @RequestParam Integer tempoSegundos,
+                                @RequestParam String detalheJson,
+                                HttpSession session,
+                                Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+    if (modoManutencaoAtivo()) return "redirect:/manutencao";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("aluno")) return "redirect:/login.html";
+
+    Jogo jogo = jogoRepository.findById(id).orElse(null);
+    if (jogo == null || Boolean.FALSE.equals(jogo.getAtivo())) return "redirect:/jogos";
+
+    if (pontuacao < 0) pontuacao = 0;
+    if (jogo.getPontosMaximos() != null && pontuacao > jogo.getPontosMaximos()) {
+        pontuacao = jogo.getPontosMaximos();
+    }
+
+    Integer pontosAtuais = u.getPontos() != null ? u.getPontos() : 0;
+    u.setPontos(pontosAtuais + pontuacao);
+    utilizadorRepository.save(u);
+    session.setAttribute("utilizadorLogado", u);
+
+    JogoRealizado realizado = new JogoRealizado();
+    realizado.setIdUtilizador(u.getIdUtilizador());
+    realizado.setIdJogo(jogo.getId());
+    realizado.setPontuacao(pontuacao);
+    realizado.setDataRealizacao(LocalDate.now());
+    realizado.setTempoSegundos(tempoSegundos);
+    realizado.setAcertos(acertos);
+    realizado.setErros(erros);
+    realizado.setDetalheJson(detalheJson);
+    jogoRealizadoRepository.save(realizado);
+
+    AtividadeAluno atividade = new AtividadeAluno();
+    atividade.setIdUtilizador(u.getIdUtilizador());
+    atividade.setTipoAtividade("jogo");
+    atividade.setDescricao("Completou jogo: " + jogo.getTitulo() + " — " + pontuacao + " pontos");
+    atividade.setDataAtividade(LocalDate.now());
+    atividadeAlunoRepository.save(atividade);
+
+    EvolucaoPontuacao novaEvolucao = new EvolucaoPontuacao();
+    novaEvolucao.setIdUtilizador(u.getIdUtilizador());
+    novaEvolucao.setSemana("Jogo " + LocalDate.now());
+    novaEvolucao.setPontos(u.getPontos());
+    evolucaoPontuacaoRepository.save(novaEvolucao);
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("jogo", jogo);
+    model.addAttribute("pontuacao", pontuacao);
+
+    return "jogo-resultado";
+}
+
+@PostMapping("/jogo/{id}/submeter")
+public String submeterJogo(@PathVariable Long id,
+                           @RequestParam(required = false) List<String> respostas,
+                           HttpSession session,
+                           Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+    if (modoManutencaoAtivo()) return "redirect:/manutencao";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (!u.getTipo().equalsIgnoreCase("aluno")) return "redirect:/login.html";
+
+    Jogo jogo = jogoRepository.findById(id).orElse(null);
+    if (jogo == null || Boolean.FALSE.equals(jogo.getAtivo())) return "redirect:/jogos";
+
+    List<String> corretas = List.of("1", "3", "5");
+    int pontuacao = 0;
+
+    if (respostas != null) {
+        for (String correta : corretas) {
+            if (respostas.contains(correta)) {
+                pontuacao += 20;
+            }
+        }
+
+        for (String resposta : respostas) {
+            if (!corretas.contains(resposta)) {
+                pontuacao -= 10;
+            }
+        }
+    }
+
+    if (pontuacao < 0) pontuacao = 0;
+    if (pontuacao > 100) pontuacao = 100;
+
+    int melhorPontuacaoAnterior = jogoRealizadoRepository
+            .findTopByIdUtilizadorAndIdJogoOrderByPontuacaoDesc(u.getIdUtilizador(), jogo.getId())
+            .map(JogoRealizado::getPontuacao)
+            .orElse(0);
+
+    int pontosGanhosAgora = 0;
+    if (pontuacao > melhorPontuacaoAnterior) {
+        pontosGanhosAgora = pontuacao - melhorPontuacaoAnterior;
+    }
+
+    Integer pontosAtuais = u.getPontos() != null ? u.getPontos() : 0;
+    u.setPontos(pontosAtuais + pontosGanhosAgora);
+    utilizadorRepository.save(u);
+    session.setAttribute("utilizadorLogado", u);
+
+    JogoRealizado realizado = new JogoRealizado();
+    realizado.setIdUtilizador(u.getIdUtilizador());
+    realizado.setIdJogo(jogo.getId());
+    realizado.setPontuacao(pontuacao);
+    realizado.setDataRealizacao(LocalDate.now());
+    jogoRealizadoRepository.save(realizado);
+
+    AtividadeAluno atividade = new AtividadeAluno();
+    atividade.setIdUtilizador(u.getIdUtilizador());
+    atividade.setTipoAtividade("jogo");
+    atividade.setDescricao("Completou jogo: " + jogo.getTitulo() + " — " + pontuacao + " pontos");
+    atividade.setDataAtividade(LocalDate.now());
+    atividadeAlunoRepository.save(atividade);
+
+    if (pontosGanhosAgora > 0) {
+        EvolucaoPontuacao novaEvolucao = new EvolucaoPontuacao();
+        novaEvolucao.setIdUtilizador(u.getIdUtilizador());
+        novaEvolucao.setSemana("Jogo " + LocalDate.now());
+        novaEvolucao.setPontos(u.getPontos());
+        evolucaoPontuacaoRepository.save(novaEvolucao);
+    }
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("jogo", jogo);
+    model.addAttribute("pontuacao", pontuacao);
+    model.addAttribute("pontosGanhosAgora", pontosGanhosAgora);
+    model.addAttribute("melhorPontuacaoAnterior", melhorPontuacaoAnterior);
+
+    return "jogo-resultado";
+}
 
     @PostMapping("/alertas/lidas")
     public String marcarTodosComoLidos(HttpSession session) {

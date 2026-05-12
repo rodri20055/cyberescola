@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Conteúdo | CyberEscola</title>
+  <title>Jogo Phishing | CyberEscola</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -81,11 +81,6 @@
       transition: 0.2s;
     }
 
-    .menu a i {
-      width: 18px;
-      text-align: center;
-    }
-
     .menu a:hover {
       background: #efe6da;
       color: #1f1f1f;
@@ -109,7 +104,6 @@
     }
 
     .topbar {
-      width: 100%;
       background: #fffdf9;
       border-bottom: 1px solid #ddd4c8;
       padding: 20px 28px;
@@ -153,8 +147,8 @@
 
     .content {
       width: 100%;
-      max-width: 1180px;
-      padding: 32px 24px 40px;
+      max-width: 1000px;
+      padding: 30px 24px 34px;
       margin: 0 auto;
     }
 
@@ -167,44 +161,73 @@
       margin-bottom: 22px;
     }
 
+    .page-header {
+      margin-bottom: 24px;
+    }
+
     .page-header h1 {
-      font-size: 2.35rem;
-      letter-spacing: -1px;
+      font-size: 2.3rem;
       margin-bottom: 8px;
     }
 
-    .meta {
-      color: #7a6b5c;
-      font-size: 1rem;
-      margin-bottom: 22px;
+    .page-header p {
+      color: #5c5c5c;
     }
 
-    .video-frame {
+    .info-box {
       background: #fffdf9;
       border: 1px solid #ddd4c8;
-      border-radius: 26px;
-      overflow: hidden;
-      margin-bottom: 22px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+      border-radius: 20px;
+      padding: 18px 20px;
+      margin-bottom: 20px;
     }
 
-    .video-embed {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      border: none;
+    .info-box strong {
       display: block;
-      background: #ece2d6;
-    }
-
-    .description {
-      color: #5c5c5c;
+      margin-bottom: 8px;
       font-size: 1rem;
-      line-height: 1.8;
-      margin-bottom: 28px;
-      max-width: 900px;
     }
 
-    .action-row {
+    .cards-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .phishing-card {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.03);
+    }
+
+    .phishing-card label {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      cursor: pointer;
+    }
+
+    .phishing-card input[type="checkbox"] {
+      margin-top: 4px;
+      transform: scale(1.2);
+    }
+
+    .card-content strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+
+    .card-content span {
+      color: #5c5c5c;
+      line-height: 1.6;
+      display: block;
+    }
+
+    .actions {
       display: flex;
       gap: 14px;
       flex-wrap: wrap;
@@ -216,10 +239,11 @@
       gap: 10px;
       background: #1f1f1f;
       color: white;
-      padding: 14px 20px;
+      padding: 14px 18px;
       border-radius: 999px;
       font-weight: 800;
       border: 1px solid #1f1f1f;
+      cursor: pointer;
     }
 
     .btn-light {
@@ -228,7 +252,7 @@
       gap: 10px;
       background: #fffdf9;
       color: #1f1f1f;
-      padding: 14px 20px;
+      padding: 14px 18px;
       border-radius: 999px;
       font-weight: 800;
       border: 1px solid #d7cec2;
@@ -243,12 +267,12 @@
         <div class="logo">Cyber<span>Escola</span></div>
 
         <nav class="menu">
-  <a href="/aluno"><i class="fa-solid fa-house"></i> Dashboard</a>
-  <a href="/conteudos" class="active"><i class="fa-solid fa-book-open"></i> Conteúdos</a>
-  <a href="/jogos"><i class="fa-solid fa-gamepad"></i> Jogos</a>
-  <a href="/ranking"><i class="fa-solid fa-trophy"></i> Classificação</a>
-  <a href="/perfil"><i class="fa-solid fa-user"></i> Perfil</a>
-</nav>
+          <a href="/aluno"><i class="fa-solid fa-house"></i> Dashboard</a>
+          <a href="/conteudos"><i class="fa-solid fa-book-open"></i> Conteúdos</a>
+          <a href="/jogos" class="active"><i class="fa-solid fa-gamepad"></i> Jogos</a>
+          <a href="/ranking"><i class="fa-solid fa-trophy"></i> Classificação</a>
+          <a href="/perfil"><i class="fa-solid fa-user"></i> Perfil</a>
+        </nav>
       </div>
 
       <div class="sidebar-footer">© 2026 CyberEscola</div>
@@ -256,70 +280,103 @@
 
     <main class="main">
       <div class="topbar">
-        <div class="topbar-left" th:text="'Bem-vindo, ' + ${utilizadorLogado.nome}">
-          Bem-vindo, Aluno
-        </div>
+        <div class="topbar-left" th:text="'Bem-vindo, ' + ${utilizador.nome}">Bem-vindo</div>
 
         <div class="topbar-right">
-          <span class="badge" th:text="${utilizadorLogado.tipo}">ALUNO</span>
+          <span class="badge">ALUNO</span>
           <a href="/perfil" class="icon-btn"><i class="fa-solid fa-user"></i></a>
           <a href="/logout" class="icon-btn"><i class="fa-solid fa-right-from-bracket"></i></a>
         </div>
       </div>
 
       <section class="content">
-        <a href="/conteudos" class="back-link">
+        <a href="/jogos" class="back-link">
           <i class="fa-solid fa-arrow-left"></i>
-          Voltar aos conteúdos
+          Voltar aos jogos
         </a>
 
         <div class="page-header">
-          <h1 th:text="${conteudo.titulo}">Título</h1>
+          <h1 th:text="${jogo.titulo}">Caça ao Phishing</h1>
+          <p>Seleciona as mensagens que consideras phishing.</p>
         </div>
 
-        <div class="meta">
-          <span th:text="${conteudo.tema}">Tema</span>
-          ·
-          <span th:text="${conteudo.duracao}">0:00</span>
+        <div class="info-box">
+          <strong>Como funciona</strong>
+          <span>
+            Assinala apenas as mensagens suspeitas. Cada resposta certa dá pontos e cada resposta errada tira pontos.
+          </span>
         </div>
 
-        <div class="video-frame">
-          <iframe class="video-embed"
-                  th:src="${conteudo.videoUrl}"
-                  title="Vídeo"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen>
-          </iframe>
-        </div>
+        <form th:action="@{'/jogo/' + ${jogo.id} + '/submeter'}" method="post">
+          <div class="cards-list">
 
-        <p class="description" th:text="${conteudo.descricao}">
-          Descrição
-        </p>
+            <div class="phishing-card">
+              <label>
+                <input type="checkbox" name="respostas" value="1">
+                <div class="card-content">
+                  <strong>Email 1</strong>
+                  <span>“A tua conta foi suspensa. Clica aqui já para recuperar o acesso.”</span>
+                </div>
+              </label>
+            </div>
 
-        <div class="action-row">
-          <a th:href="@{'/quiz-associado/' + ${conteudo.id}}" class="btn-dark">
-            <i class="fa-solid fa-book-open"></i>
-            Fazer quiz associado
-          </a>
+            <div class="phishing-card">
+              <label>
+                <input type="checkbox" name="respostas" value="2">
+                <div class="card-content">
+                  <strong>Email 2</strong>
+                  <span>“Olá Rodrigo, aqui está o material da aula de hoje enviado pelo teu professor.”</span>
+                </div>
+              </label>
+            </div>
 
-          <a href="/conteudos" class="btn-light">
-            <i class="fa-solid fa-arrow-left"></i>
-            Voltar
-          </a>
-        </div>
+            <div class="phishing-card">
+              <label>
+                <input type="checkbox" name="respostas" value="3">
+                <div class="card-content">
+                  <strong>Email 3</strong>
+                  <span>“Ganhaste um prémio! Envia o teu IBAN e palavra-passe para receberes.”</span>
+                </div>
+              </label>
+            </div>
+
+            <div class="phishing-card">
+              <label>
+                <input type="checkbox" name="respostas" value="4">
+                <div class="card-content">
+                  <strong>Email 4</strong>
+                  <span>“Atualização de segurança disponível no portal oficial da escola.”</span>
+                </div>
+              </label>
+            </div>
+
+            <div class="phishing-card">
+              <label>
+                <input type="checkbox" name="respostas" value="5">
+                <div class="card-content">
+                  <strong>Email 5</strong>
+                  <span>“Confirma imediatamente os dados do teu cartão para evitar bloqueio.”</span>
+                </div>
+              </label>
+            </div>
+
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn-dark">
+              <i class="fa-solid fa-paper-plane"></i>
+              Submeter jogo
+            </button>
+
+            <a href="/jogos" class="btn-light">
+              <i class="fa-solid fa-arrow-left"></i>
+              Cancelar
+            </a>
+          </div>
+        </form>
       </section>
     </main>
   </div>
-
-  <script th:inline="javascript">
-  const conteudoId = /*[[${conteudo.id}]]*/ 0;
-
-  setTimeout(() => {
-    fetch('/conteudo/' + conteudoId + '/marcar-visto', {
-      method: 'POST'
-    });
-  }, 10000);
-</script>
 
 </body>
 </html>

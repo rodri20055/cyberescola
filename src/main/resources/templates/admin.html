@@ -181,6 +181,7 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 18px;
+      margin-bottom: 24px;
     }
 
     .stat-card {
@@ -228,6 +229,61 @@
       flex-shrink: 0;
     }
 
+    .panel {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+      margin-top: 24px;
+    }
+
+    .panel h2 {
+      font-size: 1.3rem;
+      margin-bottom: 18px;
+      letter-spacing: -0.5px;
+    }
+
+    .participacao-lista {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .participacao-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .participacao-topo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+    }
+
+    .barra {
+      width: 100%;
+      height: 16px;
+      background: #e8ddd0;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .barra-fill {
+      height: 100%;
+      background: #9b6b43;
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    .empty-state {
+      color: #6f6257;
+      font-weight: 700;
+    }
+
     @keyframes fadeUp {
       from {
         opacity: 0;
@@ -240,7 +296,8 @@
     }
 
     .page-header,
-    .stat-card {
+    .stat-card,
+    .panel {
       animation: fadeUp 0.45s ease;
     }
 
@@ -288,12 +345,13 @@
       <div class="logo">Cyber<span>Escola</span></div>
 
       <nav class="menu">
-  <a href="/admin" class="active"><i class="fa-solid fa-house"></i> Dashboard</a>
-  <a href="/admin/utilizadores"><i class="fa-solid fa-users"></i> Utilizadores</a>
-  <a href="/admin/conteudos"><i class="fa-regular fa-folder-open"></i> Conteúdos</a>
-  <a href="/admin/configuracao"><i class="fa-solid fa-gear"></i> Configuração</a>
-  <a href="/admin/perfil"><i class="fa-regular fa-user"></i> Perfil</a>
-</nav>
+        <a href="/admin" class="active"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="/admin/utilizadores"><i class="fa-solid fa-users"></i> Utilizadores</a>
+        <a href="/admin/conteudos"><i class="fa-regular fa-folder-open"></i> Conteúdos</a>
+        <a href="/admin/configuracao"><i class="fa-solid fa-gear"></i> Configuração</a>
+        <a href="/admin/perfil"><i class="fa-regular fa-user"></i> Perfil</a>
+        <a href="/admin/jogos"><i class="fa-solid fa-gamepad"></i> Jogos</a>
+      </nav>
     </div>
 
     <div class="sidebar-footer">© 2026 CyberEscola</div>
@@ -306,9 +364,9 @@
       <div class="topbar-right">
         <span class="badge" th:text="${utilizador.tipo}">ADMIN</span>
 
-       <a href="/admin/perfil" class="icon-btn" title="Perfil">
-  <i class="fa-solid fa-user"></i>
-</a>
+        <a href="/admin/perfil" class="icon-btn" title="Perfil">
+          <i class="fa-solid fa-user"></i>
+        </a>
 
         <a href="/logout" class="icon-btn" title="Sair">
           <i class="fa-solid fa-right-from-bracket"></i>
@@ -391,6 +449,39 @@
           <div class="stat-icon">
             <i class="fa-solid fa-circle-question"></i>
           </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-info">
+            <span>Jogos ativos</span>
+            <strong th:text="${#lists.size(nomesJogosParticipacao)}">0</strong>
+          </div>
+          <div class="stat-icon">
+            <i class="fa-solid fa-gamepad"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Participação nos Jogos</h2>
+
+        <div class="participacao-lista" th:if="${not #lists.isEmpty(nomesJogosParticipacao)}">
+          <div class="participacao-item" th:each="nome, iter : ${nomesJogosParticipacao}">
+            <div class="participacao-topo">
+              <span th:text="${nome}">Nome do jogo</span>
+              <strong th:text="${percentagensParticipacaoJogos[iter.index]} + '%'">0%</strong>
+            </div>
+
+            <div class="barra">
+              <div class="barra-fill"
+                   th:style="'width:' + ${percentagensParticipacaoJogos[iter.index]} + '%;'">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(nomesJogosParticipacao)}" class="empty-state">
+          Ainda não existem jogos ativos.
         </div>
       </div>
     </section>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador de Inbox | CyberEscola</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Manrope', sans-serif; }
+    body { background: #f8f5ef; color: #1f1f1f; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 28px; }
+    h1 { font-size: 2.2rem; margin-bottom: 10px; }
+    p { color: #5c5c5c; margin-bottom: 22px; }
+    .layout {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 20px;
+    }
+    .panel {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.03);
+    }
+    .email-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .email-item {
+      border: 1px solid #eadfd2;
+      border-radius: 16px;
+      padding: 14px;
+      cursor: pointer;
+      background: #faf6f0;
+    }
+    .email-item.active {
+      background: #efe6da;
+      border-color: #d6c2aa;
+    }
+    .email-item strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+    .email-item span {
+      color: #6f6257;
+      font-size: 0.92rem;
+    }
+    .email-view h2 {
+      margin-bottom: 10px;
+      font-size: 1.3rem;
+    }
+    .meta {
+      color: #7a6b5c;
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+    .body-box {
+      background: #faf6f0;
+      border: 1px solid #eadfd2;
+      border-radius: 18px;
+      padding: 18px;
+      min-height: 180px;
+      margin-bottom: 20px;
+      line-height: 1.7;
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 13px 18px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn-danger {
+      background: #b42318;
+      color: white;
+    }
+    .btn-safe {
+      background: #027a48;
+      color: white;
+    }
+    .btn-submit {
+      background: #1f1f1f;
+      color: white;
+      margin-top: 18px;
+    }
+    .status {
+      font-size: 0.95rem;
+      color: #6f6257;
+      font-weight: 700;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: #efe6da;
+      color: #6c4b2d;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 800;
+    }
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div>
+        <h1 th:text="${jogo.titulo}">Simulador de Inbox</h1>
+        <p>Abre cada email e decide se é phishing ou seguro.</p>
+      </div>
+      <div class="badge">
+  Tempo restante: <span id="tempoRestante" th:text="${jogo.tempoLimite}">90</span>s
+</div>
+    </div>
+
+    <div class="layout">
+      <div class="panel">
+        <div id="emailList" class="email-list"></div>
+      </div>
+
+      <div class="panel email-view">
+        <h2 id="assunto">Seleciona um email</h2>
+        <div class="meta" id="meta"></div>
+        <div class="body-box" id="corpo">Escolhe um email da lista à esquerda para começar.</div>
+
+        <div class="actions">
+          <button class="btn btn-danger" onclick="marcarAtual(true)">Marcar como phishing</button>
+          <button class="btn btn-safe" onclick="marcarAtual(false)">Marcar como seguro</button>
+        </div>
+
+        <div class="status" id="status">Nenhuma decisão registada ainda.</div>
+
+        <form id="formFinal" th:action="@{'/jogo/' + ${jogo.id} + '/submeter-inbox'}" method="post">
+          <input type="hidden" name="pontuacao" id="pontuacaoFinal">
+          <input type="hidden" name="acertos" id="acertosFinal">
+          <input type="hidden" name="erros" id="errosFinal">
+          <input type="hidden" name="tempoSegundos" id="tempoSegundosFinal">
+          <input type="hidden" name="detalheJson" id="detalheJsonFinal">
+
+          <button type="button" class="btn btn-submit" onclick="submeterJogo()">
+            Submeter resultado
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script th:inline="javascript">
+  const jogoData = JSON.parse(/*[[${dadosJson}]]*/ '{}');
+  const emails = jogoData.emails || [];
+  const respostas = {};
+  let emailAtual = null;
+  const inicio = Date.now();
+  let tempoRestante = /*[[${jogo.tempoLimite}]]*/ 90;
+  let jogoSubmetido = false;
+
+  const emailList = document.getElementById('emailList');
+  const assunto = document.getElementById('assunto');
+  const meta = document.getElementById('meta');
+  const corpo = document.getElementById('corpo');
+  const status = document.getElementById('status');
+  const tempoRestanteEl = document.getElementById('tempoRestante');
+
+  function renderLista() {
+    emailList.innerHTML = '';
+
+    emails.forEach(email => {
+      const div = document.createElement('div');
+      div.className = 'email-item' + (emailAtual && emailAtual.id === email.id ? ' active' : '');
+      div.onclick = () => selecionarEmail(email.id);
+
+      const decisao = respostas[email.id];
+      const textoEstado = decisao === undefined
+        ? 'Por analisar'
+        : (decisao ? 'Marcado como phishing' : 'Marcado como seguro');
+
+      div.innerHTML = `
+        <strong>${email.assunto}</strong>
+        <span>${email.remetente}</span><br>
+        <span>${textoEstado}</span>
+      `;
+
+      emailList.appendChild(div);
+    });
+  }
+
+  function selecionarEmail(id) {
+    emailAtual = emails.find(e => e.id === id);
+    if (!emailAtual) return;
+
+    assunto.textContent = emailAtual.assunto;
+    meta.innerHTML = `<strong>De:</strong> ${emailAtual.remetente}`;
+    corpo.textContent = emailAtual.corpo;
+
+    const decisao = respostas[emailAtual.id];
+    if (decisao === undefined) {
+      status.textContent = 'Nenhuma decisão registada ainda.';
+    } else {
+      status.textContent = decisao ? 'Marcado como phishing.' : 'Marcado como seguro.';
+    }
+
+    renderLista();
+  }
+
+  function marcarAtual(valor) {
+    if (!emailAtual || jogoSubmetido) return;
+    respostas[emailAtual.id] = valor;
+    status.textContent = valor ? 'Marcado como phishing.' : 'Marcado como seguro.';
+    renderLista();
+  }
+
+  function submeterJogo() {
+    if (jogoSubmetido) return;
+    jogoSubmetido = true;
+
+    let acertos = 0;
+    let erros = 0;
+
+    emails.forEach(email => {
+      const resposta = respostas[email.id];
+      if (resposta !== undefined) {
+        if (resposta === email.phishing) {
+          acertos++;
+        } else {
+          erros++;
+        }
+      }
+    });
+
+    const pontuacao = Math.max(0, (acertos * 20) - (erros * 10));
+    const tempoSegundos = Math.floor((Date.now() - inicio) / 1000);
+
+    document.getElementById('pontuacaoFinal').value = pontuacao;
+    document.getElementById('acertosFinal').value = acertos;
+    document.getElementById('errosFinal').value = erros;
+    document.getElementById('tempoSegundosFinal').value = tempoSegundos;
+    document.getElementById('detalheJsonFinal').value = JSON.stringify(respostas);
+
+    document.getElementById('formFinal').submit();
+  }
+
+  function iniciarTemporizador() {
+    tempoRestanteEl.textContent = tempoRestante;
+
+    const intervalo = setInterval(() => {
+      if (jogoSubmetido) {
+        clearInterval(intervalo);
+        return;
+      }
+
+      tempoRestante--;
+      tempoRestanteEl.textContent = tempoRestante;
+
+      if (tempoRestante <= 0) {
+        clearInterval(intervalo);
+        status.textContent = 'O tempo terminou. A submeter automaticamente...';
+        submeterJogo();
+      }
+    }, 1000);
+  }
+
+  if (emails.length > 0) {
+    selecionarEmail(emails[0].id);
+  }
+
+  iniciarTemporizador();
+</script>

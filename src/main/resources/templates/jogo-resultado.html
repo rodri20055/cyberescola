@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resultado do Jogo | CyberEscola</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Manrope', sans-serif;
+    }
+
+    body {
+      background: #f8f5ef;
+      color: #1f1f1f;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 760px;
+    }
+
+    .result-card {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 28px;
+      padding: 36px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    }
+
+    .result-icon {
+      width: 84px;
+      height: 84px;
+      margin: 0 auto 20px;
+      border-radius: 24px;
+      background: #efe6da;
+      color: #6c4b2d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      color: #5c5c5c;
+      font-size: 1rem;
+      margin-bottom: 24px;
+    }
+
+    .score-box {
+      background: #faf6f0;
+      border: 1px solid #eadfd2;
+      border-radius: 22px;
+      padding: 24px;
+      margin-bottom: 26px;
+    }
+
+    .score-box span {
+      display: block;
+      color: #7a6b5c;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+
+    .score {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: #1f1f1f;
+    }
+
+    .message {
+      color: #5c5c5c;
+      line-height: 1.7;
+      margin-bottom: 28px;
+      font-size: 0.98rem;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      border-radius: 999px;
+      font-weight: 800;
+      text-decoration: none;
+      border: 1px solid #d7cec2;
+      background: #fffdf9;
+      color: #1f1f1f;
+    }
+
+    .btn-dark {
+      background: #1f1f1f;
+      color: white;
+      border-color: #1f1f1f;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="result-card">
+      <div class="result-icon">
+        <i class="fa-solid fa-trophy"></i>
+      </div>
+
+      <h1>Resultado do jogo</h1>
+      <p class="subtitle" th:text="${jogo.titulo}">Caça ao Phishing</p>
+
+      <div class="score-box">
+        <span>Pontuação obtida</span>
+        <div class="score" th:text="${pontuacao} + ' pontos'">0 pontos</div>
+      </div>
+
+      <p class="message" th:if="${pontosGanhosAgora > 0}">
+  O teu resultado foi guardado. Melhoraste o teu desempenho e ganhaste
+  <strong th:text="${pontosGanhosAgora}">0</strong> pontos para o ranking.
+</p>
+
+<p class="message" th:if="${pontosGanhosAgora == 0}">
+  O teu resultado foi guardado, mas não ganhaste pontos adicionais porque não superaste a tua melhor pontuação anterior.
+</p>
+
+      <div class="actions">
+        <a href="/jogos" class="btn">
+          <i class="fa-solid fa-gamepad"></i>
+          Voltar aos jogos
+        </a>
+
+        <a href="/aluno" class="btn btn-dark">
+          <i class="fa-solid fa-house"></i>
+          Ir para o dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

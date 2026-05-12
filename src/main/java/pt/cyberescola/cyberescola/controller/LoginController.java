@@ -32,46 +32,58 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String email,
-                        @RequestParam String password,
-                        @RequestParam String perfil,
-                        HttpSession session) {
+public String login(@RequestParam String email,
+                    @RequestParam String password,
+                    @RequestParam String perfil,
+                    HttpSession session) {
 
-        Optional<Utilizador> user =
-                utilizadorRepository.findByEmailAndPalavraPasse(email, password);
+    Optional<Utilizador> user =
+            utilizadorRepository.findByEmailAndPalavraPasse(email, password);
 
-        if (user.isEmpty()) {
-            return "redirect:/login.html?erro";
-        }
-
-        Utilizador u = user.get();
-
-        if (!u.getTipo().equalsIgnoreCase(perfil)) {
-            return "redirect:/login.html?erro";
-        }
-
-        String codigo = String.format("%06d", new Random().nextInt(1000000));
-
-        LoginCode loginCode = new LoginCode();
-        loginCode.setEmail(email);
-        loginCode.setCodigo(codigo);
-        loginCode.setExpiresAt(LocalDateTime.now().plusMinutes(5));
-        loginCode.setUsed(false);
-        loginCode.setTentativas(0);
-
-        loginCodeRepository.save(loginCode);
-
-        emailService.enviarEmail(
-                email,
-                "Código de verificação CyberEscola",
-                "O teu código de verificação é: " + codigo
-        );
-
-        session.setAttribute("emailPendente2FA", email);
-        session.setAttribute("perfilPendente2FA", perfil);
-
-        return "redirect:/verificar-codigo";
+    if (user.isEmpty()) {
+        return "redirect:/login.html?erro";
     }
+
+    Utilizador u = user.get();
+
+    if (!u.getTipo().equalsIgnoreCase(perfil)) {
+        return "redirect:/login.html?erro";
+    }
+
+    if (u.getTwoFactorEnabled() != null && !u.getTwoFactorEnabled()) {
+        session.setAttribute("utilizadorLogado", u);
+
+        if (u.getTipo().equalsIgnoreCase("aluno")) {
+            return "redirect:/aluno";
+        } else if (u.getTipo().equalsIgnoreCase("professor")) {
+            return "redirect:/professor";
+        } else {
+            return "redirect:/admin";
+        }
+    }
+
+    String codigo = String.format("%06d", new Random().nextInt(1000000));
+
+    LoginCode loginCode = new LoginCode();
+    loginCode.setEmail(email);
+    loginCode.setCodigo(codigo);
+    loginCode.setExpiresAt(LocalDateTime.now().plusMinutes(5));
+    loginCode.setUsed(false);
+    loginCode.setTentativas(0);
+
+    loginCodeRepository.save(loginCode);
+
+    emailService.enviarEmail(
+            email,
+            "Código de verificação CyberEscola",
+            "O teu código de verificação é: " + codigo
+    );
+
+    session.setAttribute("emailPendente2FA", email);
+    session.setAttribute("perfilPendente2FA", perfil);
+
+    return "redirect:/verificar-codigo";
+}
 
     @GetMapping("/verificar-codigo")
     public String paginaVerificarCodigo(HttpSession session) {

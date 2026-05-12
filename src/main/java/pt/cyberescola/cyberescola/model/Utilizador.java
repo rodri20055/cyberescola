@@ -28,6 +28,7 @@ public class Utilizador {
     private Boolean ativo;
 
     private String turma;
+    private Boolean twoFactorEnabled = true;
 
     @Column(name = "id_turma")
 private Long idTurma;
@@ -114,4 +115,12 @@ public void setIdTurma(Long idTurma) {
     public void setTurma(String turma) {
         this.turma = turma;
     }
+
+    public Boolean getTwoFactorEnabled() {
+    return twoFactorEnabled;
+}
+
+public void setTwoFactorEnabled(Boolean twoFactorEnabled) {
+    this.twoFactorEnabled = twoFactorEnabled;
+}
 }

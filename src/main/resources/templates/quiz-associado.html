@@ -32,20 +32,20 @@
       min-height: 100vh;
     }
 
-   .sidebar {
-  width: 290px;
-  background: #fffdf9;
-  border-right: 1px solid #ddd4c8;
-  padding: 28px 18px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  overflow-y: auto;
-}
+    .sidebar {
+      width: 290px;
+      background: #fffdf9;
+      border-right: 1px solid #ddd4c8;
+      padding: 28px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
 
     .sidebar-top {
       display: flex;
@@ -98,20 +98,20 @@
     }
 
     .main {
-  margin-left: 290px;
-  min-height: 100vh;
-  width: calc(100% - 290px);
-}
+      margin-left: 290px;
+      min-height: 100vh;
+      width: calc(100% - 290px);
+    }
 
     .topbar {
-  width: 100%;
-  background: #fffdf9;
-  border-bottom: 1px solid #ddd4c8;
-  padding: 20px 28px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+      width: 100%;
+      background: #fffdf9;
+      border-bottom: 1px solid #ddd4c8;
+      padding: 20px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
     .topbar-left {
       font-weight: 700;
@@ -147,11 +147,11 @@
     }
 
     .content {
-  width: 100%;
-  max-width: 920px;
-  padding: 32px 24px 40px;
-  margin: 0 auto;
-}
+      width: 100%;
+      max-width: 920px;
+      padding: 32px 24px 40px;
+      margin: 0 auto;
+    }
 
     .quiz-header h1 {
       font-size: 2.25rem;
@@ -301,6 +301,12 @@
         </div>
 
         <div class="quiz-card">
+
+          <div th:if="${erro}"
+               style="margin-bottom:16px; padding:14px 16px; border-radius:14px; background:#fdeaea; color:#a33a3a; border:1px solid #efc7c7; font-weight:700;">
+            <span th:text="${erro}">Erro</span>
+          </div>
+
           <form th:action="@{'/quiz-associado/' + ${quiz.idConteudo}}" method="post">
 
             <div th:each="p, iter : ${perguntas}" style="margin-bottom: 28px;">

@@ -6,4 +6,4 @@ import pt.cyberescola.cyberescola.model.ProfessorTurma;
 
 public interface ProfessorTurmaRepository extends JpaRepository<ProfessorTurma, Long> {
     List<ProfessorTurma> findByIdProfessor(Integer idProfessor);
-}
+} 

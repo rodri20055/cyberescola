@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Configuração | CyberEscola</title>
+  <title>Associar Professor a Turma | CyberEscola</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -107,7 +107,6 @@
       z-index: 1000;
       background: rgba(255, 253, 249, 0.92);
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
       border-bottom: 1px solid #ddd4c8;
       padding: 20px 28px;
       display: flex;
@@ -164,16 +163,10 @@
 
     .page-header {
       margin-bottom: 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
     }
 
     .page-header h1 {
-      font-size: 2.4rem;
-      letter-spacing: -1px;
+      font-size: 2.3rem;
       margin-bottom: 8px;
     }
 
@@ -181,58 +174,33 @@
       color: #5c5c5c;
     }
 
-    .save-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 18px;
-      border-radius: 999px;
-      background: #1f1f1f;
-      color: white;
-      font-weight: 800;
-      border: 1px solid #1f1f1f;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .save-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 20px rgba(0,0,0,0.08);
-    }
-
-    .config-card {
-      max-width: 760px;
+    .card {
       background: #fffdf9;
       border: 1px solid #ddd4c8;
       border-radius: 24px;
       padding: 24px;
+      margin-bottom: 22px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.03);
-      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
     }
 
-    .config-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 28px rgba(0,0,0,0.06);
-      border-color: #cdbca9;
-    }
-
-    .form-group {
+    .card h2 {
+      font-size: 1.3rem;
       margin-bottom: 18px;
     }
 
-    .form-group:last-child {
-      margin-bottom: 0;
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 14px;
+      align-items: end;
     }
 
     .form-group label {
       display: block;
       margin-bottom: 8px;
-      font-weight: 800;
-      font-size: 0.98rem;
-      color: #1f1f1f;
+      font-weight: 700;
     }
 
-    .form-group input,
     .form-group select {
       width: 100%;
       border: 1px solid #ddd4c8;
@@ -241,14 +209,57 @@
       background: #fff;
       font-size: 0.96rem;
       outline: none;
-      color: #1f1f1f;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .form-group input:focus,
-    .form-group select:focus {
-      border-color: #cdbca9;
-      box-shadow: 0 0 0 3px rgba(239, 230, 218, 0.65);
+    .btn-dark {
+      padding: 14px 18px;
+      border-radius: 16px;
+      background: #1f1f1f;
+      color: white;
+      border: 1px solid #1f1f1f;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .table-card {
+      background: #fffdf9;
+      border: 1px solid #ddd4c8;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      text-align: left;
+      font-size: 0.84rem;
+      color: #74685d;
+      padding: 16px;
+      border-bottom: 1px solid #eadfd2;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 16px;
+      border-bottom: 1px solid #f0e7dc;
+      vertical-align: middle;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #d63b3b;
+      font-size: 1rem;
     }
 
     @media (max-width: 900px) {
@@ -268,10 +279,15 @@
       .topbar {
         left: 0;
         width: 100%;
+        position: relative;
       }
 
       .content {
-        padding-top: 108px;
+        padding-top: 24px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -286,10 +302,10 @@
         <a href="/admin"><i class="fa-solid fa-house"></i> Dashboard</a>
         <a href="/admin/utilizadores"><i class="fa-solid fa-users"></i> Utilizadores</a>
         <a href="/admin/conteudos"><i class="fa-regular fa-folder-open"></i> Conteúdos</a>
-        <a href="/admin/configuracao" class="active"><i class="fa-solid fa-gear"></i> Configuração</a>
-        <a href="/admin/perfil"><i class="fa-regular fa-user"></i> Perfil</a>
         <a href="/admin/jogos"><i class="fa-solid fa-gamepad"></i> Jogos</a>
-        <a href="/admin/associar-professor-turma"><i class="fa-solid fa-school"></i> Associar Turmas</a>
+        <a href="/admin/associar-professor-turma" class="active"><i class="fa-solid fa-school"></i> Associar Turmas</a>
+        <a href="/admin/configuracao"><i class="fa-solid fa-gear"></i> Configuração</a>
+        <a href="/admin/perfil"><i class="fa-regular fa-user"></i> Perfil</a>
       </nav>
     </div>
 
@@ -312,41 +328,81 @@
     </div>
 
     <section class="content">
-      <form action="/admin/configuracao/guardar" method="post">
-        <div class="page-header">
-          <div>
-            <h1>Configuração</h1>
-            <p>Parâmetros da plataforma.</p>
-          </div>
+      <div class="page-header">
+        <h1>Associar Professor a Turma</h1>
+        <p>Gerir a relação entre professores e turmas.</p>
+      </div>
 
-          <button class="save-btn" type="submit">
-            <i class="fa-regular fa-floppy-disk"></i>
-            Guardar
-          </button>
+      <div class="card">
+        <h2>Nova associação</h2>
+
+        <form action="/admin/associar-professor-turma" method="post">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Professor</label>
+              <select name="idProfessor" required>
+                <option value="">Selecionar professor</option>
+                <option th:each="p : ${professores}"
+                        th:value="${p.idUtilizador}"
+                        th:text="${p.nome + ' (' + p.email + ')'}">
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Turma</label>
+              <select name="idTurma" required>
+                <option value="">Selecionar turma</option>
+                <option th:each="t : ${turmas}"
+                        th:value="${t.id}"
+                        th:text="${t.nome}">
+                </option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn-dark">
+              <i class="fa-solid fa-link"></i> Associar
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="table-card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID Professor</th>
+                <th>ID Turma</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="a : ${associacoes}">
+                <td th:text="${a.idProfessor}">1</td>
+                <td th:text="${a.idTurma}">1</td>
+                <td>
+                  <form th:if="${a.id != null}"
+                        th:action="@{'/admin/remover-professor-turma/' + ${a.id}}"
+                        method="post"
+                        style="display:inline;">
+                    <button type="submit"
+                            class="action-btn"
+                            onclick="return confirm('Remover esta associação?')">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </form>
+                  <span th:if="${a.id == null}">Sem remoção por ID</span>
+                </td>
+              </tr>
+
+              <tr th:if="${#lists.isEmpty(associacoes)}">
+                <td colspan="3">Sem associações registadas.</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-
-        <div class="config-card">
-          <div class="form-group">
-            <label>MAX_TENTATIVAS_QUIZ</label>
-            <input type="text" name="maxTentativasQuiz" th:value="${maxTentativasQuiz}">
-          </div>
-
-          <div class="form-group">
-            <label>PONTOS_POR_QUIZ</label>
-            <input type="text" name="pontosPorQuiz" th:value="${pontosPorQuiz}">
-          </div>
-
-          <div class="form-group">
-            <label>MODO_MANUTENCAO</label>
-            <input type="text" name="modoManutencao" th:value="${modoManutencao}">
-          </div>
-
-          <div class="form-group">
-            <label>EMAIL_SUPORTE</label>
-            <input type="text" name="emailSuporte" th:value="${emailSuporte}">
-          </div>
-        </div>
-      </form>
+      </div>
     </section>
   </main>
 

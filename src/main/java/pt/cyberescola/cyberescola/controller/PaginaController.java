@@ -672,6 +672,68 @@ public String submeterQuiz(@PathVariable String id,
         return "redirect:/admin/conteudos?tipo=videos";
     }
 
+    @GetMapping("/admin/associar-professor-turma")
+public String paginaAssociarProfessorTurma(HttpSession session, Model model) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (u == null || !u.getTipo().equalsIgnoreCase("admin")) {
+        return "redirect:/login.html";
+    }
+
+    List<Utilizador> professores = utilizadorRepository.findAll().stream()
+            .filter(x -> x.getTipo() != null && x.getTipo().equalsIgnoreCase("professor"))
+            .toList();
+
+    List<Turma> turmas = turmaRepository.findAll();
+    List<ProfessorTurma> associacoes = professorTurmaRepository.findAll();
+
+    model.addAttribute("utilizador", u);
+    model.addAttribute("professores", professores);
+    model.addAttribute("turmas", turmas);
+    model.addAttribute("associacoes", associacoes);
+
+    return "admin-associar-professor-turma";
+}
+
+@PostMapping("/admin/associar-professor-turma")
+public String associarProfessorTurma(@RequestParam Integer idProfessor,
+                                     @RequestParam Long idTurma,
+                                     HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (u == null || !u.getTipo().equalsIgnoreCase("admin")) {
+        return "redirect:/login.html";
+    }
+
+    boolean jaExiste = professorTurmaRepository.findByIdProfessor(idProfessor).stream()
+            .anyMatch(pt -> pt.getIdTurma().equals(idTurma));
+
+    if (!jaExiste) {
+        ProfessorTurma pt = new ProfessorTurma();
+        pt.setIdProfessor(idProfessor);
+        pt.setIdTurma(idTurma);
+        professorTurmaRepository.save(pt);
+    }
+
+    return "redirect:/admin/associar-professor-turma";
+}
+
+
+@PostMapping("/admin/remover-professor-turma/{id}")
+public String removerProfessorTurma(@PathVariable Long id, HttpSession session) {
+    if (semLogin(session)) return "redirect:/login.html";
+
+    Utilizador u = (Utilizador) session.getAttribute("utilizadorLogado");
+    if (u == null || !u.getTipo().equalsIgnoreCase("admin")) {
+        return "redirect:/login.html";
+    }
+
+    professorTurmaRepository.deleteById(id);
+    return "redirect:/admin/associar-professor-turma";
+}
+
     @PostMapping("/admin/conteudos/apagar/{id}")
     public String apagarConteudoAdmin(@PathVariable Long id,
                                       HttpSession session) {

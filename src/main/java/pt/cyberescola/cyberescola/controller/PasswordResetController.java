@@ -57,7 +57,7 @@ public String enviarLinkReset(@RequestParam String email) {
 
         tokenRepository.save(resetToken);
 
-        String link = "http://localhost:8081/nova-password?token=" + token;
+        String link = "https://cyberescola.onrender.com/nova-password?token=" + token;
 
         System.out.println("Token criado: " + token);
         System.out.println("Link gerado: " + link);

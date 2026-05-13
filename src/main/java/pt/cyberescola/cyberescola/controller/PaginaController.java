@@ -2245,16 +2245,16 @@ public String editarPerfil(@RequestParam String nome,
         }
 
         if (foto != null && !foto.isEmpty()) {
-            String nomeFicheiro = UUID.randomUUID() + "_" + foto.getOriginalFilename();
+    String nomeFicheiro = UUID.randomUUID() + "_" + foto.getOriginalFilename();
 
-            Path pastaUploads = Paths.get("src/main/resources/static/uploads");
-            Files.createDirectories(pastaUploads);
+    Path pastaUploads = Paths.get("uploads");
+    Files.createDirectories(pastaUploads);
 
-            Path caminhoFicheiro = pastaUploads.resolve(nomeFicheiro);
-            Files.copy(foto.getInputStream(), caminhoFicheiro, StandardCopyOption.REPLACE_EXISTING);
+    Path caminhoFicheiro = pastaUploads.resolve(nomeFicheiro);
+    Files.copy(foto.getInputStream(), caminhoFicheiro, StandardCopyOption.REPLACE_EXISTING);
 
-            u.setFotoPerfil("/uploads/" + nomeFicheiro);
-        }
+    u.setFotoPerfil("/uploads/" + nomeFicheiro);
+}
 
         utilizadorRepository.save(u);
         session.setAttribute("utilizadorLogado", u);

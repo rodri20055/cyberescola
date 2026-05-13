@@ -580,11 +580,11 @@
         <div th:if="${utilizador.tipo == 'professor'}" class="perfil-professor-card">
           <div class="perfil-topo">
             <div class="perfil-foto">
-              <img th:if="${utilizador.fotoPerfil != null and utilizador.fotoPerfil != ''}"
-                   th:src="@{${utilizador.fotoPerfil}}"
-                   alt="Foto">
-              <i th:if="${utilizador.fotoPerfil == null or utilizador.fotoPerfil == ''}"
-                 class="fa-solid fa-user"></i>
+              <img th:if="${utilizador.fotoPerfil != null and !#strings.isEmpty(utilizador.fotoPerfil)}"
+     th:src="${utilizador.fotoPerfil}"
+     alt="Foto de perfil">
+<i th:if="${utilizador.fotoPerfil == null or #strings.isEmpty(utilizador.fotoPerfil)}"
+   class="fa-solid fa-user"></i>
             </div>
 
             <div>

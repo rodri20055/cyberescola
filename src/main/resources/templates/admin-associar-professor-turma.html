@@ -290,6 +290,35 @@
         grid-template-columns: 1fr;
       }
     }
+    @media (max-width: 900px) {
+  .sidebar {
+    width: 100%;
+    position: relative !important;
+    top: 0;
+    left: 0;
+    height: auto !important;
+    border-right: none;
+    border-bottom: 1px solid #ddd4c8;
+    overflow-y: visible !important;
+    z-index: 1;
+  }
+
+  .main {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
+  .topbar {
+    position: relative !important;
+    top: 0;
+    left: 0 !important;
+    width: 100% !important;
+  }
+
+  .content {
+    padding-top: 24px !important;
+  }
+}
   </style>
 </head>
 <body>
